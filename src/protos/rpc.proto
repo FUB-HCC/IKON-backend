@@ -1,0 +1,3 @@
+service RouteGuide {
+   rpc cluster(Data, Filter) returns (Data) {}
+}

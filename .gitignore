@@ -63,3 +63,6 @@ typings/
 # ssl certificates
 assets/ssl/server.key
 assets/ssl/server.crt
+
+# data
+assets/data/*

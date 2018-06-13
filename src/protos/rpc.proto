@@ -1,3 +1,20 @@
-service RouteGuide {
-   rpc cluster(Data, Filter) returns (Data) {}
+syntax = "proto3";
+
+package rpcserver;
+
+service RPCserver {
+   rpc cluster(ClusterRequest) returns (Matrix) {}
+}
+
+message Matrix {
+   int32 row = 1;
+   int32 col = 2;
+   repeated double data = 3;
+}
+
+message ClusterRequest {
+	int32 dim_embedding = 1;
+	double perplexity = 2;
+	double  learning_rate = 3;
+	repeated string fields = 4;
 }

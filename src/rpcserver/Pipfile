@@ -11,6 +11,9 @@ grpcio = "*"
 grpcio-tools = "*"
 langdetect = "*"
 matplotlib = "*"
+ipykernel = "*"
+bokeh = "*"
+ipywidgets = "*"
 
 [dev-packages]
 

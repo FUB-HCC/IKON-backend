@@ -64,7 +64,4 @@ typings/
 assets/ssl/server.key
 assets/ssl/server.crt
 
-# data
-assets/data/projects.json
-
 .idea/

@@ -64,4 +64,10 @@ typings/
 assets/ssl/server.key
 assets/ssl/server.crt
 
+#secrets
+assets/config/secrets.json
+
+#data
+assets/data/institutions.csv
+
 .idea/

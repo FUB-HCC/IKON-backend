@@ -1,0 +1,16 @@
+{
+	"ssl": {
+		"keyPath": "/../../assets/ssl/server.key",
+		"crtPath":"/../../assets/ssl/server.crt"
+	},
+	"frontend": {
+		"htmlPath": "/../../IKON-projektor/build/index.html",
+		"buildFolder": "IKON-projektor/build"
+	},
+	"data": {
+		"csv": "/../../../assets/data/projects.csv",
+		"taxonomy": "/../../../assets/data/taxonomy.csv",
+		"institutions": "/../../../assets/data/institutions.csv",
+		"jsonOut": "/../../../assets/data/projects.json"
+	}
+}

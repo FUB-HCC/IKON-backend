@@ -3,18 +3,23 @@ syntax = "proto3";
 package rpcserver;
 
 service RPCserver {
-   rpc cluster(ClusterRequest) returns (Matrix) {}
+   	rpc cluster(TopicExtractionRequest) returns (TopicExtractionResult) {}
 }
 
-message Matrix {
-   int32 row = 1;
-   int32 col = 2;
-   repeated double data = 3;
+message TopicExtractionResults {
+   	repeated double x = 1;
+   	repeated double y = 2;
+   	repeated int32 cluster = 3;
+   	repeated int32 project_id = 4;
+	string message = 5;
 }
 
-message ClusterRequest {
-	int32 dim_embedding = 1;
-	double perplexity = 2;
-	double  learning_rate = 3;
-	repeated string fields = 4;
+message TopicExtractionRequest {
+	string topic_extraction_method = 1;
+	string clustering_method = 2;
+	string embedding_method = 3;
+	int32 dim_topic = 4;
+	int32 num_clusters = 5;
+	double perplexity = 6;
+	double  learning_rate = 7;
 }

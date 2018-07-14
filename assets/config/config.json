@@ -8,9 +8,9 @@
 		"buildFolder": "IKON-projektor/build"
 	},
 	"data": {
-		"csv": "/../../../assets/data/projects.csv",
-		"taxonomy": "/../../../assets/data/taxonomy.csv",
-		"institutions": "/../../../assets/data/institutions.csv",
-		"jsonOut": "/../../../assets/data/projects.json"
+		"csv": "/../../../assets/data/project_input/projects.csv",
+		"taxonomy": "/../../../assets/data/data_augmentation/taxonomy.csv",
+		"institutions": "/../../../assets/data/data_augmentation/institutions.csv",
+		"jsonOut": "/../../../assets/data/project_output/projects.json"
 	}
 }

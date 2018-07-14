@@ -26,11 +26,9 @@ server.use('/', router);
 
 // load Dataloader
 const data = new Dataloader(config, secrets)
-//Promise.all(data.loadTransform()).then(file => console.log(file)).catch(reason => console.log(reason))
 data.load()
-	.then(() => data._geocode('Invalidenstraße 43,10115 Berlin,Deutschland'))
 	.then(() => data.transform())
-	.then(() => data.save())
+
 // Create https server & run
 https.createServer({
     key: fs.readFileSync(path.join(__dirname, config.ssl.keyPath)),
@@ -44,7 +42,7 @@ router.get('/', (req, res) => {
 	res.sendFile(path.join(__dirname, config.frontend.htmlPath))
 })	
 
-router.get('/api/topic', (req, res) => {
+router.get('/api/cluster', (req, res) => {
 	res.send('Not implemented yet!')
 })
 

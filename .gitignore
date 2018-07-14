@@ -68,6 +68,6 @@ assets/ssl/server.crt
 assets/config/secrets.json
 
 #data
-assets/data/institutions.csv
+assets/data/data_augmentation/institutions.csv
 
 .idea/

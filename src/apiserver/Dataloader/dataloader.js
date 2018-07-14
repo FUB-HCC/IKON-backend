@@ -54,12 +54,11 @@ class Dataloader {
 				  })
 	}
 
-	_computeEntry(entry) {
+	async _computeEntry(entry) {
 		const tax = this._findInTaxonomy(entry.subject_area.split(';'))
 		const address = this._findInInstitutions(entry.institution_id)
-		return this._geocode(address).then((pos) => {
-			console.log(pos, address)
-			return {
+		const pos = await this._geocode(address)
+		return {
 				'antragsteller': 'Anonym',
 		        'end': entry.funding_end_year,
 		        'forschungsbereich': tax['Wissenschaftsbereich'].split(' ')[1],
@@ -67,13 +66,13 @@ class Dataloader {
 		        'hauptthema': tax['Fachgebiet'].split(' ')[1],
 		        'id': entry.project_id,
 		        'address': address,
-		        'pos' :{
+		        'pos' : {
 		        	'long': pos.lng,
 		        	'lat': pos.lat
 		        },
 		        'kooperationspartner': '',
 		        'nebenthemen': entry.participating_subject_areas_full_string
-		        				.split(';')
+		        				.split(',')
 		        				.map(topic => topic.trim())
 		        				.filter(topic => topic != ''),
 		        'projektleiter': 'Anonym',
@@ -86,15 +85,21 @@ class Dataloader {
 		        				.map(region => region.trim())
 		        				.filter(region => region != ''),
 		        'synergie': '1'
-			}
-		})
+		}
 	}
 
 	transform() {
 		if (this.file !== {}) {
-			this.file['csv'] = this.file['csv'].map(entry => {
-							return this._computeEntry(entry)
-							})
+			this.file['csv'] = Promise.all(
+				this.file['csv']
+					.map(async (entry) => {
+						return this._computeEntry(entry)
+					})
+			)
+			.then(values => {
+				this._save(values)
+				return values
+			})
 		}
 	}
 
@@ -104,9 +109,9 @@ class Dataloader {
 		}
 	}
 
-	async save() {
+	async _save(values) {
 		try {
-			await fs.writeJson(path.join(__dirname, this.paths['jsonOut']), this.file['csv'])
+			await fs.writeJson(path.join(__dirname, this.paths['jsonOut']), values)
 			console.log('success!')
 		} catch (err) {
 			console.error(err)

@@ -13,7 +13,7 @@ const secrets = require(path.join(__dirname, '/../../assets/config/secrets.json'
 
 const server = express()
 server.use(helmet())
-server.use('static', express.static(path.join(__dirname, config.frontend.buildFolder)))
+server.use('/static', express.static(path.join(__dirname, config.frontend.staticFolder)))
 
 // Server setting
 const PORT = process.env.PORT || 8080
@@ -29,7 +29,7 @@ server.use('/', router);
 // load Dataloader
 const data = new Dataloader(config, secrets)
 data.load()
-	.then(() => data.transform())
+	//.then(() => data.transform())
 
 https.createServer({
     key: fs.readFileSync(path.join(__dirname, config.ssl.keyPath)),

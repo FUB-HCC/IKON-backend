@@ -5,7 +5,7 @@
 	},
 	"frontend": {
 		"htmlPath": "/../../IKON-projektor/build/index.html",
-		"buildFolder": "IKON-projektor/build"
+		"staticFolder": "/../../IKON-projektor/build/static"
 	},
 	"data": {
 		"csv": "/../../../assets/data/project_input/projects.csv",

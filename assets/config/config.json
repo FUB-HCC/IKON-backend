@@ -11,6 +11,7 @@
 		"csv": "/../../../assets/data/project_input/projects.csv",
 		"taxonomy": "/../../../assets/data/data_augmentation/taxonomy.csv",
 		"institutions": "/../../../assets/data/data_augmentation/institutions.csv",
+		"countryNames": "/../../../assets/data/data_augmentation/country-iso-names.json",
 		"jsonOut": "/../../../assets/data/project_output/projects.json"
 	}
 }

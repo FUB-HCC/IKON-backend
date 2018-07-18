@@ -29,7 +29,7 @@ server.use('/', router);
 // load Dataloader
 const data = new Dataloader(config, secrets)
 data.load()
-	//.then(() => data.transform())
+	.then(() => data.transform())
 
 https.createServer({
     key: fs.readFileSync(path.join(__dirname, config.ssl.keyPath)),

@@ -9,15 +9,17 @@ class Dataloader {
   			key: secrets.geocoding_API_key,
   			Promise: Promise
 			})
-		this.file = {}
+		this.file = {'countryNames': require(path.join(__dirname,this.paths['countryNames']))}
 	}
 
 	async load() {
 		for(var key in this.paths) {
 			try {
-				this.file[key] = await csv({
+				if (!['jsonOut','countryNames'].includes(key)) {
+					this.file[key] = await csv({
 					delimiter: (key == 'taxonomy')?';':','
 					}).fromFile(path.join(__dirname, this.paths[key]))
+				}
 			}
 			catch(reason)
 			{
@@ -37,10 +39,18 @@ class Dataloader {
 	}
 
 	_findInInstitutions(id) {
-		return this.file['institutions']
-				   .find(row => row.institution_id == id)
-				   .address
-				   .replace(new RegExp('\n', 'g'), ',')
+		const institution = this.file['institutions']
+				   				.find(row => row.institution_id == id)
+		return (institution != undefined)? institution : {"address": ""}		   
+	}
+
+	_findInCountryNames(name) {
+		try {
+			return this.file['countryNames'][name]
+		}	
+		catch(reason) {
+			return ""
+		}	   
 	}
 
 	_geocode(loc) {
@@ -56,7 +66,9 @@ class Dataloader {
 
 	async _computeEntry(entry) {
 		const tax = this._findInTaxonomy(entry.subject_area.split(';'))
-		const address = this._findInInstitutions(entry.institution_id)
+		const institution = this._findInInstitutions(entry.institution_id)
+		console.log(institution)
+		const address = institution.address.replace(new RegExp('\n', 'g'), ',')
 		const pos = await this._geocode(address)
 		return {
 				'antragsteller': 'Anonym',
@@ -66,6 +78,7 @@ class Dataloader {
 		        'hauptthema': tax['Fachgebiet'].split(' ')[1],
 		        'id': entry.project_id,
 		        'address': address,
+		        'institution': institution.name,
 		        'pos' : {
 		        	'long': pos.lng,
 		        	'lat': pos.lat
@@ -83,7 +96,10 @@ class Dataloader {
 		        'forschungsregion': entry.international_connections
 		        				.split(';')
 		        				.map(region => region.trim())
-		        				.filter(region => region != ''),
+		        				.filter(region => region != '')
+		        				.map(region => {
+		        					console.log(region, this._findInCountryNames(region))
+		        					return this._findInCountryNames(region)}),
 		        'synergie': '1'
 		}
 	}
@@ -92,6 +108,7 @@ class Dataloader {
 		if (this.file !== {}) {
 			this.file['csv'] = Promise.all(
 				this.file['csv']
+					.slice(0)
 					.map(async (entry) => {
 						return this._computeEntry(entry)
 					})
@@ -100,6 +117,7 @@ class Dataloader {
 				this._save(values)
 				return values
 			})
+			.catch((reason) => console.log(reason))
 		}
 	}
 

@@ -1,3 +1,5 @@
+"use strict";
+
 const express = require('express')
 const helmet = require('helmet')
 const fs = require('fs-extra')
@@ -11,7 +13,7 @@ const secrets = require(path.join(__dirname, '/../../assets/config/secrets.json'
 
 const server = express()
 server.use(helmet())
-server.use('static', express.static(config.frontend.buildFolder))
+server.use('static', express.static(path.join(__dirname, config.frontend.buildFolder)))
 
 // Server setting
 const PORT = process.env.PORT || 8080
@@ -29,7 +31,6 @@ const data = new Dataloader(config, secrets)
 data.load()
 	.then(() => data.transform())
 
-// Create https server & run
 https.createServer({
     key: fs.readFileSync(path.join(__dirname, config.ssl.keyPath)),
     cert: fs.readFileSync(path.join(__dirname, config.ssl.crtPath))
@@ -37,13 +38,17 @@ https.createServer({
     console.log(`API Server Started On Port ${PORT}!`)
 })
 
+
 // Routes
 router.get('/', (req, res) => {
 	res.sendFile(path.join(__dirname, config.frontend.htmlPath))
 })	
 
-router.get('/api/cluster', (req, res) => {
-	res.send('Not implemented yet!')
+router.get('/api/data', (req, res) => {
+	console.log(data.file['csv'])
+	Promise.resolve(data.file['csv'])
+		.then((value) => {res.status(200).json(value)})
+	
 })
 
 // exit strategy

@@ -1,0 +1,86 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: IKON backend
+  license:
+    name: APGL V3.0
+servers:
+  - url: https://localhost:5000/api/
+paths:
+  /data:
+    get:
+      summary: Get the intial project data
+      operationId: getData
+      tags:
+        - projects
+      responses:
+        '200':
+          description: An array of projects
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Projects"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Project:
+      properties:
+        antragsteller:
+          type: string
+        end:
+          type: string
+        forschunsgbereich:
+          type: string
+        geldgeber:
+          type: string
+        hauptthema:
+          type: string
+        id:
+          type: string
+        address:
+          type: string
+        pos:
+          type: object
+          properties:
+            lat:
+              type: integer
+              format: int32
+            long:
+              type: integer
+              format: int32
+        kooperationspartner:
+          type: string
+        nebenthemen:
+          type: string
+        projektleiter:
+          type: string
+        start:
+          type: string
+        titel:
+          type: string
+        beschreibung:
+          type: string
+        href:
+          type: string
+        forschunsgsregion:
+          type: array
+          items:
+            type: string
+        synergie:
+          type: string
+    Projects:
+      type: array
+      items:
+        $ref: "#/components/schemas/Project"
+    Error:
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string

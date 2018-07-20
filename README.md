@@ -19,7 +19,7 @@ First you need to clone the repository.
 In order to do that navigate to the folder where you want to save the project and execute:
 
 ```
-git clone https://github.com/FUB-HCC/IKON-backend.git
+git clone --recurse-submodules -j8 https://github.com/FUB-HCC/IKON-backend.git
 ```
 
 Then proceed by installing the dependencies for the API server:

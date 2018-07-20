@@ -1,3 +1,6 @@
 [submodule "IKON-projektor"]
 	path = IKON-projektor
 	url = https://github.com/FUB-HCC/IKON-projektor
+[submodule "assets/IKON-backend-config"]
+	path = assets/IKON-backend-config
+	url = https://github.com/FUB-HCC/IKON-backend-config

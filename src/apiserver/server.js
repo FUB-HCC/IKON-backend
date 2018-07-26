@@ -8,8 +8,8 @@ const https = require('https')
 const path = require('path')
 const Dataloader = require('./Dataloader/dataloader')
 
-const config = require(path.join(__dirname, '/../../assets/config/config.json'))
-const secrets = require(path.join(__dirname, '/../../assets/config/secrets.json'))
+const config = require(path.join(__dirname, '/../../assets/IKON-backend-config/config.json'))
+const secrets = require(path.join(__dirname, '/../../assets/IKON-backend-config/secrets.json'))
 
 const server = express()
 server.use(helmet())

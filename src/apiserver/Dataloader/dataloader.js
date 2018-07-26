@@ -1,6 +1,7 @@
 const csv = require('csvtojson')
 const path = require('path')
 const fs = require('fs-extra')
+const hash = require('object-hash')
 
 class Dataloader {
 	constructor(config, secrets){
@@ -10,27 +11,32 @@ class Dataloader {
   			Promise: Promise
 			})
 		this.file = {'countryNames': require(path.join(__dirname,this.paths['countryNames']))}
+
+		// check if all input files are already transformed or changed
+		fs.pathExists(path.join(__dirname,this.paths['countryNames']))
+		  .then(exists => {
+		  	if (exists) {
+		  		this.file['institution'] = require(path.join(__dirname,this.paths['institutions-json']))
+		  		if (hash()) {}
+		  	}
+		  })
 	}
 
-	async load() {
-		for(var key in this.paths) {
-			try {
-				if (!['jsonOut','countryNames'].includes(key)) {
-					this.file[key] = await csv({
-					delimiter: (key == 'taxonomy')?';':','
-					}).fromFile(path.join(__dirname, this.paths[key]))
-				}
-			}
-			catch(reason)
-			{
-				console.log(reason)
-				process.exit()
-			}
+	async load(path) {
+		try {
+			return await csv({
+				delimiter: (path == 'taxonomy-csv')?';':','
+				}).fromFile(path.join(__dirname, this.paths[path]))
+		}
+		catch(reason)
+		{
+			console.log(reason)
+			process.exit()
 		}
 	}
 
 	_findInTaxonomy(names) {
-		const tax = this.file['taxonomy'].find(row => 
+		const tax = this.file['taxonomy-csv'].find(row => 
 					names.some(name => Object.values(row).includes(name)))
 		return (tax != undefined)?tax : {
 			"Wissenschaftsbereich": "1 a",
@@ -39,7 +45,7 @@ class Dataloader {
 	}
 
 	_findInInstitutions(id) {
-		const institution = this.file['institutions']
+		const institution = this.file['institutions-json']
 				   				.find(row => row.institution_id == id)
 		return (institution != undefined)? institution : {"address": ""}		   
 	}
@@ -73,9 +79,9 @@ class Dataloader {
 		return {
 				'antragsteller': 'Anonym',
 		        'end': entry.funding_end_year,
-		        'forschungsbereich': tax['Wissenschaftsbereich'].split(' ')[1],
+		        'forschungsbereich': tax['Wissenschaftsbereich'].split(/_(.+)/)[1],
 		        'geldgeber': 'DFG',
-		        'hauptthema': tax['Fachgebiet'].split(' ')[1],
+		        'hauptthema': tax['Fachgebiet'].split(/ (.+)/)[1],
 		        'id': entry.project_id,
 		        'address': address,
 		        'institution': institution.name,
@@ -129,7 +135,7 @@ class Dataloader {
 
 	async _save(values) {
 		try {
-			await fs.writeJson(path.join(__dirname, this.paths['jsonOut']), values)
+			await fs.writeJson(path.join(__dirname, this.paths['project-json']), values)
 			console.log('success!')
 		} catch (err) {
 			console.error(err)

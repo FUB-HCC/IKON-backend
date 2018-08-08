@@ -90,12 +90,18 @@ class Dataloader {
 		try {
 			if ((await fs.pathExists(filePath)))
 			{
-				this.files.out['institutions'] = require(filePath)
-				if ( hash(this.files.in['institutions']) !== this.files.out['institutions']['hash'] ) {
+				this.files.out['institutions'] = await fs.readJson(filePath)
+				const hashvalue = hash(this.files.in['institutions']) + hash(this.files.out['projects']).toString()
+				console.log(this.files.out['institutions']['hash'])
+				if ( hashvalue != this.files.out['institutions']['hash'] ) {
 					return this.geocodeInstitutions()
+				}
+				else {
+					console.log('Loading saved file!')
 				}
 			}
 			else {
+				console.log('Not found')
 				return this.geocodeInstitutions()
 			}
 		}
@@ -129,6 +135,7 @@ class Dataloader {
 			for (var i in this.files.out['institutions']) {
 				this.files.out['institutions'][i]['loc'] = await geocode(this.files.out['institutions'][i]['address'])
 			}
+			this.files.out['institutions']['hash'] = hash(this.files.in['institutions']) + hash(this.files.out['projects'])
 			console.log(this.files.out['institutions'])
 			return this._save('institutions')
 		}
@@ -139,28 +146,7 @@ class Dataloader {
 	}
 
 
-	findInTaxonomy(names) {
-		const tax = this.file['taxonomy-csv'].find(row => 
-					names.some(name => Object.values(row).includes(name)))
-		return (tax != undefined)?tax : {
-			"Wissenschaftsbereich": "1 a",
-			"Fachgebiet": "2 b"
-		}
-	}
-
-	_findInInstitutions(id) {
-		const institution = this.file['institutions-json']
-				   				.find(row => row.institution_id == id)
-		return (institution != undefined)? institution : {"address": ""}		   
-	}
-
-
 	async _computeEntry(entry) {
-		const tax = this._findInTaxonomy(entry.subject_area.split(';'))
-		const institution = this._findInInstitutions(entry.institution_id)
-		console.log(institution)
-		const address = institution.address.replace(new RegExp('\n', 'g'), ',')
-		const pos = await this._geocode(address)
 		return {
 				'antragsteller': 'Anonym',
 		        'end': entry.funding_end_year,

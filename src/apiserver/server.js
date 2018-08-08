@@ -27,9 +27,10 @@ const router = express.Router();
 server.use('/', router);
 
 // load Dataloader
-const data = new Dataloader(config, secrets)
-data.load()
-	.then(() => data.transform())
+const dataloader = new Dataloader(config, secrets)
+dataloader.load()
+		  .then(() => dataloader.transform())
+		  .then(() => console.log('saved and ready'))
 
 https.createServer({
     key: fs.readFileSync(path.join(__dirname, config.ssl.keyPath)),

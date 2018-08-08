@@ -1,7 +1,7 @@
-const csv = require('csvtojson')
 const path = require('path')
 const fs = require('fs-extra')
 const hash = require('object-hash')
+const alasql = require('alasql')
 
 class Dataloader {
 	constructor(config, secrets){
@@ -10,23 +10,20 @@ class Dataloader {
   			key: secrets.geocoding_API_key,
   			Promise: Promise
 			})
-		this.file = {'countryNames': require(path.join(__dirname,this.paths['countryNames']))}
-
-		// check if all input files are already transformed or changed
-		fs.pathExists(path.join(__dirname,this.paths['countryNames']))
-		  .then(exists => {
-		  	if (exists) {
-		  		this.file['institution'] = require(path.join(__dirname,this.paths['institutions-json']))
-		  		if (hash()) {}
-		  	}
-		  })
 	}
 
-	async load(path) {
+	async read(file) {
 		try {
-			return await csv({
-				delimiter: (path == 'taxonomy-csv')?';':','
-				}).fromFile(path.join(__dirname, this.paths[path]))
+			const filePath = path.join(__dirname, this.paths.in[file])
+			if (this.paths.in[file].endsWith('csv')) {
+				return alasql.promise(`SELECT * FROM CSV("${path.join(__dirname, this.paths.in[file])}")`)
+			}
+			else if (this.paths.in[file].endsWith('json')){
+				return fs.readJson(filePath)
+			}
+			else {
+				throw `${file} is not in a supported file format!`
+			}
 		}
 		catch(reason)
 		{
@@ -35,7 +32,114 @@ class Dataloader {
 		}
 	}
 
-	_findInTaxonomy(names) {
+	async load() {
+		try {
+			// a subselect does not work yet in alasql. That's why this is a bit ugly
+			this.files = {}
+			this.files.in = {}
+			this.files.out = {}
+			for (const key in this.paths.in) {
+				this.files.in[key] = await this.read(key)
+			}
+			this.files.out['projects'] = await alasql.promise(`
+			SELECT proj.project_id AS project_id, 
+				   FIRST(proj.institution_id) AS institution_id, 
+				   ARRAY(DISTINCT countryCode.code) AS countries, 
+				   ARRAY(DISTINCT people.person_id) AS people, 
+				   FIRST(DISTINCT tax.subject_area) AS subject_area, 
+				   FIRST(DISTINCT tax.review_board) AS review_board, 
+				   FIRST(DISTINCT tax.research_area) AS research_area 
+			FROM ? AS proj
+
+			-- Match the country codes to projects
+			LEFT JOIN ? AS countries
+			ON proj.project_id = countries.project_id
+			LEFT JOIN ? AS countryCode
+			ON countries.country = countryCode.country
+
+			-- Match participating people to projects
+			LEFT JOIN ? AS projectsPeople
+			ON proj.project_id = projectsPeople.project_id_number
+			LEFT JOIN ? AS people
+			ON projectsPeople.person_id = people.person_id
+
+			-- Match taxonomy
+			LEFT JOIN ? AS subj
+			ON proj.project_id = subj.project_id
+			LEFT JOIN ? AS tax
+			ON subj.subject_area = tax.subject_area
+
+			GROUP BY proj.project_id
+			`, [this.files.in['projects'], 
+				this.files.in['projects-countries'], 
+				this.files.in['countryNames'], 
+				this.files.in['projects-people'], 
+				this.files.in['people'], 
+				this.files.in['projects-subjects'],
+				this.files.in['taxonomy']])
+
+        	return this._save('projects')	
+		}
+		catch(reason) {
+			console.log(reason)
+		}
+	}
+
+	async transform() {
+		const filePath = path.join(__dirname, this.paths.out['institutions'])
+		try {
+			if ((await fs.pathExists(filePath)))
+			{
+				this.files.out['institutions'] = require(filePath)
+				if ( hash(this.files.in['institutions']) !== this.files.out['institutions']['hash'] ) {
+					return this.geocodeInstitutions()
+				}
+			}
+			else {
+				return this.geocodeInstitutions()
+			}
+		}
+		catch(reason) {
+			console.log(reason)
+		}
+	}
+
+	async geocodeInstitutions() {
+
+		const geocode =  async loc => {
+		return this.googleMapsClient.geocode({address: loc})
+				  .asPromise()
+				  .then((response) => {
+				  	console.log(loc, response.json.results[0]['geometry']['location'], '\n')
+				    return response.json.results[0]['geometry']['location']
+				  })
+				  .catch((err) => {
+				    console.log(err)
+				    return {lat: 'error', lng: 'error'}
+				  })
+		}	
+
+		try {
+			this.files.out['institutions'] = await alasql.promise(`
+				SELECT DISTINCT inst.*
+				FROM ? AS inst
+ 				JOIN ? AS proj
+				ON proj.institution_id = inst.institution_id
+				`,[this.files.in['institutions'], this.files.out['projects']])
+			for (var i in this.files.out['institutions']) {
+				this.files.out['institutions'][i]['loc'] = await geocode(this.files.out['institutions'][i]['address'])
+			}
+			console.log(this.files.out['institutions'])
+			return this._save('institutions')
+		}
+		catch (reason) {
+			console.log(reason)
+		}
+
+	}
+
+
+	findInTaxonomy(names) {
 		const tax = this.file['taxonomy-csv'].find(row => 
 					names.some(name => Object.values(row).includes(name)))
 		return (tax != undefined)?tax : {
@@ -50,25 +154,6 @@ class Dataloader {
 		return (institution != undefined)? institution : {"address": ""}		   
 	}
 
-	_findInCountryNames(name) {
-		try {
-			return this.file['countryNames'][name]
-		}	
-		catch(reason) {
-			return ""
-		}	   
-	}
-
-	_geocode(loc) {
-		return this.googleMapsClient.geocode({address: loc})
-				  .asPromise()
-				  .then((response) => {
-				    return response.json.results[0]['geometry']['location']
-				  })
-				  .catch((err) => {
-				    console.log(err)
-				  })
-	}
 
 	async _computeEntry(entry) {
 		const tax = this._findInTaxonomy(entry.subject_area.split(';'))
@@ -110,22 +195,6 @@ class Dataloader {
 		}
 	}
 
-	transform() {
-		if (this.file !== {}) {
-			this.file['csv'] = Promise.all(
-				this.file['csv']
-					.slice(0)
-					.map(async (entry) => {
-						return this._computeEntry(entry)
-					})
-			)
-			.then(values => {
-				this._save(values)
-				return values
-			})
-			.catch((reason) => console.log(reason))
-		}
-	}
 
 	print() {
 		if (this.file !== {}) {
@@ -133,9 +202,9 @@ class Dataloader {
 		}
 	}
 
-	async _save(values) {
+	async _save(file) {
 		try {
-			await fs.writeJson(path.join(__dirname, this.paths['project-json']), values)
+			return fs.writeJson(path.join(__dirname, this.paths.out[file]), this.files.out[file])
 			console.log('success!')
 		} catch (err) {
 			console.error(err)

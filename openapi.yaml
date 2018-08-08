@@ -7,10 +7,10 @@ info:
 servers:
   - url: https://localhost:5000/api/
 paths:
-  /data:
+  /projects:
     get:
       summary: Get the intial project data
-      operationId: getData
+      operationId: getProjects
       tags:
         - projects
       responses:
@@ -20,6 +20,25 @@ paths:
             application/json:    
               schema:
                 $ref: "#/components/schemas/Projects"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /institutions:
+    get:
+      summary: Get the geocoded list of all institutions which are connnected to projects
+      operationId: getInstitutions
+      tags:
+        - intitutions
+      responses:
+        '200':
+          description: An array of institutions
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Institutions"
         default:
           description: unexpected error
           content:
@@ -44,15 +63,6 @@ components:
           type: string
         address:
           type: string
-        pos:
-          type: object
-          properties:
-            lat:
-              type: integer
-              format: int32
-            long:
-              type: integer
-              format: int32
         kooperationspartner:
           type: string
         nebenthemen:
@@ -77,6 +87,37 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Project"
+    Institution:
+      properties:
+        institution_id:
+          type: int32
+        name:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+        fax:
+          type: string
+        email:
+          type: string
+        address:
+          type: string
+        loc:
+          type: object
+          properties:
+            lat:
+              type: integer
+              format: int32
+            lng:
+              type: integer
+              format: int32
+        internet:
+          type: string
+    Institutions:
+      type: array
+      items:
+        $ref: "#/components/schemas/Institutions"
     Error:
       properties:
         code:

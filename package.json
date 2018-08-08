@@ -19,7 +19,7 @@
   "homepage": "https://github.com/FUB-HCC/IKON-backend#readme",
   "dependencies": {
     "@google/maps": "0.5.4",
-    "csvtojson": "2.0.6",
+    "alasql": "0.4.9",
     "express": "4.16.3",
     "fs-extra": "6.0.1",
     "grpc": "1.12.3",

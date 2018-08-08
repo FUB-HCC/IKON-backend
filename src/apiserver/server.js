@@ -44,9 +44,16 @@ router.get('/', (req, res) => {
 	res.sendFile(path.join(__dirname, config.frontend.htmlPath))
 })	
 
-router.get('/api/data', (req, res) => {
-	console.log(data.file['csv'])
-	Promise.resolve(data.file['csv'])
+router.get('/api/projects', (req, res) => {
+	console.log(dataloader.out.files['projects'])
+	Promise.resolve(dataloader.out.files['projects'])
+		.then((value) => {res.status(200).json(value)})
+	
+})
+
+router.get('/api/institutions', (req, res) => {
+	console.log(dataloader.out.files['institutions'])
+	Promise.resolve(dataloader.out.files['institutions'])
 		.then((value) => {res.status(200).json(value)})
 	
 })

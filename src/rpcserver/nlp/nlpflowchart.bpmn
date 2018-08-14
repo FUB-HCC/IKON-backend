@@ -57,7 +57,12 @@
     <bpmn:task id="Task_1xrr4mg" name="Get corresponding words and print them&#10;">
       <bpmn:incoming>SequenceFlow_15lmiq0</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_1gctfz1</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_02xozid</bpmn:outgoing>
     </bpmn:task>
+    <bpmn:sequenceFlow id="SequenceFlow_02xozid" sourceRef="Task_1xrr4mg" targetRef="EndEvent_1vpycrq" />
+    <bpmn:endEvent id="EndEvent_1vpycrq">
+      <bpmn:incoming>SequenceFlow_02xozid</bpmn:incoming>
+    </bpmn:endEvent>
     <bpmn:textAnnotation id="TextAnnotation_1oacn1f">
       <bpmn:text>German stopword list</bpmn:text>
     </bpmn:textAnnotation>
@@ -421,6 +426,13 @@
         <di:waypoint x="1534" y="395" />
         <di:waypoint x="1534" y="247" />
         <di:waypoint x="1867" y="247" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1vpycrq_di" bpmnElement="EndEvent_1vpycrq">
+        <dc:Bounds x="2057.037037037037" y="229" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_02xozid_di" bpmnElement="SequenceFlow_02xozid">
+        <di:waypoint x="1967" y="247" />
+        <di:waypoint x="2057" y="247" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

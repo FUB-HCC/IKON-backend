@@ -10,6 +10,8 @@
     <bpmn:messageFlow id="MessageFlow_05wxzpn" sourceRef="Task_1424553" targetRef="Task_05por06" />
     <bpmn:messageFlow id="MessageFlow_1nt9mvq" sourceRef="Task_1424553" targetRef="Task_0ibzo5t" />
     <bpmn:messageFlow id="MessageFlow_1wcxfks" name="Clustering results&#10;" sourceRef="Task_1424553" targetRef="Task_0o7xdlv" />
+    <bpmn:messageFlow id="MessageFlow_00h01vf" sourceRef="Task_1424553" targetRef="Task_0j06g37" />
+    <bpmn:messageFlow id="MessageFlow_12xzcza" sourceRef="Task_1k3rila" targetRef="Task_0tb6o75" />
   </bpmn:collaboration>
   <bpmn:process id="Process_1" isExecutable="false">
     <bpmn:laneSet id="LaneSet_0h0q6cl" />
@@ -44,13 +46,23 @@
     <bpmn:dataObject id="DataObject_06aq61q" />
     <bpmn:sequenceFlow id="SequenceFlow_04mlz8j" sourceRef="Task_1eq3kmr" targetRef="Task_0xcmftg" />
     <bpmn:sequenceFlow id="SequenceFlow_1yxxube" sourceRef="Task_0xcmftg" targetRef="Task_1ivrdj5" />
+    <bpmn:sequenceFlow id="SequenceFlow_15lmiq0" sourceRef="Task_0j06g37" targetRef="Task_1xrr4mg" />
+    <bpmn:sequenceFlow id="SequenceFlow_1gctfz1" sourceRef="Task_0tb6o75" targetRef="Task_1xrr4mg" />
+    <bpmn:task id="Task_0j06g37" name="Project cluster centers into word space and get n most influenctial dimensions&#10;">
+      <bpmn:outgoing>SequenceFlow_15lmiq0</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_0tb6o75" name="Project feature dimensions into word space and get n most influenctial dimensions">
+      <bpmn:outgoing>SequenceFlow_1gctfz1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_1xrr4mg" name="Get corresponding words and print them&#10;">
+      <bpmn:incoming>SequenceFlow_15lmiq0</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1gctfz1</bpmn:incoming>
+    </bpmn:task>
     <bpmn:textAnnotation id="TextAnnotation_1oacn1f">
-      <bpmn:text>German stopword list
-</bpmn:text>
+      <bpmn:text>German stopword list</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_1693ogn">
-      <bpmn:text>GEPRIS Data file
-</bpmn:text>
+      <bpmn:text>GEPRIS Data file</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_18lavi9" sourceRef="DataObjectReference_1nxi1oi" targetRef="TextAnnotation_1oacn1f" />
     <bpmn:association id="Association_17tvd03" sourceRef="DataObjectReference_0i3elht" targetRef="TextAnnotation_1693ogn" />
@@ -380,6 +392,35 @@
       <bpmndi:BPMNEdge id="SequenceFlow_1gtfx7i_di" bpmnElement="SequenceFlow_1gtfx7i">
         <di:waypoint x="174" y="247" />
         <di:waypoint x="248" y="247" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Task_0j06g37_di" bpmnElement="Task_0j06g37">
+        <dc:Bounds x="1595.037037037037" y="355" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="MessageFlow_00h01vf_di" bpmnElement="MessageFlow_00h01vf">
+        <di:waypoint x="1664" y="824" />
+        <di:waypoint x="1664" y="435" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Task_0tb6o75_di" bpmnElement="Task_0tb6o75">
+        <dc:Bounds x="1112.037037037037" y="355.07142857142856" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="MessageFlow_12xzcza_di" bpmnElement="MessageFlow_12xzcza">
+        <di:waypoint x="1169" y="596" />
+        <di:waypoint x="1169" y="435" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Task_1xrr4mg_di" bpmnElement="Task_1xrr4mg">
+        <dc:Bounds x="1867.037037037037" y="207" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_15lmiq0_di" bpmnElement="SequenceFlow_15lmiq0">
+        <di:waypoint x="1695" y="395" />
+        <di:waypoint x="1775" y="395" />
+        <di:waypoint x="1775" y="247" />
+        <di:waypoint x="1867" y="247" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1gctfz1_di" bpmnElement="SequenceFlow_1gctfz1">
+        <di:waypoint x="1212" y="395" />
+        <di:waypoint x="1534" y="395" />
+        <di:waypoint x="1534" y="247" />
+        <di:waypoint x="1867" y="247" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

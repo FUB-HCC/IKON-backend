@@ -31,13 +31,14 @@ const dataloader = new Dataloader(config, secrets)
 dataloader.load()
 		  .then(() => dataloader.transform())
 		  .then(() => console.log('saved and ready'))
-
-https.createServer({
-    key: fs.readFileSync(path.join(__dirname, config.ssl.keyPath)),
-    cert: fs.readFileSync(path.join(__dirname, config.ssl.crtPath))
-}, server).listen(PORT, () => {
-    console.log(`API Server Started On Port ${PORT}!`)
-})
+		  .then(() => {
+		  	https.createServer({
+			    key: fs.readFileSync(path.join(__dirname, config.ssl.keyPath)),
+			    cert: fs.readFileSync(path.join(__dirname, config.ssl.crtPath))
+			}, server).listen(PORT, () => {
+			    console.log(`API Server Started On Port ${PORT}!`)
+			})
+		  })
 
 
 // Routes

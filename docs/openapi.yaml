@@ -31,7 +31,7 @@ paths:
       summary: Get the geocoded list of all institutions which are connnected to projects
       operationId: getInstitutions
       tags:
-        - intitutions
+        - institutions
       responses:
         '200':
           description: An array of institutions
@@ -49,39 +49,41 @@ components:
   schemas:
     Project:
       properties:
-        antragsteller:
+        applicant:
           type: string
-        end:
+        end_date:
           type: string
-        forschunsgbereich:
+        research_area:
           type: string
-        geldgeber:
+        review_board:
           type: string
-        hauptthema:
+        subject_area:
+          type: string
+        sponsor:
           type: string
         id:
           type: string
         address:
           type: string
-        kooperationspartner:
+        cooperating_institutions:
           type: string
-        nebenthemen:
+        side_topics:
           type: string
-        projektleiter:
+        project_leader:
           type: string
-        start:
+        start_date:
           type: string
-        titel:
+        title:
           type: string
-        beschreibung:
+        abstract:
           type: string
         href:
           type: string
-        forschunsgsregion:
+        region:
           type: array
           items:
             type: string
-        synergie:
+        synergy:
           type: string
     Projects:
       type: array
@@ -90,7 +92,8 @@ components:
     Institution:
       properties:
         institution_id:
-          type: int32
+          type: integer
+          format: int32
         name:
           type: string
         address:
@@ -100,8 +103,6 @@ components:
         fax:
           type: string
         email:
-          type: string
-        address:
           type: string
         loc:
           type: object
@@ -117,7 +118,7 @@ components:
     Institutions:
       type: array
       items:
-        $ref: "#/components/schemas/Institutions"
+        $ref: "#/components/schemas/Institution"
     Error:
       properties:
         code:

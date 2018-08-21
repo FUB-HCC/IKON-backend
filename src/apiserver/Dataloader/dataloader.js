@@ -41,14 +41,39 @@ class Dataloader {
 			for (const key in this.paths.in) {
 				this.files.in[key] = await this.read(key)
 			}
+
+			alasql.fn.pattern = (address) => {
+				return '%' + address.split('\n')
+				                    .map(topic => topic.trim())
+				                    .filter(line => line != '')
+				                    .slice(0,2)
+				                    .join('\n') + '%'
+			}
+
+			alasql.fn.clean = (list) => {
+				return ((Array.isArray(list))?list:list.split(',').map(elem => elem.trim())).filter(elem => elem != '' && elem != undefined)
+			}
+
 			this.files.out['projects'] = await alasql.promise(`
-			SELECT proj.project_id AS project_id, 
+			SELECT proj.project_id AS id, 
 				   FIRST(proj.institution_id) AS institution_id, 
-				   ARRAY(DISTINCT countryCode.code) AS countries, 
-				   ARRAY(DISTINCT people.person_id) AS people, 
+				   clean(ARRAY(DISTINCT countryCode.code)) AS region, 
+				   clean(ARRAY(DISTINCT institutions.institution_id)) AS cooperating_institutions, 
 				   FIRST(DISTINCT tax.subject_area) AS subject_area, 
 				   FIRST(DISTINCT tax.review_board) AS review_board, 
-				   FIRST(DISTINCT tax.research_area) AS research_area 
+				   FIRST(DISTINCT tax.research_area) AS research_area,
+				   'Anonym' AS applicant,
+				   'DFG' AS sponsor,
+				   clean(FIRST(proj.participating_subject_areas_full_string)) AS side_topics,
+				   'Anonym' AS project_leader,
+				   FIRST(proj.funding_start_year) AS start_date,
+				   FIRST(proj.funding_end_year) AS end_date,
+				   FIRST(proj.title) AS title,
+				   FIRST(proj.project_abstract) AS abstract,
+				   '' AS href,
+				   '1' AS synergy
+
+
 			FROM ? AS proj
 
 			-- Match the country codes to projects
@@ -57,11 +82,13 @@ class Dataloader {
 			LEFT JOIN ? AS countryCode
 			ON countries.country = countryCode.country
 
-			-- Match participating people to projects
+			-- Match participating people to projects (not sure if it matches completly!!)
 			LEFT JOIN ? AS projectsPeople
 			ON proj.project_id = projectsPeople.project_id_number
 			LEFT JOIN ? AS people
 			ON projectsPeople.person_id = people.person_id
+			LEFT JOIN ? as institutions
+			ON institutions.name LIKE pattern(people.address)
 
 			-- Match taxonomy
 			LEFT JOIN ? AS subj
@@ -70,15 +97,17 @@ class Dataloader {
 			ON subj.subject_area = tax.subject_area
 
 			GROUP BY proj.project_id
+			ORDER BY proj.project_id
 			`, [this.files.in['projects'], 
 				this.files.in['projects-countries'], 
 				this.files.in['countryNames'], 
 				this.files.in['projects-people'], 
-				this.files.in['people'], 
+				this.files.in['people'],
+				this.files.in['institutions'], 
 				this.files.in['projects-subjects'],
 				this.files.in['taxonomy']])
-
-        	return this._save('projects')	
+			console.log(this.files.out['projects'])
+        	return this._save('projects', this.files.out['projects'])	
 		}
 		catch(reason) {
 			console.log(reason)
@@ -90,10 +119,10 @@ class Dataloader {
 		try {
 			if ((await fs.pathExists(filePath)))
 			{
-				this.files.out['institutions'] = await fs.readJson(filePath)
-				const hashvalue = hash(this.files.in['institutions']) + hash(this.files.out['projects']).toString()
-				console.log(this.files.out['institutions']['hash'])
-				if ( hashvalue != this.files.out['institutions']['hash'] ) {
+				const filetemp = await fs.readJson(filePath)
+				this.files.out['institutions'] = filetemp['data']
+				const hashvalue = hash(this.files.in['institutions']) + hash(this.files.out['projects'])
+				if ( hashvalue != filetemp['hash'] ) {
 					return this.geocodeInstitutions()
 				}
 				else {
@@ -135,9 +164,8 @@ class Dataloader {
 			for (var i in this.files.out['institutions']) {
 				this.files.out['institutions'][i]['loc'] = await geocode(this.files.out['institutions'][i]['address'])
 			}
-			this.files.out['institutions']['hash'] = hash(this.files.in['institutions']) + hash(this.files.out['projects'])
 			console.log(this.files.out['institutions'])
-			return this._save('institutions')
+			return this._save('institutions', {hash: hash(this.files.in['institutions']) + hash(this.files.out['projects']), data: this.files.out['institutions']})
 		}
 		catch (reason) {
 			console.log(reason)
@@ -188,9 +216,9 @@ class Dataloader {
 		}
 	}
 
-	async _save(file) {
+	async _save(file, data) {
 		try {
-			return fs.writeJson(path.join(__dirname, this.paths.out[file]), this.files.out[file])
+			return fs.writeJson(path.join(__dirname, this.paths.out[file]), data)
 			console.log('success!')
 		} catch (err) {
 			console.error(err)

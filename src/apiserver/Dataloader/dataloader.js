@@ -12,7 +12,7 @@ class Dataloader {
 			})
 	}
 
-	async read(file) {
+	async _read(file) {
 		try {
 			const filePath = path.join(__dirname, this.paths.in[file])
 			if (this.paths.in[file].endsWith('csv')) {
@@ -39,7 +39,7 @@ class Dataloader {
 			this.files.in = {}
 			this.files.out = {}
 			for (const key in this.paths.in) {
-				this.files.in[key] = await this.read(key)
+				this.files.in[key] = await this._read(key)
 			}
 
 			alasql.fn.pattern = (address) => {
@@ -123,7 +123,7 @@ class Dataloader {
 				this.files.out['institutions'] = filetemp['data']
 				const hashvalue = hash(this.files.in['institutions']) + hash(this.files.out['projects'])
 				if ( hashvalue != filetemp['hash'] ) {
-					return this.geocodeInstitutions()
+					return this._geocodeInstitutions()
 				}
 				else {
 					console.log('Loading saved file!')
@@ -131,7 +131,7 @@ class Dataloader {
 			}
 			else {
 				console.log('Not found')
-				return this.geocodeInstitutions()
+				return this._geocodeInstitutions()
 			}
 		}
 		catch(reason) {
@@ -139,9 +139,9 @@ class Dataloader {
 		}
 	}
 
-	async geocodeInstitutions() {
+	async _geocodeInstitutions() {
 
-		const geocode =  async loc => {
+		const _geocode =  async loc => {
 		return this.googleMapsClient.geocode({address: loc})
 				  .asPromise()
 				  .then((response) => {
@@ -162,7 +162,7 @@ class Dataloader {
 				ON proj.institution_id = inst.institution_id
 				`,[this.files.in['institutions'], this.files.out['projects']])
 			for (var i in this.files.out['institutions']) {
-				this.files.out['institutions'][i]['loc'] = await geocode(this.files.out['institutions'][i]['address'])
+				this.files.out['institutions'][i]['loc'] = await _geocode(this.files.out['institutions'][i]['address'])
 			}
 			console.log(this.files.out['institutions'])
 			return this._save('institutions', {hash: hash(this.files.in['institutions']) + hash(this.files.out['projects']), data: this.files.out['institutions']})

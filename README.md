@@ -52,7 +52,7 @@ Give an example
 | ------------- 				|:-------------:                                 											   |    															    -----:|
 | File matching 				| Loads and extracts information from all given files using an in-memory SQL database          | :red_circle: :red_circle: :red_circle: :white_circle: :white_check_mark: |
 | Feature extraction      	    | Loads project from the given data and computes an embedding of the projects in a toppic space| :red_circle: :red_circle: :red_circle: :red_circle: :heavy_check_mark:   |
-| Concise architecture   		| Is be built with best practices in mind and a thought-out plan		    				   |:red_circle: :red_circle: :white_circle: :white_circle: :white_check_mark:|
+| Concise architecture   		| Is built with best practices in mind and a thought-out plan		    				   |:red_circle: :red_circle: :white_circle: :white_circle: :white_check_mark:|
 | Interprocess communication	| Different processes (API, file loader, feature extractor) should be able to call eachother   |:white_circle: :white_circle: :white_circle: :white_circle: :white_check_mark:|
 | Defined API endpoints   		| Offers public and well-documented API endpoints for all currently implemented features	   |:red_circle: :red_circle: :red_circle: :red_circle: :heavy_check_mark:|
 | Coding style   		  		| Every piece of code followes a standardized coding style									   |:white_circle: :white_circle: :white_circle: :white_circle: :white_check_mark:|

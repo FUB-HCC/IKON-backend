@@ -48,16 +48,17 @@ Give an example
 ```
 
 ## Roadmap
+Every
 | Feature       				| Description                                    											   |															    Progress  |
 | ------------- 				|:-------------:                                 											   |    															    -----:|
-| File matching 				| Loads and extracts information from all given files using an in-memory SQL database          | :red_circle: :red_circle: :red_circle: :white_circle: :white_check_mark: |
-| Feature extraction      	    | Loads project from the given data and computes an embedding of the projects in a toppic space| :red_circle: :red_circle: :red_circle: :red_circle: :heavy_check_mark:   |
-| Concise architecture   		| Is built with best practices in mind and a thought-out plan		    				   |:red_circle: :red_circle: :white_circle: :white_circle: :white_check_mark:|
-| Interprocess communication	| Different processes (API, file loader, feature extractor) should be able to call eachother   |:white_circle: :white_circle: :white_circle: :white_circle: :white_check_mark:|
-| Defined API endpoints   		| Offers public and well-documented API endpoints for all currently implemented features	   |:red_circle: :red_circle: :red_circle: :red_circle: :heavy_check_mark:|
-| Coding style   		  		| Every piece of code followes a standardized coding style									   |:white_circle: :white_circle: :white_circle: :white_circle: :white_check_mark:|
-| Continous Delivery	  		| Tests exist and are tested for on every communication 									   |:white_circle: :white_circle: :white_circle: :white_circle: :white_check_mark:|
-| Dockerized    		  		| The backend and all its services run in Docker containers									   |:white_circle: :white_circle: :white_circle: :white_circle: :white_check_mark:|
+| File matching 				| Loads and extracts information from all given files using an in-memory SQL database          |75%|
+| Feature extraction      	    | Loads project from the given data and computes an embedding of the projects in a toppic space| 100%|
+| Concise architecture   		| Is built with best practices in mind and a thought-out plan		    				   |25%|
+| Interprocess communication	| Different processes (API, file loader, feature extractor) should be able to call eachother   |0%|
+| Defined API endpoints   		| Offers public and well-documented API endpoints for all currently implemented features	   |100%|
+| Coding style   		  		| Every piece of code followes a standardized coding style									   |0%|
+| Continous Delivery	  		| Tests exist and are tested for on every communication 									   |0%|
+| Dockerized    		  		| The backend and all its services run in Docker containers									   |10%|
 
 
 Add additional notes about how to deploy this on a live system

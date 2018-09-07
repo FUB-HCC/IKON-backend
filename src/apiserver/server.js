@@ -47,16 +47,14 @@ router.get('/', (req, res) => {
 })	
 
 router.get('/api/projects', (req, res) => {
-	console.log(dataloader.out.files['projects'])
-	Promise.resolve(dataloader.out.files['projects'])
-		.then((value) => {res.status(200).json(value)})
+	console.log(dataloader.files.out['projects'])
+	res.status(200).json(dataloader.files.out['projects'])
 	
 })
 
 router.get('/api/institutions', (req, res) => {
-	console.log(dataloader.out.files['institutions'])
-	Promise.resolve(dataloader.out.files['institutions'])
-		.then((value) => {res.status(200).json(value)})
+	console.log(dataloader.files.out['institutions'])
+	res.status(200).json(dataloader.files.out['institutions'])
 	
 })
 

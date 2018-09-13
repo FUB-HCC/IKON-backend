@@ -51,14 +51,14 @@ class Dataloader {
 			}
 
 			alasql.fn.clean = (list) => {
-				return ((Array.isArray(list))?list:list.split(',').map(elem => elem.trim())).filter(elem => elem != '' && elem != undefined)
+				return ((Array.isArray(list))?list:list.split(',').map(elem => elem.trim())).filter(elem => elem != '' && elem != undefined && elem != 'NA')
 			}
 
 			this.files.out['projects'] = await alasql.promise(`
 			SELECT proj.project_id AS id, 
 				   FIRST(proj.institution_id) AS institution_id, 
 				   clean(ARRAY(DISTINCT countryCode.code)) AS region, 
-				   clean(ARRAY(DISTINCT institutions.institution_id)) AS cooperating_institutions, 
+				   clean(ARRAY(DISTINCT people.institution_id)) AS cooperating_institutions, 
 				   FIRST(DISTINCT tax.subject_area) AS subject_area, 
 				   FIRST(DISTINCT tax.review_board) AS review_board, 
 				   FIRST(DISTINCT tax.research_area) AS research_area,
@@ -82,13 +82,11 @@ class Dataloader {
 			LEFT JOIN ? AS countryCode
 			ON countries.country = countryCode.country
 
-			-- Match participating people to projects (not sure if it matches completly!!)
+			-- Match participating people to projects
 			LEFT JOIN ? AS projectsPeople
 			ON proj.project_id = projectsPeople.project_id_number
 			LEFT JOIN ? AS people
 			ON projectsPeople.person_id = people.person_id
-			LEFT JOIN ? as institutions
-			ON institutions.name LIKE pattern(people.address)
 
 			-- Match taxonomy
 			LEFT JOIN ? AS subj
@@ -130,7 +128,7 @@ class Dataloader {
 				}
 			}
 			else {
-				console.log('Not found')
+				console.log('Saved file not found! Regenerating tables ...')
 				return this._geocodeInstitutions()
 			}
 		}
@@ -156,11 +154,28 @@ class Dataloader {
 
 		try {
 			this.files.out['institutions'] = await alasql.promise(`
-				SELECT DISTINCT inst.*
+				SELECT DISTINCT inst.institution_id, inst.name, inst.address, inst.phone, inst.fax, inst.email
 				FROM ? AS inst
  				JOIN ? AS proj
-				ON proj.institution_id = inst.institution_id
-				`,[this.files.in['institutions'], this.files.out['projects']])
+ 				ON proj.institution_id = inst.institution_id
+
+ 				`,[this.files.in['institutions'], 
+				   this.files.out['projects']])
+
+			this.files.out['institutions'].push( ...(await alasql.promise(`
+				SELECT DISTINCT inst.institution_id, inst.name, inst.address, inst.phone, inst.fax, inst.email
+				FROM ? AS projectsPeople
+				JOIN ? AS people
+				ON projectsPeople.person_id = people.person_id
+				JOIN ? AS inst
+				ON people.institution_id = inst.institution_id
+
+				`,[this.files.in['projects-people'], 
+				   this.files.in['people'],
+				   this.files.in['institutions']
+				   ])))
+			this.files.out['institutions'] = [... new Set(this.files.out['institutions'])]
+
 			for (var i in this.files.out['institutions']) {
 				this.files.out['institutions'][i]['loc'] = await _geocode(this.files.out['institutions'][i]['address'])
 			}
@@ -171,49 +186,6 @@ class Dataloader {
 			console.log(reason)
 		}
 
-	}
-
-
-	async _computeEntry(entry) {
-		return {
-				'antragsteller': 'Anonym',
-		        'end': entry.funding_end_year,
-		        'forschungsbereich': tax['Wissenschaftsbereich'].split(/_(.+)/)[1],
-		        'geldgeber': 'DFG',
-		        'hauptthema': tax['Fachgebiet'].split(/ (.+)/)[1],
-		        'id': entry.project_id,
-		        'address': address,
-		        'institution': institution.name,
-		        'pos' : {
-		        	'long': pos.lng,
-		        	'lat': pos.lat
-		        },
-		        'kooperationspartner': '',
-		        'nebenthemen': entry.participating_subject_areas_full_string
-		        				.split(',')
-		        				.map(topic => topic.trim())
-		        				.filter(topic => topic != ''),
-		        'projektleiter': 'Anonym',
-		        'start': entry.funding_start_year,
-		        'titel': entry.title,
-		        'beschreibung': entry.project_abstract,
-		        'href': '',
-		        'forschungsregion': entry.international_connections
-		        				.split(';')
-		        				.map(region => region.trim())
-		        				.filter(region => region != '')
-		        				.map(region => {
-		        					console.log(region, this._findInCountryNames(region))
-		        					return this._findInCountryNames(region)}),
-		        'synergie': '1'
-		}
-	}
-
-
-	print() {
-		if (this.file !== {}) {
-			console.log(this.file)
-		}
 	}
 
 	async _save(file, data) {

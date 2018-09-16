@@ -50,7 +50,7 @@ Give an example
 ## Roadmap
 | Feature       				| Description                                    											   |															    Progress  |
 | ------------- 				|:-------------:                                 											   |    															    -----:|
-| File matching 				| Loads and extracts information from all given files using an in-memory SQL database          | 75% |
+| File matching 				| Loads and extracts information from all given files using an in-memory SQL database          | 100% |
 | Feature extraction      	    | Loads project from the given data and computes an embedding of the projects in a toppic space | 100% |
 | Concise architecture   		| Is built with best practices in mind and a thought-out plan		    				   | 25% |
 | Interprocess communication	| Different processes (API, file loader, feature extractor) should be able to call eachother   | 0% |

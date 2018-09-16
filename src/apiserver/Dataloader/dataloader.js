@@ -59,9 +59,9 @@ class Dataloader {
 				   FIRST(proj.institution_id) AS institution_id, 
 				   clean(ARRAY(DISTINCT countryCode.code)) AS region, 
 				   clean(ARRAY(DISTINCT people.institution_id)) AS cooperating_institutions, 
-				   FIRST(DISTINCT tax.subject_area) AS subject_area, 
-				   FIRST(DISTINCT tax.review_board) AS review_board, 
-				   FIRST(DISTINCT tax.research_area) AS research_area,
+				   FIRST(tax.subject_area) AS subject_area, 
+				   FIRST(tax.review_board) AS review_board, 
+				   FIRST(tax.research_area) AS research_area,
 				   'Anonym' AS applicant,
 				   'DFG' AS sponsor,
 				   clean(FIRST(proj.participating_subject_areas_full_string)) AS side_topics,
@@ -101,7 +101,6 @@ class Dataloader {
 				this.files.in['countryNames'], 
 				this.files.in['projects-people'], 
 				this.files.in['people'],
-				this.files.in['institutions'], 
 				this.files.in['projects-subjects'],
 				this.files.in['taxonomy']])
 			console.log(this.files.out['projects'])

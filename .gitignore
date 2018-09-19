@@ -71,3 +71,4 @@ assets/config/secrets.json
 assets/data/data_augmentation/institutions.csv
 
 .idea/
+database/

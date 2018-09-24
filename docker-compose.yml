@@ -3,8 +3,9 @@ services:
 
   postgres:
     container_name: postgres
-    restart: always
-    image: postgres:latest
+    build:
+      context: .
+      dockerfile: /src/postgres/Dockerfile
     volumes:
       - ./database:/var/lib/postgresql/data
     ports:
@@ -12,7 +13,7 @@ services:
     environment:
       POSTGRES_USER: pguser
       POSTGRES_PASSWORD: pguser
-      POSTGRES_DB: pgdb
+      POSTGRES_DB: postgres
 
   adminer:
     image: adminer

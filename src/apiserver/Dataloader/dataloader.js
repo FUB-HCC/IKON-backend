@@ -70,7 +70,7 @@ class Dataloader {
 				   FIRST(proj.funding_end_year) AS end_date,
 				   FIRST(proj.title) AS title,
 				   FIRST(proj.project_abstract) AS abstract,
-				   '' AS href,
+				   CONCAT('http://gepris.dfg.de/gepris/projekt/372767665', proj.project_id) AS href,
 				   '1' AS synergy
 
 

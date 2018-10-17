@@ -1,19 +1,21 @@
 "use strict";
 
-const path = require('path')
-const fs = require('fs-extra')
-const hash = require('object-hash')
+const fs = require('fs')
+//const hash = require('object-hash')
 
 const express = require('express')
 const helmet = require('helmet')
-const fs = require('fs-extra')
 const bodyParser = require('body-parser')
 const https = require('https')
-const path = require('path')
-const { Pool } = require('pg')
-const pool = new Pool()
 
-const config = require(path.join(__dirname, 'config/config.json'))
+const { Pool } = require('pg')
+const pool = new Pool({
+  user: process.env.PGUSER,
+  host: process.env.PGHOST,
+  database: process.env.PGDATABASE,
+  password: fs.readFileSync('/run/secrets/postgres_password', 'utf8').trim(),
+  port: process.env.PGPORT,
+})
 
 const server = express()
 server.use(helmet())
@@ -25,31 +27,42 @@ const PORT = process.env.PORT || 8080
 server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({ extended: true }))
 
+/*
+console.log(process.env.PGPASSWORD	)
+// set up Google maps client
+const googleMapsClient = require('@google/maps').createClient({
+		key: fs.readFileSync('/run/secrets/geocoding_api_key'),
+		Promise: Promise
+	}) */
+
 // Configure router
 const router = express.Router();
 server.use('/', router);
 
 https.createServer({
-			    key: fs.readFileSync(path.join(__dirname, config.ssl.keyPath)),
-			    cert: fs.readFileSync(path.join(__dirname, config.ssl.crtPath))
+			    key: fs.readFileSync('/run/secrets/ssl_key'),
+			    cert: fs.readFileSync('/run/secrets/ssl_crt')
 			}, server).listen(PORT, () => {
 			    console.log(`API Server Started On Port ${PORT}!`)
 			})
 
 
 // Routes
-router.get('/', (req, res) => {
-	res.sendFile(path.join(__dirname, config.frontend.htmlPath))
-})	
 
-router.get('/api/projects', (req, res) => {
-	console.log(dataloader.out.files['projects'])
-	Promise.resolve(dataloader.out.files['projects'])
-		.then((value) => {res.status(200).json(value)})
+router.get('/test', async (req, res) => {
+	let row = ''
+	try {
+		row = await pool.query('SELECT NOW()')
+	}
+	catch(err) {
+		console.log(err)
+
+	}
+	res.status(200).json(row)
 	
 })
 
-router.get('/api/institutions', (req, res) => {
+router.get('/institutions', (req, res) => {
 	console.log(dataloader.out.files['institutions'])
 	Promise.resolve(dataloader.out.files['institutions'])
 		.then((value) => {res.status(200).json(value)})
@@ -57,19 +70,17 @@ router.get('/api/institutions', (req, res) => {
 })
 
 // exit strategy
-process.on('exit', (err) => {  
-    console.log(err);
+process.on('SIGINT', async (err) => {  
+    console.log('err')
+    await pool.end()
 })
 
+/*
 
 class Dataloader {
 	constructor(config, secrets){
 		this.paths = config.data
-		this.googleMapsClient = require('@google/maps').createClient({
-  			key: secrets.geocoding_API_key,
-  			Promise: Promise
-			})
-	}
+
 
 	async _read(file) {
 		try {
@@ -249,5 +260,4 @@ class Dataloader {
 	}
 
 }
-
-module.exports = Dataloader
+*/

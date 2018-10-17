@@ -1,4 +1,4 @@
-FROM node:8
+FROM node:10
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -8,8 +8,6 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package*.json ./
 COPY src/ /src/
-COPY ../../assets/data /assets/data
-COPY ../../assets/IKON-backend-config /assets/config
 
 RUN npm install
 # If you are building your code for production
@@ -18,5 +16,5 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-EXPOSE 3000
+EXPOSE 8080
 CMD [ "npm", "start" ]

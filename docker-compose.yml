@@ -1,8 +1,8 @@
-version: '3'
+version: '3.1'
 services:
 
   postgres:
-    container_name: postgres
+    container_name: Postgres
     build:
       context: .
       dockerfile: /src/postgres/Dockerfile
@@ -12,11 +12,41 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_USER: pguser
-      POSTGRES_PASSWORD: pguser
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
       POSTGRES_DB: postgres
+    secrets:
+      - postgres_password
+
+  dal:
+    container_name: DataAccessLayer
+    build:
+      context: ./src/dal/
+      dockerfile: Dockerfile
+    ports:
+      - "5433:8080"
+    environment:
+      PGUSER: pguser
+      PGHOST: postgres
+      PGDATABASE: postgres
+      PGPORT: 5432
+    secrets:
+      - postgres_password
+      - ssl_key
+      - ssl_crt
+      - geocoding_api_key
 
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
+
+secrets:
+  postgres_password:
+    file: ./assets/IKON-backend-config/secrets/postgres_password
+  geocoding_api_key:
+    file: ./assets/IKON-backend-config/secrets/geocoding_api_key
+  ssl_crt:
+    file: ./assets/ssl/server.crt
+  ssl_key:
+    file: ./assets/ssl/server.key

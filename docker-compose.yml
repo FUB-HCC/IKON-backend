@@ -13,7 +13,7 @@ services:
     environment:
       POSTGRES_USER: pguser
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
-      POSTGRES_DB: postgres
+      POSTGRES_DB: ikon
     secrets:
       - postgres_password
 
@@ -27,7 +27,7 @@ services:
     environment:
       PGUSER: pguser
       PGHOST: postgres
-      PGDATABASE: postgres
+      PGDATABASE: ikon
       PGPORT: 5432
     secrets:
       - postgres_password
@@ -35,11 +35,18 @@ services:
       - ssl_crt
       - geocoding_api_key
 
-  adminer:
-    image: adminer
-    restart: always
+  rabbitmq:
+    image: rabbitmq:latest
+    container_name: RabbitMQ
     ports:
-      - 8080:8080
+      - 5672:5672
+    environment:
+      RABBITMQ_SSL_KEY_FILE: /run/secrets/ssl_key
+    secrets:
+      - postgres_password
+      - ssl_key
+      - ssl_crt
+      - geocoding_api_key
 
 secrets:
   postgres_password:
@@ -50,3 +57,4 @@ secrets:
     file: ./assets/ssl/server.crt
   ssl_key:
     file: ./assets/ssl/server.key
+

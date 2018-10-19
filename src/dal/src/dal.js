@@ -23,12 +23,19 @@ server.use(helmet())
 // Server setting
 const PORT = process.env.PORT || 8080
 
+// set up sql queries
+const queries = {
+	getAllProjects: fs.readFileSync('./src/sql/getAllProjects.sql', 'utf8').trim()
+}
+
+console.log(queries.getAllProjects)
+
 // Register body-parser
 server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({ extended: true }))
 
 /*
-console.log(process.env.PGPASSWORD	)
+console.log(process.env.PGPASSWORD)
 // set up Google maps client
 const googleMapsClient = require('@google/maps').createClient({
 		key: fs.readFileSync('/run/secrets/geocoding_api_key'),
@@ -49,23 +56,16 @@ https.createServer({
 
 // Routes
 
-router.get('/test', async (req, res) => {
+router.get('/projects', async (req, res) => {
 	let row = ''
 	try {
-		row = await pool.query('SELECT NOW()')
+		row = await pool.query(queries.getAllProjects)
 	}
 	catch(err) {
 		console.log(err)
 
 	}
 	res.status(200).json(row)
-	
-})
-
-router.get('/institutions', (req, res) => {
-	console.log(dataloader.out.files['institutions'])
-	Promise.resolve(dataloader.out.files['institutions'])
-		.then((value) => {res.status(200).json(value)})
 	
 })
 
@@ -125,49 +125,7 @@ class Dataloader {
 			}
 
 			this.files.out['projects'] = await alasql.promise(`
-			SELECT proj.project_id AS id, 
-				   FIRST(proj.institution_id) AS institution_id, 
-				   clean(ARRAY(DISTINCT countryCode.code)) AS region, 
-				   clean(ARRAY(DISTINCT institutions.institution_id)) AS cooperating_institutions, 
-				   FIRST(DISTINCT tax.subject_area) AS subject_area, 
-				   FIRST(DISTINCT tax.review_board) AS review_board, 
-				   FIRST(DISTINCT tax.research_area) AS research_area,
-				   'Anonym' AS applicant,
-				   'DFG' AS sponsor,
-				   clean(FIRST(proj.participating_subject_areas_full_string)) AS side_topics,
-				   'Anonym' AS project_leader,
-				   FIRST(proj.funding_start_year) AS start_date,
-				   FIRST(proj.funding_end_year) AS end_date,
-				   FIRST(proj.title) AS title,
-				   FIRST(proj.project_abstract) AS abstract,
-				   '' AS href,
-				   '1' AS synergy
 
-
-			FROM ? AS proj
-
-			-- Match the country codes to projects
-			LEFT JOIN ? AS countries
-			ON proj.project_id = countries.project_id
-			LEFT JOIN ? AS countryCode
-			ON countries.country = countryCode.country
-
-			-- Match participating people to projects (not sure if it matches completly!!)
-			LEFT JOIN ? AS projectsPeople
-			ON proj.project_id = projectsPeople.project_id_number
-			LEFT JOIN ? AS people
-			ON projectsPeople.person_id = people.person_id
-			LEFT JOIN ? as institutions
-			ON institutions.name LIKE pattern(people.address)
-
-			-- Match taxonomy
-			LEFT JOIN ? AS subj
-			ON proj.project_id = subj.project_id
-			LEFT JOIN ? AS tax
-			ON subj.subject_area = tax.subject_area
-
-			GROUP BY proj.project_id
-			ORDER BY proj.project_id
 			`, [this.files.in['projects'], 
 				this.files.in['projects-countries'], 
 				this.files.in['countryNames'], 

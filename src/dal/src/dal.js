@@ -25,7 +25,8 @@ const PORT = process.env.PORT || 8080
 
 // set up sql queries
 const queries = {
-	getAllProjects: fs.readFileSync('./src/sql/getAllProjects.sql', 'utf8').trim()
+	getAllProjects: fs.readFileSync('./src/sql/getAllProjects.sql', 'utf8').trim(),
+	getAllInstitutions: fs.readFileSync('./src/sql/getAllInstitutions.sql', 'utf8').trim()
 }
 
 console.log(queries.getAllProjects)
@@ -55,7 +56,6 @@ https.createServer({
 
 
 // Routes
-
 router.get('/projects', async (req, res) => {
 	let row = ''
 	try {
@@ -63,10 +63,20 @@ router.get('/projects', async (req, res) => {
 	}
 	catch(err) {
 		console.log(err)
-
 	}
 	res.status(200).json(row)
-	
+})
+
+// Routes
+router.get('/institutions', async (req, res) => {
+	let row = ''
+	try {
+		row = await pool.query(queries.getAllProjects)
+	}
+	catch(err) {
+		console.log(err)
+	}
+	res.status(200).json(row)
 })
 
 // exit strategy
@@ -82,90 +92,7 @@ class Dataloader {
 		this.paths = config.data
 
 
-	async _read(file) {
-		try {
-			const filePath = path.join(__dirname, this.paths.in[file])
-			if (this.paths.in[file].endsWith('csv')) {
-				return alasql.promise(`SELECT * FROM CSV("${path.join(__dirname, this.paths.in[file])}")`)
-			}
-			else if (this.paths.in[file].endsWith('json')){
-				return fs.readJson(filePath)
-			}
-			else {
-				throw `${file} is not in a supported file format!`
-			}
-		}
-		catch(reason)
-		{
-			console.log(reason)
-			process.exit()
-		}
-	}
 
-	async load() {
-		try {
-			// a subselect does not work yet in alasql. That's why this is a bit ugly
-			this.files = {}
-			this.files.in = {}
-			this.files.out = {}
-			for (const key in this.paths.in) {
-				this.files.in[key] = await this._read(key)
-			}
-
-			alasql.fn.pattern = (address) => {
-				return '%' + address.split('\n')
-				                    .map(topic => topic.trim())
-				                    .filter(line => line != '')
-				                    .slice(0,2)
-				                    .join('\n') + '%'
-			}
-
-			alasql.fn.clean = (list) => {
-				return ((Array.isArray(list))?list:list.split(',').map(elem => elem.trim())).filter(elem => elem != '' && elem != undefined)
-			}
-
-			this.files.out['projects'] = await alasql.promise(`
-
-			`, [this.files.in['projects'], 
-				this.files.in['projects-countries'], 
-				this.files.in['countryNames'], 
-				this.files.in['projects-people'], 
-				this.files.in['people'],
-				this.files.in['institutions'], 
-				this.files.in['projects-subjects'],
-				this.files.in['taxonomy']])
-			console.log(this.files.out['projects'])
-        	return this._save('projects', this.files.out['projects'])	
-		}
-		catch(reason) {
-			console.log(reason)
-		}
-	}
-
-	async transform() {
-		const filePath = path.join(__dirname, this.paths.out['institutions'])
-		try {
-			if ((await fs.pathExists(filePath)))
-			{
-				const filetemp = await fs.readJson(filePath)
-				this.files.out['institutions'] = filetemp['data']
-				const hashvalue = hash(this.files.in['institutions']) + hash(this.files.out['projects'])
-				if ( hashvalue != filetemp['hash'] ) {
-					return this._geocodeInstitutions()
-				}
-				else {
-					console.log('Loading saved file!')
-				}
-			}
-			else {
-				console.log('Not found')
-				return this._geocodeInstitutions()
-			}
-		}
-		catch(reason) {
-			console.log(reason)
-		}
-	}
 
 	async _geocodeInstitutions() {
 

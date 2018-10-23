@@ -26,18 +26,22 @@ CREATE TABLE IF NOT EXISTS people (
 COPY people FROM '/dump_data/people_joined_with_institutions.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projects (
+  num INTEGER,
+  institution_id INTEGER REFERENCES institutions(id),
   id INTEGER PRIMARY KEY ,
   title TEXT,
   project_abstract TEXT,
   dfg_process TEXT,
   funding_start_year TEXT,
   funding_end_year TEXT,
-  parent_project_id INTEGER REFERENCES projects(id),
+  parent_project_id INTEGER,
   participating_subject_areas TEXT,
-  description TEXT
+  description TEXT,
+  subject_area TEXT,
+  international_connections TEXT
 );
 
-COPY projects FROM '/dump_data/extracted_project_data.csv' DELIMITER ',' CSV HEADER;
+COPY projects FROM '/dump_data/projects.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS subjects (
   subject_area TEXT NOT NULL PRIMARY KEY ,

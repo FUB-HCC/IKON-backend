@@ -52,28 +52,28 @@ CREATE TABLE IF NOT EXISTS subjects (
 COPY subjects FROM '/dump_data/subject_areas.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS countryCodes (
-  country TEXT NOT NULL PRIMARY KEY ,
+  country TEXT PRIMARY KEY ,
   code TEXT NOT NULL
 );
 
 COPY countryCodes FROM '/dump_data/country_code.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projectsCountries (
-  project_id INTEGER REFERENCES projects(id),
+  project_id INTEGER NOT NULL,
   country TEXT 
 );
 
 COPY projectsCountries FROM '/dump_data/projects_international_connections.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projectsParticipatingSubjects (
-  project_id INTEGER REFERENCES projects(id),
+  project_id INTEGER NOT NULL,
   subject TEXT NOT NULL
 );
 
 COPY projectsParticipatingSubjects FROM '/dump_data/project_ids_to_participating_subject_areas.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projectsInstitutions (
-  project_id INTEGER REFERENCES projects(id),
+  project_id INTEGER NOT NULL,
   institution_id INTEGER REFERENCES institutions(id),
   relation_type TEXT
 );
@@ -82,7 +82,7 @@ COPY projectsInstitutions FROM '/dump_data/project_institution_relations.csv' DE
 
 CREATE TABLE IF NOT EXISTS institutionsProjects (
   institution_id INTEGER REFERENCES institutions(id),
-  project_id INTEGER REFERENCES projects(id)
+  project_id INTEGER NOT NULL
 );
 
 COPY institutionsProjects FROM '/dump_data/projects_listed_on_institution_detail_pages.csv' DELIMITER ',' CSV HEADER;
@@ -94,7 +94,7 @@ FROM institutionsProjects;
 DROP TABLE institutionsProjects;
 
 CREATE TABLE IF NOT EXISTS projectsPeople (
-  project_id INTEGER REFERENCES projects(id),
+  project_id INTEGER NOT NULL,
   person_id INTEGER,
   relation_type TEXT
 );
@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS projectsPeople (
 COPY projectsPeople FROM '/dump_data/project_person_relations.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projectsSubjects (
-  project_id INTEGER REFERENCES projects(id),
+  project_id INTEGER NOT NULL,
   subject_area TEXT
 );
 

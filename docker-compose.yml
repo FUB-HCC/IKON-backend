@@ -11,7 +11,7 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: pguser
+      POSTGRES_USER: ikon_user
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
       POSTGRES_DB: ikon
     secrets:
@@ -25,23 +25,10 @@ services:
     ports:
       - "5433:8080"
     environment:
-      PGUSER: pguser
+      PGUSER: ikon_user
       PGHOST: postgres
       PGDATABASE: ikon
       PGPORT: 5432
-    secrets:
-      - postgres_password
-      - ssl_key
-      - ssl_crt
-      - geocoding_api_key
-
-  rabbitmq:
-    image: rabbitmq:latest
-    container_name: RabbitMQ
-    ports:
-      - 5672:5672
-    environment:
-      RABBITMQ_SSL_KEY_FILE: /run/secrets/ssl_key
     secrets:
       - postgres_password
       - ssl_key

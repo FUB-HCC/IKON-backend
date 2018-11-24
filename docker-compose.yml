@@ -33,15 +33,15 @@ services:
       - postgres_password
       - ssl_key
       - ssl_crt
-      - geocoding_api_key
+      - ikoncode_secrets
 
 secrets:
   postgres_password:
     file: ./assets/IKON-backend-config/secrets/postgres_password
-  geocoding_api_key:
-    file: ./assets/IKON-backend-config/secrets/geocoding_api_key
   ssl_crt:
     file: ./assets/ssl/server.crt
   ssl_key:
     file: ./assets/ssl/server.key
+  ikoncode_secrets:
+    file: ./assets/IKON-backend-config/secrets/ikoncode_secrets
 

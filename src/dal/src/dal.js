@@ -13,7 +13,10 @@ const { Pool } = require('pg')
 
 // custom imports
 const geocoder = require('./geocode.js')
+const MediaWikiConnector = require('./mediawikiconnector.js')
+const bot = new MediaWikiConnector('/run/secrets/ikoncode_secrets')
 
+// connect to database
 const pool = new Pool({
   user: process.env.PGUSER,
   host: process.env.PGHOST,

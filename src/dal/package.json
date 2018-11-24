@@ -11,11 +11,12 @@
   "license": "AGPL-3.0",
   "dependencies": {
     "@google/maps": "0.5.5",
+    "amqplib": "0.5.2",
+    "axios": "0.18.0",
     "body-parser": "1.18.3",
     "express": "4.16.3",
     "fs-extra": "7.0.0",
     "helmet": "3.13.0",
-    "pg": "7.4.3",
-    "amqplib": "0.5.2"
+    "pg": "7.4.3"
   }
 }

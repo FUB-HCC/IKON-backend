@@ -30,7 +30,7 @@ npm install
 
 Finally end the setup process by installing the dependencies for the RPC server:
 ```
-cd src/rpc_server/
+cd src/rpcserver/
 pipenv install
 ```
 Now you can start the server by executing:

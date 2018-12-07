@@ -33,6 +33,23 @@ services:
       - postgres_password
       - ssl_key
       - ssl_crt
+
+  mwc:
+    container_name: MediaWikiConnector
+    build:
+      context: ./src/mwc/
+      dockerfile: Dockerfile
+    ports:
+      - "5434:8080"
+    environment:
+      PGUSER: ikonuser
+      PGHOST: Postgres
+      PGDATABASE: ikon
+      PGPORT: 5432
+    secrets:
+      - postgres_password
+      - ssl_key
+      - ssl_crt
       - ikoncode_secrets
 
 secrets:

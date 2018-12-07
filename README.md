@@ -8,7 +8,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-You will need [Node.js](https://nodejs.org/en/download/package-manager/), [Python3](https://docs.python.org/3/using/index.html) and [pipenv](https://docs.pipenv.org/) installed in order to run the backend. 
+You will need [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installed in order to run the backend. 
 
 
 ### Installing
@@ -22,21 +22,11 @@ In order to do that navigate to the folder where you want to save the project an
 git clone --recurse-submodules -j8 https://github.com/FUB-HCC/IKON-backend.git
 ```
 
-Then proceed by installing the dependencies for the API server:
+Then proceed by building and running the containers:
 ```
 cd IKON-backend/
-npm install 
-```
-
-Finally end the setup process by installing the dependencies for the RPC server:
-```
-cd src/rpc_server/
-pipenv install
-```
-Now you can start the server by executing:
-```
-cd ../../
-npm start
+docker-compose build
+docker-compose up
 ```
 
 ### Coding style

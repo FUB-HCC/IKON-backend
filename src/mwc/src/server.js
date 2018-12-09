@@ -23,16 +23,24 @@ catch (e) {
 
 const getAllProjects = async () => {
 	await this.login
-	const params = {
+	const params1 = {
 		action: 'ask',
-		query: '[[Category:Drittmittelprojekt]]|?Identifier|?TitelProjekt|limit=10000'
+		query: '[[Category:Drittmittelprojekt]]|?Identifier'
 	}
-	const data = await ikoncode.api.callAsync(params)
-	console.log(data)
-	console.log(data[2].query.results)
+	const data = await ikoncode.api.callAsync(params1)
+	const responses = Object.keys(data[2].query.results).map( key => {
+		const params2 = {
+			action: 'browsebysubject',
+			subject: key
+		}
+		return ikoncode.api.callAsync(params2)
+	})
+	Promise.all(responses).then(data =>{
+		const projects = data.map(entry => {return entry[2].query.data})
+	})
+
 }
 
-getAllProjects()
 
 
 // connect to database

@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS institutions (
 
 COPY institutions FROM '/dump_data/extracted_institution_data.csv' DELIMITER ',' CSV HEADER;
 
-CREATE TABLE IF NOT EXISTS people (
+CREATE TABLE IF NOT EXISTS peopleTemp (
   num INTEGER,
   id INTEGER NOT NULL,
   name TEXT,
@@ -23,28 +23,50 @@ CREATE TABLE IF NOT EXISTS people (
   institution_id INTEGER REFERENCES institutions(id)
 );
 
-COPY people FROM '/dump_data/people_joined_with_institutions.csv' DELIMITER ',' CSV HEADER;
+COPY peopleTemp FROM '/dump_data/people_joined_with_institutions.csv' DELIMITER ',' CSV HEADER;
+
+CREATE TABLE IF NOT EXISTS people (
+  id INTEGER PRIMARY KEY ,
+  name TEXT NOT NULL
+);
+
+INSERT INTO people (id, name)
+SELECT DISTINCT id, name
+FROM peopleTemp;
+
+CREATE TABLE IF NOT EXISTS peopleInstitutions (
+  people_id INTEGER REFERENCES people(id),
+  address TEXT,
+  phone TEXT,
+  fax TEXT,
+  email TEXT,
+  internet TEXT,
+  institution_name TEXT,
+  institution_id INTEGER REFERENCES institutions(id)
+);
+
+INSERT INTO peopleInstitutions (people_id, address, phone, fax, email, internet, institution_name, institution_id)
+SELECT DISTINCT id, address, phone, fax, email, internet, institution_name, institution_id
+FROM peopleTemp;
+
+DROP TABLE peopleTemp;
 
 CREATE TABLE IF NOT EXISTS projects (
-  num INTEGER,
-  institution_id INTEGER REFERENCES institutions(id),
   id INTEGER PRIMARY KEY ,
   title TEXT,
   project_abstract TEXT,
   dfg_process TEXT,
   funding_start_year TEXT,
   funding_end_year TEXT,
-  parent_project_id INTEGER,
+  parent_project_id INTEGER REFERENCES projects(id),
   participating_subject_areas TEXT,
-  description TEXT,
-  subject_area TEXT,
-  international_connections TEXT
+  description TEXT
 );
 
-COPY projects FROM '/dump_data/projects.csv' DELIMITER ',' CSV HEADER;
+COPY projects FROM '/dump_data/extracted_project_data.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS subjects (
-  subject_area TEXT NOT NULL PRIMARY KEY ,
+  subject_area TEXT PRIMARY KEY ,
   review_board TEXT NOT NULL,
   research_area TEXT NOT NULL
 );
@@ -52,28 +74,28 @@ CREATE TABLE IF NOT EXISTS subjects (
 COPY subjects FROM '/dump_data/subject_areas.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS countryCodes (
-  country TEXT PRIMARY KEY ,
+  country TEXT PRIMARY KEY,
   code TEXT NOT NULL
 );
 
 COPY countryCodes FROM '/dump_data/country_code.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projectsCountries (
-  project_id INTEGER NOT NULL,
-  country TEXT 
+  project_id INTEGER REFERENCES projects(id),
+  country TEXT REFERENCES countryCodes(country)
 );
 
 COPY projectsCountries FROM '/dump_data/projects_international_connections.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projectsParticipatingSubjects (
-  project_id INTEGER NOT NULL,
+  project_id INTEGER REFERENCES projects(id),
   subject TEXT NOT NULL
 );
 
 COPY projectsParticipatingSubjects FROM '/dump_data/project_ids_to_participating_subject_areas.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projectsInstitutions (
-  project_id INTEGER NOT NULL,
+  project_id INTEGER REFERENCES projects(id),
   institution_id INTEGER REFERENCES institutions(id),
   relation_type TEXT
 );
@@ -82,7 +104,7 @@ COPY projectsInstitutions FROM '/dump_data/project_institution_relations.csv' DE
 
 CREATE TABLE IF NOT EXISTS institutionsProjects (
   institution_id INTEGER REFERENCES institutions(id),
-  project_id INTEGER NOT NULL
+  project_id INTEGER REFERENCES projects(id)
 );
 
 COPY institutionsProjects FROM '/dump_data/projects_listed_on_institution_detail_pages.csv' DELIMITER ',' CSV HEADER;
@@ -94,15 +116,15 @@ FROM institutionsProjects;
 DROP TABLE institutionsProjects;
 
 CREATE TABLE IF NOT EXISTS projectsPeople (
-  project_id INTEGER NOT NULL,
-  person_id INTEGER,
+  project_id INTEGER REFERENCES projects(id),
+  person_id INTEGER REFERENCES people(id),
   relation_type TEXT
 );
 
 COPY projectsPeople FROM '/dump_data/project_person_relations.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projectsSubjects (
-  project_id INTEGER NOT NULL,
+  project_id INTEGER REFERENCES projects(id),
   subject_area TEXT
 );
 

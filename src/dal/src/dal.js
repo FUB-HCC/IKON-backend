@@ -8,7 +8,6 @@ const helmet = require('helmet')
 const bodyParser = require('body-parser')
 const https = require('https')
 const axios = require('axios')
-const querystring = require("querystring")
 const { Pool } = require('pg')
 
 // custom imports

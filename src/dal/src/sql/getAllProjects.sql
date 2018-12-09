@@ -1,7 +1,7 @@
 SELECT proj.id AS id,
   FIRST(projectsinstitutions.institution_id) AS institution_id,
   ARRAY_AGG(DISTINCT countryCode.code) AS region,
-  ARRAY_AGG(DISTINCT people.institution_id) AS cooperating_institutions,
+  ARRAY_AGG(DISTINCT peopleinstitutions.institution_id) AS cooperating_institutions,
   FIRST(subjects.subject_area) AS subject_area,
   FIRST(subjects.review_board) AS review_board,
   FIRST(subjects.research_area) AS research_area,
@@ -38,6 +38,8 @@ LEFT JOIN projectsPeople
 ON proj.id = projectsPeople.project_id
 LEFT JOIN people
 ON projectsPeople.person_id = people.id
+LEFT JOIN peopleinstitutions
+ON people.id = peopleinstitutions.people_id
 
 -- Match taxonomy
 LEFT JOIN projectsSubjects AS subj
@@ -45,7 +47,8 @@ ON proj.id = subj.project_id
 LEFT JOIN subjects
 ON subj.subject_area = subjects.subject_area
 
+WHERE projectsinstitutions.institution_id = 13232
 GROUP BY proj.id
 ORDER BY proj.id
 
-LIMIT 500
+LIMIT 1000

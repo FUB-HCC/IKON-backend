@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node src/mwc.js"
   },
   "author": "",
   "license": "ISC",

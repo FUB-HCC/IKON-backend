@@ -54,15 +54,9 @@ https.createServer({
 
 // Routes
 router.get('/projects', async (req, res, next) => {
-
-	// define offset and limit
-	const offset = req.query['offset'] || 0
-	const limit = req.query['limit'] || 1000
-	const institution = req.query['institution'] || 13232
-
 	let row = ''
 	try {
-		row = (await pool.query(queries.getAllProjects, [institution, offset, limit]))['rows']
+		row = (await pool.query(queries.getAllProjects))['rows']
 	}
 	catch(err) {
 		console.log(err)
@@ -70,16 +64,13 @@ router.get('/projects', async (req, res, next) => {
 	res.status(200).json(row)
 })
 
+// Routes
 router.get('/institutions', async (req, res, next) => {
-
-	// define institution to filter by
-	const institution = req.query['institution'] || 13232
-
 	// get missing geocodes
 	let row = ''
 	let missingGeocodes = []
 	try {
-		row = (await pool.query(queries.getAllInstitutions, [institution]))['rows']
+		row = (await pool.query(queries.getAllInstitutions))['rows']
 		for (var i = row.length - 1; i >= 0; i--) {
 			if (!(row[i].lat && row[i].long)) {
 				const geocode = await geocoder._geocodeLocation(row[i]['address'])

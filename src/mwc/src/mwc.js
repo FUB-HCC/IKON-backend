@@ -25,9 +25,10 @@ const getAllProjects = async () => {
 	await this.login
 	const params1 = {
 		action: 'ask',
-		query: '[[Category:Drittmittelprojekt]]|?Identifier'
+		query: '[[Category:Drittmittelprojekt]]|?Identifier|limit=100000'
 	}
 	const data = await ikoncode.api.callAsync(params1)
+	console.log(Object.keys(data[2].query.results))
 	const responses = Object.keys(data[2].query.results).map( key => {
 		const params2 = {
 			action: 'browsebysubject',
@@ -41,6 +42,7 @@ const getAllProjects = async () => {
 
 }
 
+getAllProjects()
 
 
 // connect to database

@@ -31,26 +31,12 @@ docker-compose up
 
 ### Coding style
 
-This project is going to use ESLint and Pylint for code-style checking. 
+This project uses ESLint and (Pylint) for code-style checking. 
+To run the linter execute the following line in the root folder of this repository:
 
 ```
-Give an example
+npx eslint .
 ```
-
-## Roadmap
-| Feature       				| Description                                    											   |															    Progress  |
-| ------------- 				|:-------------:                                 											   |    															    -----:|
-| File matching 				| Loads and extracts information from all given files using an in-memory SQL database          | :red_circle: :red_circle: :red_circle: :white_circle: :white_check_mark: |
-| Feature extraction      	    | Loads project from the given data and computes an embedding of the projects in a toppic space| :red_circle: :red_circle: :red_circle: :red_circle: :heavy_check_mark:   |
-| Concise architecture   		| Is built with best practices in mind and a thought-out plan		    				   |:red_circle: :red_circle: :white_circle: :white_circle: :white_check_mark:|
-| Interprocess communication	| Different processes (API, file loader, feature extractor) should be able to call eachother   |:white_circle: :white_circle: :white_circle: :white_circle: :white_check_mark:|
-| Defined API endpoints   		| Offers public and well-documented API endpoints for all currently implemented features	   |:red_circle: :red_circle: :red_circle: :red_circle: :heavy_check_mark:|
-| Coding style   		  		| Every piece of code followes a standardized coding style									   |:white_circle: :white_circle: :white_circle: :white_circle: :white_check_mark:|
-| Continous Delivery	  		| Tests exist and are tested for on every communication 									   |:white_circle: :white_circle: :white_circle: :white_circle: :white_check_mark:|
-| Dockerized    		  		| The backend and all its services run in Docker containers									   |:white_circle: :white_circle: :white_circle: :white_circle: :white_check_mark:|
-
-
-Add additional notes about how to deploy this on a live system
 
 ## Built With
 

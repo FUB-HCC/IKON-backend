@@ -1,0 +1,196 @@
+{
+  "query": {
+    "subject": "sit autem est",
+    "data": [
+      {
+        "property": "Description",
+        "dataitem": [
+          {
+            "type": 2,
+            "item": "dolorem"
+          }
+        ]
+      },
+      {
+        "property": "End",
+        "dataitem": [
+          {
+            "type": 6,
+            "item": "2019-11-25T04:27:23.330Z"
+          }
+        ]
+      },
+      {
+        "property": "ExternalInitiative",
+        "dataitem": [
+          {
+            "type": 4,
+            "item": "g"
+          }
+        ]
+      },
+      {
+        "property": "FieldOfAction",
+        "dataitem": [
+          {
+            "type": 2,
+            "item": "saepe"
+          }
+        ]
+      },
+      {
+        "property": "Format",
+        "dataitem": [
+          {
+            "type": 2,
+            "item": "doloribus"
+          }
+        ]
+      },
+      {
+        "property": "Goal",
+        "dataitem": [
+          {
+            "type": 2,
+            "item": "esse"
+          }
+        ]
+      },
+      {
+        "property": "HasConnectionTo",
+        "dataitem": [
+          {
+            "type": 2,
+            "item": "incidunt"
+          }
+        ]
+      },
+      {
+        "property": "HasCooperationPartner",
+        "dataitem": [
+          {
+            "type": 2,
+            "item": "non"
+          }
+        ]
+      },
+      {
+        "property": "HasInhouseproject",
+        "dataitem": [
+          {
+            "type": 2,
+            "item": "voluptates"
+          }
+        ]
+      },
+      {
+        "property": "HasProject",
+        "dataitem": [
+          {
+            "type": 3,
+            "item": 67024
+          }
+        ]
+      },
+      {
+        "property": "HasSponsor",
+        "dataitem": [
+          {
+            "type": 2,
+            "item": "et"
+          }
+        ]
+      },
+      {
+        "property": "HasSubjectArea",
+        "dataitem": [
+          {
+            "type": 2,
+            "item": "omnis"
+          }
+        ]
+      },
+      {
+        "property": "HasThesisproject",
+        "dataitem": [
+          {
+            "type": 2,
+            "item": "quis"
+          },
+          {
+            "type": 2,
+            "item": "dolor"
+          },
+          {
+            "type": 2,
+            "item": "tempora"
+          }
+        ]
+      },
+      {
+        "property": "SocialGoals",
+        "dataitem": [
+          {
+            "type": 2,
+            "item": "et"
+          },
+          {
+            "type": 2,
+            "item": "incidunt"
+          },
+          {
+            "type": 2,
+            "item": "consequatur"
+          }
+        ]
+      },
+      {
+        "property": "Start",
+        "dataitem": [
+          {
+            "type": 6,
+            "item": "2019-03-11T17:44:37.575Z"
+          }
+        ]
+      },
+      {
+        "property": "TargetGroup",
+        "dataitem": [
+          {
+            "type": 2,
+            "item": "dolorem"
+          }
+        ]
+      },
+      {
+        "property": "_INST",
+        "dataitem": [
+          {
+            "type": 9,
+            "item": "illum"
+          }
+        ]
+      },
+      {
+        "property": "_MDAT",
+        "dataitem": [
+          {
+            "type": 6,
+            "item": "2019-06-22T06:46:26.280Z"
+          }
+        ]
+      },
+      {
+        "property": "_SKEY",
+        "dataitem": [
+          {
+            "type": 2,
+            "item": "tempore"
+          }
+        ]
+      }
+    ],
+    "serializer": "SMW\\Serializers\\SemanticDataSerializer",
+    "version": 0.1
+  }
+}

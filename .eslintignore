@@ -1,0 +1,11 @@
+/node_modules
+/IKON-projektor
+/docs
+/database
+/assets
+/.idea
+/src/controller/node_modules
+/src/dal/node_modules
+/src/mwc/node_modules
+/src/postgres
+/rpcserver

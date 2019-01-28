@@ -1,0 +1,28 @@
+{
+  "name": "ikon-backend",
+  "version": "1.0.0",
+  "description": "One Paragraph of project description goes here",
+  "main": "docker.compose.yml",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "5.12.1",
+    "eslint-config-airbnb-base": "13.1.0",
+    "eslint-plugin-import": "2.15.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FUB-HCC/IKON-backend.git"
+  },
+  "author": "",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/FUB-HCC/IKON-backend/issues"
+  },
+  "homepage": "https://github.com/FUB-HCC/IKON-backend#readme"
+}

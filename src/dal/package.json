@@ -18,5 +18,9 @@
     "helmet": "3.13.0",
     "nodemw": "0.12.2",
     "pg": "7.4.3"
+  },
+  "devDependencies": {
+    "chai": "4.2.0",
+    "mocha": "5.2.0"
   }
 }

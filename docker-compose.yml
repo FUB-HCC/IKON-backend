@@ -46,6 +46,9 @@ services:
       PGHOST: Postgres
       PGDATABASE: ikon
       PGPORT: 5432
+      IKONCODE: /run/secrets/ikoncode_secrets
+      SSL_KEY: /run/secrets/ssl_key
+      SSL_CERT: /run/secrets/ssl_cert
     secrets:
       - postgres_password
       - ssl_key

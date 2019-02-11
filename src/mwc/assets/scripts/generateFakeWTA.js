@@ -18,7 +18,7 @@ const getFakeDate = (type) => {
     case 3:
       return faker.random.number();
     case 4:
-      return faker.random.alphaNumeric();
+      return faker.random.boolean();
     case 6:
       return faker.date.future();
     case 9:

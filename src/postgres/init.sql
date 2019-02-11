@@ -54,20 +54,84 @@ FROM peopleTemp;
 
 DROP TABLE peopleTemp;
 
+--------------------------------------------------------------------------------------------------------------------
+--- Create project inheritance hierarchy and copy DFG projects via temporary tables (TODO: Is there a better way?)
 CREATE TABLE IF NOT EXISTS projects (
+  id INTEGER PRIMARY KEY ,
+  title TEXT,
+  project_abstract TEXT,
+  funding_start_year DATE,
+  funding_end_year DATE,
+  participating_subject_areas TEXT,
+  description TEXT,
+  origin TEXT
+);
+
+CREATE TABLE IF NOT EXISTS DFGProjects (
+  id INTEGER PRIMARY KEY REFERENCES projects(id),
+  dfg_process TEXT
+);
+
+CREATE TABLE IF NOT EXISTS MFNProjects (
+  id INTEGER PRIMARY KEY REFERENCES projects(id),
+  organisational_unit TEXT,
+  acronyme TEXT,
+  HatAntragsteller TEXT,
+  FoerderkennzeichenDrittmittelprojekt TEXT,
+  HatMittelgeber TEXT,
+  IsPartOf TEXT,
+  HatLeitthema TEXT,
+  project_leader TEXT,
+  Projekttrager TEXT,
+  Redaktionelle_Beschreibung TEXT,
+  Status TEXT,
+  Summary TEXT,
+  TitelProjekt TEXT,
+  TitelEN TEXT,
+  Weitere_Informationen TEXT,
+  Zusammenfassung TEXT
+);
+
+CREATE TABLE IF NOT EXISTS knowledgeTransferActivities (
+  id INTEGER PRIMARY KEY REFERENCES projects(id),
+  external_initiative BOOLEAN,
+  format TEXT,
+  social_goals TEXT,
+  field_of_action TEXT,
+  target_group TEXT,
+  goal TEXT,
+  project_id INTEGER REFERENCES projects(id),
+  sponsor INTEGER REFERENCES institutions(id),
+  cooperation_partner INTEGER REFERENCES institutions(id),
+  connection INTEGER REFERENCES institutions(id)
+);
+
+CREATE TABLE IF NOT EXISTS projectsTemp (
   id INTEGER PRIMARY KEY ,
   title TEXT,
   project_abstract TEXT,
   dfg_process TEXT,
   funding_start_year TEXT,
   funding_end_year TEXT,
-  parent_project_id INTEGER REFERENCES projects(id),
   participating_subject_areas TEXT,
-  description TEXT
+  description TEXT,
+  origin TEXT
 );
 
-COPY projects FROM '/dump_data/extracted_project_data.csv' DELIMITER ',' CSV HEADER;
+COPY projectsTemp FROM '/dump_data/extracted_project_data.csv' DELIMITER ',' CSV HEADER;
+INSERT INTO projects (id, title, project_abstract, funding_start_year, funding_end_year, participating_subject_areas, description, origin)
+SELECT DISTINCT id, title, project_abstract, to_date(funding_start_year, 'YYYY'), to_date(funding_end_year, 'YYYY'), participating_subject_areas, description, 'MFN'
+FROM projectsTemp;
+
+INSERT INTO DFGProjects (id, dfg_process)
+SELECT DISTINCT id, dfg_process
+FROM projectsTemp;
+
+DROP TABLE projectsTemp;
+
 CREATE INDEX projects_idx ON projects (id);
+
+--------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS subjects (
   subject_area TEXT PRIMARY KEY ,

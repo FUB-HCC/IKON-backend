@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node src/mwc.js"
+    "start": "node src/mwc.js",
+    "local": "IKONCODE='../../assets/IKON-backend-config/secrets/ikoncode_secrets' NODE_ENV='dev' SSL_KEY='../../assets/ssl/server.key' SSL_CERT='../../assets/ssl/server.crt' node src/mwc.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,5 +17,8 @@
     "helmet": "3.15.0",
     "nodemw": "0.12.2",
     "pg": "7.7.1"
+  },
+  "devDependencies": {
+    "faker": "4.1.0"
   }
 }

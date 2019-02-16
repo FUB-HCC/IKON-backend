@@ -10,7 +10,7 @@ const https = require('https');
 const { Pool } = require('pg');
 
 // custom imports
-const geocoder = require('./geocode.js');
+const { initGeolocations } = require('./geocode.js');
 
 // connect to database
 const pool = new Pool({
@@ -36,6 +36,7 @@ const PORT = process.env.PORT || 8080;
 const queries = {
   getAllProjects: fs.readFileSync('./src/sql/getAllProjects.sql', 'utf8').trim(),
   getAllInstitutions: fs.readFileSync('./src/sql/getAllInstitutions.sql', 'utf8').trim(),
+  getConnectedInstitutions: fs.readFileSync('./src/sql/getConnectedInstitutions.sql', 'utf8').trim(),
   insertGeolocation: fs.readFileSync('./src/sql/insertGeolocation.sql', 'utf8').trim(),
 };
 
@@ -58,52 +59,35 @@ router.get('/projects', async (req, res) => {
   const limit = req.query.limit || 1000;
   const institution = req.query.institution || 13232;
 
-  let row = '';
+  let rows = '';
   try {
-    row = (await pool.query(queries.getAllProjects, [institution, offset, limit])).rows;
+    rows = (await pool.query(queries.getAllProjects, [institution, offset, limit])).rows;
   } catch (err) {
     console.log(err);
   }
-  res.status(200).json(row);
+  res.status(200).json(rows);
 });
 
 router.get('/institutions', async (req, res) => {
   // define institution to filter by
   const institution = req.query.institution || 13232;
 
-  // get missing geocodes
-  let row = '';
-  const missingGeocodes = {};
+  let rows = '';
   try {
-    row = (await pool.query(queries.getAllInstitutions, [institution])).rows;
-    for (let i = row.length - 1; i >= 0; i = -1) {
-      if (!(row[i].lat && row[i].long)) {
-        missingGeocodes[i] = geocoder.geocodeLocation(row[i].address);
-      }
-    }
-
-    await Promise.all(Object.values(missingGeocodes));
-    for (const [key, value] of Object.entries(missingGeocodes)) {
-      row[key].lat = value[0].lat;
-      row[key].long = value[0].lon;
-    }
+    rows = (await pool.query(queries.getConnectedInstitutions, [institution])).rows;
   } catch (err) {
     console.log(err);
   }
+  res.status(200).json(rows);
+});
 
-  // send results
-  res.status(200).json(row);
-
-  // save new geocodes in database
-  missingGeocodes.map((missingGeocode) => {
-    try {
-      pool.query(queries.insertGeolocation, missingGeocode);
-    } catch (e) {
-      console.log(e);
-      return e;
-    }
-    return missingGeocode;
-  });
+router.patch('/institutions', async (req, res) => {
+  try {
+    initGeolocations(pool, queries)
+  } catch (err) {
+    res.status(500).send()
+  }
+  res.status(200).send();
 });
 
 // exit strategy

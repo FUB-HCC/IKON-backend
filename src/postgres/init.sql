@@ -11,6 +11,9 @@ CREATE TABLE IF NOT EXISTS institutions (
 COPY institutions FROM '/dump_data/extracted_institution_data.csv' DELIMITER ',' CSV HEADER;
 CREATE INDEX institutions_idx ON institutions (id);
 
+--------------------------------------------------------------------------------------------------------------------
+--- Create people table
+
 CREATE TABLE IF NOT EXISTS peopleTemp (
   num INTEGER,
   id INTEGER NOT NULL,
@@ -36,6 +39,9 @@ SELECT DISTINCT id, name
 FROM peopleTemp;
 
 CREATE INDEX people_idx ON people (id);
+
+--------------------------------------------------------------------------------------------------------------------
+--- Create connection between people and institutions
 
 CREATE TABLE IF NOT EXISTS peopleInstitutions (
   people_id INTEGER REFERENCES people(id),
@@ -200,8 +206,8 @@ COPY projectsSubjects FROM '/dump_data/project_ids_to_subject_areas.csv' DELIMIT
 
 CREATE TABLE IF NOT EXISTS institutionsGeolocations (
   institution_id INTEGER REFERENCES institutions(id),
-  lat FLOAT8,
-  long FLOAT8
+  lat FLOAT8 NOT NULL,
+  lon FLOAT8 NOT NULL
 );
 
 -- Create a function that always returns the first non-NULL item

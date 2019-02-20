@@ -1,10 +1,18 @@
 {
   "name": "ikon-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "description": "One Paragraph of project description goes here",
+  "main": "docker.compose.yml",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "5.12.1",
+    "eslint-config-airbnb-base": "13.1.0",
+    "eslint-plugin-import": "2.15.0"
+  },
   "scripts": {
-    "start": "node --trace-sync-io src/apiserver/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -12,18 +20,9 @@
     "url": "git+https://github.com/FUB-HCC/IKON-backend.git"
   },
   "author": "",
-  "license": "AGPL-3.0",
+  "license": "AGPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/FUB-HCC/IKON-backend/issues"
   },
-  "homepage": "https://github.com/FUB-HCC/IKON-backend#readme",
-  "dependencies": {
-    "@google/maps": "0.5.4",
-    "alasql": "0.4.9",
-    "express": "4.16.3",
-    "fs-extra": "6.0.1",
-    "grpc": "1.12.3",
-    "helmet": "3.12.1",
-    "object-hash": "1.3.0"
-  }
+  "homepage": "https://github.com/FUB-HCC/IKON-backend#readme"
 }

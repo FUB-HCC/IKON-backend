@@ -1,0 +1,67 @@
+version: '3.1'
+services:
+
+  postgres:
+    container_name: Postgres
+    build:
+      context: .
+      dockerfile: /src/postgres/Dockerfile
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ikonuser
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      POSTGRES_DB: ikon
+    secrets:
+      - postgres_password
+
+  dal:
+    container_name: DataAccessLayer
+    build:
+      context: ./src/dal/
+      dockerfile: Dockerfile
+    ports:
+      - "5433:8080"
+    environment:
+      PGUSER: ikonuser
+      PGHOST: Postgres
+      PGDATABASE: ikon
+      PGPORT: 5432
+    secrets:
+      - postgres_password
+      - ssl_key
+      - ssl_crt
+
+  mwc:
+    container_name: MediaWikiConnector
+    build:
+      context: ./src/mwc/
+      dockerfile: Dockerfile
+    ports:
+      - "5434:8080"
+    environment:
+      PGUSER: ikonuser
+      PGHOST: Postgres
+      PGDATABASE: ikon
+      PGPORT: 5432
+      IKONCODE: /run/secrets/ikoncode_secrets
+      SSL_KEY: /run/secrets/ssl_key
+      SSL_CERT: /run/secrets/ssl_cert
+    secrets:
+      - postgres_password
+      - ssl_key
+      - ssl_crt
+      - ikoncode_secrets
+
+secrets:
+  postgres_password:
+    file: ./assets/IKON-backend-config/secrets/postgres_password
+  ssl_crt:
+    file: ./assets/ssl/server.crt
+  ssl_key:
+    file: ./assets/ssl/server.key
+  ikoncode_secrets:
+    file: ./assets/IKON-backend-config/secrets/ikoncode_secrets
+

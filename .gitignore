@@ -69,6 +69,8 @@ assets/config/secrets.json
 
 #data
 assets/data/data_augmentation/institutions.csv
+assets/data/database_dump/dump.sqlite
+assets/data/gepris/extracted_project_data.csv
 
 .idea/
 database/

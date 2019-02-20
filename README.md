@@ -8,7 +8,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-You will need [Node.js](https://nodejs.org/en/download/package-manager/), [Python3](https://docs.python.org/3/using/index.html) and [pipenv](https://docs.pipenv.org/) installed in order to run the backend. 
+You will need [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installed in order to run the backend. 
 
 
 ### Installing
@@ -22,45 +22,21 @@ In order to do that navigate to the folder where you want to save the project an
 git clone --recurse-submodules -j8 https://github.com/FUB-HCC/IKON-backend.git
 ```
 
-Then proceed by installing the dependencies for the API server:
+Then proceed by building and running the containers:
 ```
 cd IKON-backend/
-npm install 
-```
-
-Finally end the setup process by installing the dependencies for the RPC server:
-```
-cd src/rpc_server/
-pipenv install
-```
-Now you can start the server by executing:
-```
-cd ../../
-npm start
+docker-compose build
+docker-compose up
 ```
 
 ### Coding style
 
-This project is going to use ESLint and Pylint for code-style checking. 
+This project uses ESLint and (Pylint) for code-style checking. 
+To run the linter execute the following line in the root folder of this repository:
 
 ```
-Give an example
+npx eslint .
 ```
-
-## Roadmap
-| Feature       				| Description                                    											   |															    Progress  |
-| ------------- 				|:-------------:                                 											   |    															    -----:|
-| File matching 				| Loads and extracts information from all given files using an in-memory SQL database          | 100% |
-| Feature extraction      	    | Loads project from the given data and computes an embedding of the projects in a toppic space | 100% |
-| Concise architecture   		| Is built with best practices in mind and a thought-out plan		    				   | 25% |
-| Interprocess communication	| Different processes (API, file loader, feature extractor) should be able to call eachother   | 0% |
-| Defined API endpoints   		| Offers public and well-documented API endpoints for all currently implemented features	   | 100% |
-| Coding style   		  		| Every piece of code followes a standardized coding style									   | 0% |
-| Continous Delivery	  		| Tests exist and are tested for on every communication 									   | 0% |
-| Dockerized    		  		| The backend and all its services run in Docker containers									   | 10% |
-
-
-Add additional notes about how to deploy this on a live system
 
 ## Built With
 

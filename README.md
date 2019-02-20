@@ -25,25 +25,9 @@ git clone --recurse-submodules -j8 https://github.com/FUB-HCC/IKON-backend.git
 Then proceed by building and running the containers:
 ```
 cd IKON-backend/
-<<<<<<< HEAD
 docker-compose build
 docker-compose up
-=======
-npm install 
 ```
-
-Finally end the setup process by installing the dependencies for the RPC server:
-```
-cd src/rpcserver/
-pipenv install
-```
-Now you can start the server by executing:
-```
-cd ../../
-npm start
->>>>>>> ca0e0471db93482df7e8873604af8e95fc00c87b
-```
-
 ### Coding style
 
 This project uses ESLint and (Pylint) for code-style checking. 
@@ -61,8 +45,8 @@ npx eslint .
 
 
 ## Authors
+* [Tim Korjakow](https://github.com/wittenator)
 
-This is getting completed later.
 
 ## License
 

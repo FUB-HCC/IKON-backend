@@ -5,7 +5,7 @@ services:
     container_name: Postgres
     build:
       context: .
-      dockerfile: /src/postgres/Dockerfile
+      dockerfile: ./src/postgres/Dockerfile
     volumes:
       - ./database:/var/lib/postgresql/data
     ports:

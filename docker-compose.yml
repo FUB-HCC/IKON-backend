@@ -24,6 +24,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5433:8080"
+    depends_on:
+      - postgres
     environment:
       PGUSER: ikonuser
       PGHOST: Postgres

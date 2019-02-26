@@ -1,3 +1,6 @@
+--------------------------------------------------------------------------------------------------------------------
+--- Create institution table  and load data from a csv file
+
 CREATE TABLE IF NOT EXISTS institutions (
   id INTEGER PRIMARY KEY ,
   name TEXT,
@@ -12,7 +15,8 @@ COPY institutions FROM '/dump_data/extracted_institution_data.csv' DELIMITER ','
 CREATE INDEX institutions_idx ON institutions (id);
 
 --------------------------------------------------------------------------------------------------------------------
---- Create people table
+--- Create people table  and load data from a csv file
+--- Create connection between people and institutions
 
 CREATE TABLE IF NOT EXISTS peopleTemp (
   num INTEGER,
@@ -40,9 +44,6 @@ FROM peopleTemp;
 
 CREATE INDEX people_idx ON people (id);
 
---------------------------------------------------------------------------------------------------------------------
---- Create connection between people and institutions
-
 CREATE TABLE IF NOT EXISTS peopleInstitutions (
   people_id INTEGER REFERENCES people(id),
   address TEXT,
@@ -61,11 +62,32 @@ FROM peopleTemp;
 DROP TABLE peopleTemp;
 
 --------------------------------------------------------------------------------------------------------------------
+--- Create format table  and load data from a csv file
+
+CREATE TABLE IF NOT EXISTS formats (
+  id SERIAL PRIMARY KEY ,
+  type TEXT NOT NULL
+);
+
+COPY formats(type) FROM '/dump_data/WTA-Formate.csv' DELIMITER ',' CSV HEADER;
+
+--------------------------------------------------------------------------------------------------------------------
+--- Create targetgroup table  and load data from a csv file
+
+CREATE TABLE IF NOT EXISTS targetgroups (
+  id SERIAL PRIMARY KEY ,
+  type TEXT NOT NULL
+);
+
+COPY targetgroups(type) FROM '/dump_data/WTA-Zielgruppen.csv' DELIMITER ',' CSV HEADER;
+
+--------------------------------------------------------------------------------------------------------------------
 --- Create project inheritance hierarchy and copy DFG projects via temporary tables (TODO: Is there a better way?)
+
 CREATE TABLE IF NOT EXISTS projects (
   id INTEGER PRIMARY KEY ,
   title TEXT,
-  project_abstract TEXT,
+  project_abstract TEXT NOT NULL,
   funding_start_year DATE,
   funding_end_year DATE,
   participating_subject_areas TEXT,
@@ -98,18 +120,13 @@ CREATE TABLE IF NOT EXISTS MFNProjects (
   Zusammenfassung TEXT
 );
 
-CREATE TABLE IF NOT EXISTS knowledgeTransferActivities (
+CREATE TABLE IF NOT EXISTS ktas (
   id INTEGER PRIMARY KEY REFERENCES projects(id),
   external_initiative BOOLEAN,
-  format TEXT,
+  format INTEGER REFERENCES formats(id),
   social_goals TEXT,
   field_of_action TEXT,
-  target_group TEXT,
-  goal TEXT,
-  project_id INTEGER REFERENCES projects(id),
-  sponsor INTEGER REFERENCES institutions(id),
-  cooperation_partner INTEGER REFERENCES institutions(id),
-  connection INTEGER REFERENCES institutions(id)
+  goal TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS projectsTemp (
@@ -126,7 +143,7 @@ CREATE TABLE IF NOT EXISTS projectsTemp (
 
 COPY projectsTemp FROM '/dump_data/extracted_project_data.csv' DELIMITER ',' CSV HEADER;
 INSERT INTO projects (id, title, project_abstract, funding_start_year, funding_end_year, participating_subject_areas, description, origin)
-SELECT DISTINCT id, title, project_abstract, to_date(funding_start_year, 'YYYY'), to_date(funding_end_year, 'YYYY'), participating_subject_areas, description, 'MFN'
+SELECT DISTINCT id, title, project_abstract, to_date(funding_start_year, 'YYYY'), to_date(funding_end_year, 'YYYY'), participating_subject_areas, description, 'GEPRIS'
 FROM projectsTemp;
 
 INSERT INTO DFGProjects (id, dfg_process)
@@ -138,6 +155,7 @@ DROP TABLE projectsTemp;
 CREATE INDEX projects_idx ON projects (id);
 
 --------------------------------------------------------------------------------------------------------------------
+--- Create subjects table  and load data from a csv file
 
 CREATE TABLE IF NOT EXISTS subjects (
   subject_area TEXT PRIMARY KEY ,
@@ -147,12 +165,43 @@ CREATE TABLE IF NOT EXISTS subjects (
 
 COPY subjects FROM '/dump_data/subject_areas.csv' DELIMITER ',' CSV HEADER;
 
+--------------------------------------------------------------------------------------------------------------------
+--- Create countrycode table and load data from a csv file
+
 CREATE TABLE IF NOT EXISTS countryCodes (
   country TEXT PRIMARY KEY,
   code TEXT NOT NULL
 );
 
 COPY countryCodes FROM '/dump_data/country_code.csv' DELIMITER ',' CSV HEADER;
+
+--------------------------------------------------------------------------------------------------------------------
+--- Create quite a few m:n tables
+
+CREATE TABLE IF NOT EXISTS ktasTargetgroups (
+  kta_id INTEGER REFERENCES ktas(id),
+  targetgroup_id INTEGER REFERENCES targetgroups(id)
+);
+
+CREATE TABLE IF NOT EXISTS ktasProjects (
+  kta_id INTEGER REFERENCES ktas(id),
+  project_id INTEGER REFERENCES projects(id)
+);
+
+CREATE TABLE IF NOT EXISTS ktasSponsorsInstitution (
+  kta_id INTEGER REFERENCES ktas(id),
+  institution_id INTEGER REFERENCES institutions(id)
+);
+
+CREATE TABLE IF NOT EXISTS ktasConnectionsInstitution (
+  kta_id INTEGER REFERENCES ktas(id),
+  institution_id INTEGER REFERENCES institutions(id)
+);
+
+CREATE TABLE IF NOT EXISTS ktasCooperationsInstitution (
+  kta_id INTEGER REFERENCES ktas(id),
+  institution_id INTEGER REFERENCES institutions(id)
+);
 
 CREATE TABLE IF NOT EXISTS projectsCountries (
   project_id INTEGER REFERENCES projects(id),
@@ -252,8 +301,7 @@ CREATE MATERIALIZED VIEW project_view AS
     FIRST(proj.funding_end_year) AS end_date,
     FIRST(proj.title) AS title,
     FIRST(proj.project_abstract) AS abstract,
-    CONCAT('http://gepris.dfg.de/gepris/projekt/', proj.id) AS href,
-    '1' AS synergy
+    CONCAT('http://gepris.dfg.de/gepris/projekt/', proj.id) AS href
 
 
   FROM projects AS proj

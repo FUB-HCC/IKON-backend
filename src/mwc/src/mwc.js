@@ -26,24 +26,39 @@ const getAllProjects = async () => {
   process.exit(1);
   }
 
-  const params1 = {
-    action: 'ask',
-    query: '[[Category:Drittmittelprojekt]]|?Identifier|limit=100000',
-  };
-  const data = await ikoncode.api.callAsync(params1);
-  console.log(Object.keys(data[2].query.results));
-  const responses = Object.keys(data[2].query.results).map((key) => {
-    const params2 = {
-      action: 'browsebysubject',
-      subject: key,
+  let projects = [];
+
+  try {
+    const params1 = {
+      action: 'ask',
+      query: '[[Category:Drittmittelprojekt]]|?Identifier|limit=100000',
     };
-    return ikoncode.api.callAsync(params2);
-  });
-  await Promise.all(responses);
-  return responses.map(entry => entry[2].query.data);
+    projects = await ikoncode.api.callAsync(params1);
+    console.log(Object.keys(projects[2].query.results));
+  }
+  catch (e) {
+    console.log(e)
+  }
+
+  let results = [];
+  for (const key of Object.keys(projects[2].query.results)) {
+    try {
+      const params2 = {
+        action: 'browsebysubject',
+        subject: key,
+      };
+      results.push(ikoncode.api.callAsync(params2));
+    }
+    catch (e) {
+      console.log(e);
+    }
+  } 
+  // for some reason this is necessary
+  await Promise.all(results)
+  return Promise.all(results);
 };
 
-getAllProjects();
+getAllProjects().then(results => results.map(([a,b, {query}]) => console.log(query)));
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'dev') {
   // connect to database

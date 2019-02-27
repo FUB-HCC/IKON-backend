@@ -31,8 +31,7 @@ git clone --recurse-submodules -j8 https://github.com/FUB-HCC/IKON-backend.git
 Then proceed by building and running the containers:
 ```
 cd IKON-backend/
-docker-compose build
-docker-compose up
+docker-compose up --build
 ```
 ### Coding style
 

@@ -62,10 +62,11 @@ router.get('/projects', async (req, res) => {
   let rows = '';
   try {
     rows = (await pool.query(queries.getAllProjects, [institution, offset, limit])).rows;
+    res.status(200).json(rows);
   } catch (err) {
     console.log(err);
+    res.status(500).send(err);
   }
-  res.status(200).json(rows);
 });
 
 router.get('/institutions', async (req, res) => {
@@ -75,19 +76,20 @@ router.get('/institutions', async (req, res) => {
   let rows = '';
   try {
     rows = (await pool.query(queries.getConnectedInstitutions, [institution])).rows;
+    res.status(200).json(rows);
   } catch (err) {
     console.log(err);
+    res.status(500).send(err);
   }
-  res.status(200).json(rows);
 });
 
 router.patch('/institutions', async (req, res) => {
   try {
-    initGeolocations(pool, queries)
+    initGeolocations(pool, queries);
+    res.status(200).send();
   } catch (err) {
-    res.status(500).send()
+    res.status(500).send(err);
   }
-  res.status(200).send();
 });
 
 // exit strategy

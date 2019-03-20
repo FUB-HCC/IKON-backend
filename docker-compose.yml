@@ -26,6 +26,7 @@ services:
       - "5433:8080"
     depends_on:
       - postgres
+      - mwc
     environment:
       PGUSER: ikonuser
       PGHOST: Postgres
@@ -42,17 +43,12 @@ services:
       context: ./src/mwc/
       dockerfile: Dockerfile
     ports:
-      - "5434:8080"
+      - "5434:8081"
     environment:
-      PGUSER: ikonuser
-      PGHOST: Postgres
-      PGDATABASE: ikon
-      PGPORT: 5432
       IKONCODE: /run/secrets/ikoncode_secrets
       SSL_KEY: /run/secrets/ssl_key
-      SSL_CERT: /run/secrets/ssl_cert
+      SSL_CRT: /run/secrets/ssl_crt
     secrets:
-      - postgres_password
       - ssl_key
       - ssl_crt
       - ikoncode_secrets

@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const https = require('https');
 const MediaWikiConnector = require('./MediaWikiConnector/MediaWikiConnector.js');
+const WTAFaker = require('./WTAFaker/generateFakeWTA.js');
 
 const server = express();
 
@@ -35,20 +36,25 @@ https.createServer({
 // Routes
 router.get('/projects', async (req, res) => {
   try {
-    const result = (await MediaWikiConnector.getAllProjects(loginPromise)).map( ([a,b, {query: {subject, data}}]) => { 
-      return data.reduce((dict, {property, dataitem}) => {
-          dict[MediaWikiConnector.getNameMapping(property)] = dataitem.map(({ item }) => {return item});
-          return dict;
-        }, {subject})
-    });
-    console.log(result)
+    const result = (await MediaWikiConnector.getAllProjects(loginPromise)).map(([a, b, { query: { subject, data } }]) => data.reduce((dict, { property, dataitem }) => {
+      dict[MediaWikiConnector.getNameMapping(property)] = dataitem.map(({ item }) => item);
+      return dict;
+    }, { subject }));
+    console.log(result);
     res.status(200).send(result);
-  }
-  catch(e) {
+  } catch (e) {
     res.status(500).send();
   }
 });
 
+router.post('/wtas', async (req, res) => {
+  try {
+    const result = 
+    res.status(200).send(result);
+  } catch (e) {
+    res.status(500).send();
+  }
+});
 
 
 // exit strategy

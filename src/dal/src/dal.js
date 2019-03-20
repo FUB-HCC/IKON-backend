@@ -96,4 +96,5 @@ router.patch('/institutions', async (req, res) => {
 process.on('SIGINT', async (err) => {
   console.log(err);
   await pool.end();
+  process.exit(0);
 });

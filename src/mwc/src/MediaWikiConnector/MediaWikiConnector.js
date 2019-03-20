@@ -1,5 +1,6 @@
 const MWC = require('nodemw');
 const Promise = require('bluebird');
+
 const ikoncode = Promise.promisifyAll(new MWC(process.env.IKONCODE));
 ikoncode.api = Promise.promisifyAll(ikoncode.api, { multiArgs: true });
 
@@ -11,14 +12,14 @@ exports.wikiLogin = () => {
     console.log(e);
     process.exit(1);
   }
-}
+};
 
 exports.getAllProjects = async (login) => {
   try {
     await login;
   } catch (e) {
-  console.log(e);
-  process.exit(1);
+    console.log(e);
+    process.exit(1);
   }
 
   let projects = [];
@@ -30,12 +31,11 @@ exports.getAllProjects = async (login) => {
     };
     projects = await ikoncode.api.callAsync(params1);
     console.log(Object.keys(projects[2].query.results));
-  }
-  catch (e) {
-    console.log(e)
+  } catch (e) {
+    console.log(e);
   }
 
-  let results = [];
+  const results = [];
   for (const key of Object.keys(projects[2].query.results)) {
     try {
       const params2 = {
@@ -43,27 +43,26 @@ exports.getAllProjects = async (login) => {
         subject: key,
       };
       results.push(ikoncode.api.callAsync(params2));
-    }
-    catch (e) {
+    } catch (e) {
       console.log(params2, e);
     }
-  } 
+  }
   // for some reason this is necessary
-  await Promise.all(results)
-  console.log(results)
+  await Promise.all(results);
+  console.log(results);
   return Promise.all(results);
 };
 
-exports.getNameMapping = ( name ) => {
+exports.getNameMapping = (name) => {
   const mapping = {
-    'Projektbeginn': 'funding_start_year',
-    'Projektende': 'funding_end_year',
-    'Zusammenfassung': 'project_summary',
-    'subject': 'id',
-    'RedaktionelleBeschreibung' : 'description',
-    'HatFach': 'participating_subject_area',
-    'TitelProjekt': 'title'
-  }
+    Projektbeginn: 'funding_start_year',
+    Projektende: 'funding_end_year',
+    Zusammenfassung: 'project_summary',
+    subject: 'id',
+    RedaktionelleBeschreibung: 'description',
+    HatFach: 'participating_subject_area',
+    TitelProjekt: 'title',
+  };
 
-  return (Object.keys(mapping).includes(name))? mapping[name]: name;
-}
+  return (Object.keys(mapping).includes(name)) ? mapping[name] : name;
+};

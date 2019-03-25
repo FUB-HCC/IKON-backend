@@ -14,7 +14,7 @@ exports.wikiLogin = () => {
   }
 };
 
-exports.getAllProjects = async (login) => {
+const fetchAllProjects = async (login) => {
   try {
     await login;
   } catch (e) {
@@ -53,7 +53,7 @@ exports.getAllProjects = async (login) => {
   return Promise.all(results);
 };
 
-exports.getNameMapping = (name) => {
+const getNameMapping = (name) => {
   const mapping = {
     Projektbeginn: 'funding_start_year',
     Projektende: 'funding_end_year',
@@ -62,7 +62,17 @@ exports.getNameMapping = (name) => {
     RedaktionelleBeschreibung: 'description',
     HatFach: 'participating_subject_area',
     TitelProjekt: 'title',
+    HatOrganisationseinheit: 'organisational_unit',
+    Akronym: 'acronym',
+    
   };
 
   return (Object.keys(mapping).includes(name)) ? mapping[name] : name;
 };
+
+exports.getAllProjects = async (loginPromise) => {
+  return (await fetchAllProjects(loginPromise)).map(([a, b, { query: { subject, data } }]) => data.reduce((dict, { property, dataitem }) => {
+      dict[getNameMapping(property)] = dataitem.map(({ item }) => item);
+      return dict;
+    }, { subject }));
+} 

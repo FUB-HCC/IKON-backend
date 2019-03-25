@@ -5,11 +5,12 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const https = require('https');
 const MediaWikiConnector = require('./MediaWikiConnector/MediaWikiConnector.js');
-const WTAFaker = require('./WTAFaker/generateFakeWTA.js');
+const WTAFakerClass = require('./WTAFaker/generateFakeWTA.js');
 
 const server = express();
 
 const loginPromise = MediaWikiConnector.wikiLogin();
+const WTAFaker = MediaWikiConnector.getAllProjects(loginPromise).then(data => {return new WTAFakerClass(data);});
 
 
 // set server middleware
@@ -36,23 +37,22 @@ https.createServer({
 // Routes
 router.get('/projects', async (req, res) => {
   try {
-    const result = (await MediaWikiConnector.getAllProjects(loginPromise)).map(([a, b, { query: { subject, data } }]) => data.reduce((dict, { property, dataitem }) => {
-      dict[MediaWikiConnector.getNameMapping(property)] = dataitem.map(({ item }) => item);
-      return dict;
-    }, { subject }));
+    const result = (await MediaWikiConnector.getAllProjects(loginPromise));
     console.log(result);
     res.status(200).send(result);
   } catch (e) {
+    console.log(e);
     res.status(500).send();
   }
 });
 
-router.post('/wtas', async (req, res) => {
+router.get('/wtas', async (req, res) => {
   try {
-    const result = 
+    const result = WTAFaker.generateFakeWTAs();
     res.status(200).send(result);
   } catch (e) {
-    res.status(500).send();
+    console.log(e);
+    res.status(500).send(e);
   }
 });
 

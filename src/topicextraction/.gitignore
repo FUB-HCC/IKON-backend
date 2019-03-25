@@ -115,5 +115,5 @@ dmypy.json
 .pyre/
 
 # Dumps
-nlp/dumps/*
+nlp/dumps/*.json
 dump.*

@@ -1,13 +1,60 @@
 require.undef('circles');
 
 define('circles', ['d3'], function (d3) {
-    function draw(container, data) {
-      var margin = {top: 20, right: 20, bottom: 30, left: 40},
-      width = 960 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
+
+    function draw(container, data, width, height) {
+      var margin ={top: (0.05*width), right: (0.1*width), bottom: (0.1*width), left: (0.05*width)};
+      width = 0.8*width;
+      height = 0.9*height;
+
+      ///////// set up svg and clipping
+
+      var svg = d3.select(container).append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      svg.append("defs").append("clipPath")
+        .attr("id", "clip")
+      .append("rect")
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr("width", width)
+        .attr("height", height);
+
+      function zoomed() {
+      // create new scale ojects based on event
+          var new_x = d3.event.transform.rescaleX(x);
+          var new_y = d3.event.transform.rescaleY(y);
+      // update axes
+          gX.call(xAxis.scale(new_x));
+          gY.call(yAxis.scale(new_y));
+          console.log(points)
+          svg.selectAll(".dot")
+           .data(data.project_data)
+           .attr('cx', function(d) {return new_x(d.embpoint[0])})
+           .attr('cy', function(d) {return new_y(d.embpoint[1])});
+      }
+
+      // Pan and zoom
+      var zoom = d3.zoom()
+          .scaleExtent([.5, 20])
+          .extent([[0, 0], [width, height]])
+          .on("zoom", zoomed);
+
+      svg.append("rect")
+          .attr("width", width)
+          .attr("height", height)
+          .style("fill", "none")
+          .style("pointer-events", "all")
+          .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+          .call(zoom);
+
+      ///////// set up axes
 
       var x = d3.scaleLinear()
-          .range([0, width]);
+        .range([0, width]);
 
       var y = d3.scaleLinear()
           .range([height, 0]);
@@ -18,14 +65,19 @@ define('circles', ['d3'], function (d3) {
 
       var yAxis = d3.axisLeft(y);
 
-      var svg = d3.select(container).append("svg")
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
       x.domain(d3.extent(data.project_data, function(d) { return d.embpoint[0]; })).nice();
       y.domain(d3.extent(data.project_data, function(d) { return d.embpoint[1]; })).nice();
+
+      var gX = svg.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(xAxis);
+
+      var gY = svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis)
+
+      ///////// insert data points and contour plot
 
       var contours = d3.contourDensity()
         .x(d => x(d.embpoint[0]))
@@ -35,44 +87,27 @@ define('circles', ['d3'], function (d3) {
       (data.project_data)
 
       svg.append("g")
-          .attr("class", "x axis")
-          .attr("transform", "translate(0," + height + ")")
-          .call(xAxis)
-        .append("text")
-          .attr("class", "label")
-          .attr("x", width)
-          .attr("y", -6)
-          .style("text-anchor", "end")
-          .text("Sepal Width (cm)");
-
-      svg.append("g")
-          .attr("class", "y axis")
-          .call(yAxis)
-        .append("text")
-          .attr("class", "label")
-          .attr("transform", "rotate(-90)")
-          .attr("y", 6)
-          .attr("dy", ".71em")
-          .style("text-anchor", "end")
-          .text("Sepal Length (cm)")
-
-        svg.append("g")
           .attr("fill", "none")
           .attr("stroke", "steelblue")
           .attr("stroke-linejoin", "round")
+          .attr("clip-path", "url(#clip)")
         .selectAll("path")
         .data(contours)
         .enter().append("path")
+          .attr("class", "isoline")
           .attr("d", d3.geoPath());
 
       svg.selectAll(".dot")
-          .data(data.project_data)
+        .data(data.project_data);
         .enter().append("circle")
-          .attr("class", "dot")
-          .attr("r", 3.5)
-          .attr("cx", function(d) { return x(d.embpoint[0]); })
-          .attr("cy", function(d) { return y(d.embpoint[1]); })
-          .style("fill", function(d) { return color(d.cluster); });
+        .attr("class", "dot")
+        .attr("r", 3.5)
+        .attr("cx", function(d) { return x(d.embpoint[0]); })
+        .attr("cy", function(d) { return y(d.embpoint[1]); })
+        .style("fill", function(d) { return color(d.cluster); })
+        .attr("clip-path", "url(#clip)");
+
+      ///////// set up legend
 
       var legend = svg.selectAll(".legend")
           .data(color.domain())

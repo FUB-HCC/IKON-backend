@@ -42,7 +42,7 @@ define('scatter', ['d3'], function (d3) {
         .size([width, height])
       (data.cluster_topography)
 
-      var colorHeat = d3.scaleLog()
+      var colorHeat = d3.scaleLinear()
         .domain(d3.extent(data.cluster_topography))
         .interpolate(d => d3.interpolateMagma)
 

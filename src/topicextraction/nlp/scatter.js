@@ -42,6 +42,10 @@ define('scatter', ['d3'], function (d3) {
         .size([width, height])
       (data.cluster_topography)
 
+      var colorHeat = d3.scaleLog()
+        .domain(d3.extent(data.cluster_topography))
+        .interpolate(d => d3.interpolateMagma)
+
 
       svg.append("g")
           .attr("fill", "none")
@@ -52,6 +56,7 @@ define('scatter', ['d3'], function (d3) {
         .data(contours)
         .enter().append("path")
           .attr("class", "isoline")
+          .attr("fill", d => colorHeat(d.value))
           .attr("d", d3.geoPath());
 
       svg.selectAll(".dot")

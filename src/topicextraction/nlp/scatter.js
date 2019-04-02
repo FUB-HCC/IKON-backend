@@ -39,6 +39,7 @@ define('scatter', ['d3'], function (d3) {
 
       ///////// insert data points and contour plot
       var contours = d3.contours()
+        .smooth([true])
         .size([width, height])
       (data.cluster_topography)
 
@@ -49,7 +50,7 @@ define('scatter', ['d3'], function (d3) {
 
       svg.append("g")
           .attr("fill", "none")
-          .attr("stroke", "steelblue")
+          .attr("stroke", "none")
           .attr("stroke-linejoin", "round")
           .attr("clip-path", "url(#clip)")
         .selectAll("path")
@@ -87,6 +88,7 @@ define('scatter', ['d3'], function (d3) {
           .attr("y", 9)
           .attr("dy", ".35em")
           .style("text-anchor", "end")
+          .style("color", "white")
           .text(function(d) { return d; });
           
     }

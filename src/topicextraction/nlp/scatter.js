@@ -1,12 +1,13 @@
 require.undef('scatter');
 
 define('scatter', ['d3'], function (d3) {
-    function draw(container, data, width, height, type) {
+    function draw(container, data, width, height, viztype) {
       var margin ={top: (0.05*width), right: (0.1*width), bottom: (0.1*width), left: (0.05*width)};
       //width = 0.8*width;
       //height = 0.9*height;
 
       ///////// set up svg and clipping
+      console.log(container, data, width, height, viztype)
 
       var svg = d3.select(container).append("svg")
           .attr("width", width + margin.left + margin.right)
@@ -32,10 +33,10 @@ define('scatter', ['d3'], function (d3) {
 
       var color = d3.scaleOrdinal(d3.schemeCategory10);
       console.log(type)
-      var accessor = (d, type, coord) => {return (type!=='scatter')?d.embpoint[coord]:d.mappoint[coord]};
+      var accessor = (d, type, coord) => {return (type=='scatter')?d.embpoint[coord]:d.mappoint[coord]};
 
-      x.domain(d3.extent(data.project_data, function(d) { return accessor(d, type, 0); }));
-      y.domain(d3.extent(data.project_data, function(d) { return accessor(d, type, 1); }));
+      x.domain(d3.extent(data.project_data, function(d) { return accessor(d, viztype, 0); }));
+      y.domain(d3.extent(data.project_data, function(d) { return accessor(d, viztype, 1); }));
 
       ///////// insert data points and contour plot
       var contours = d3.contours()
@@ -65,8 +66,8 @@ define('scatter', ['d3'], function (d3) {
         .enter().append("circle")
         .attr("class", "dot")
         .attr("r", 3.5)
-        .attr("cx", function(d) { return x(accessor(d, type, 0)); })
-        .attr("cy", function(d) { return y(accessor(d, type, 1)); })
+        .attr("cx", function(d) { return x(accessor(d, viztype, 0)); })
+        .attr("cy", function(d) { return y(accessor(d, viztype, 1)); })
         .style("fill", function(d) { return color(d.cluster); });
 
       ///////// set up legend

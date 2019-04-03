@@ -70,7 +70,7 @@ define('scatter', ['d3'], function (d3) {
         .data(data.project_data)
         .enter().append("circle")
         .attr("class", "dot")
-        .attr("r", 3.5)
+        .attr("r", 5)
         .attr("cx", function(d) { return x(accessor(d, viztype, 0)); })
         .attr("cy", function(d) { return y(accessor(d, viztype, 1)); })
         .style("fill", function(d) { return color(d.cluster); })
@@ -97,13 +97,13 @@ define('scatter', ['d3'], function (d3) {
           .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
       legend.append("rect")
-          .attr("x", width - 18)
+          .attr("x", width + 18)
           .attr("width", 18)
           .attr("height", 18)
           .style("fill", color);
 
       legend.append("text")
-          .attr("x", width - 24)
+          .attr("x", width + 16)
           .attr("y", 9)
           .attr("dy", ".35em")
           .style("text-anchor", "end")

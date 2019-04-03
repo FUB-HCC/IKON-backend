@@ -48,12 +48,17 @@ define('scatter', ['d3'], function (d3) {
         .domain(d3.extent(data.cluster_topography))
         .interpolate(d => d3.interpolateMagma)
 
+      // Define the div for the tooltip
+      var div = d3.select("body").append("div") 
+          .attr("class", "tooltip")       
+          .style("opacity", 0);
+
 
       svg.append("g")
           .attr("fill", "none")
           .attr("stroke", "none")
           .attr("stroke-linejoin", "round")
-          .attr("clip-path", "url(#clip)")
+          //.attr("clip-path", "url(#clip)")
         .selectAll("path")
         .data(contours)
         .enter().append("path")
@@ -68,7 +73,20 @@ define('scatter', ['d3'], function (d3) {
         .attr("r", 3.5)
         .attr("cx", function(d) { return x(accessor(d, viztype, 0)); })
         .attr("cy", function(d) { return y(accessor(d, viztype, 1)); })
-        .style("fill", function(d) { return color(d.cluster); });
+        .style("fill", function(d) { return color(d.cluster); })
+        .on("mouseover", function(d) {    
+            div.transition()    
+                .duration(200)    
+                .style("opacity", .9);    
+            div .html(d.id + "<br/>"  + d.title)  
+                .style("left", (d3.event.pageX) + "px")   
+                .style("top", (d3.event.pageY - 28) + "px");  
+            })          
+        .on("mouseout", function(d) {   
+            div.transition()    
+                .duration(500)    
+                .style("opacity", 0); 
+        });
 
       ///////// set up legend
 

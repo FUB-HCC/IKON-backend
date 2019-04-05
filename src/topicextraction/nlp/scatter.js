@@ -73,7 +73,7 @@ define('scatter', ['d3'], function (d3) {
         .attr("r", 5)
         .attr("cx", function(d) { return x(accessor(d, viztype, 0)); })
         .attr("cy", function(d) { return y(accessor(d, viztype, 1)); })
-        .style("fill", function(d) { return color(d.cluster); })
+        .style("fill", function(d) { return data.cluster_data.cluster_colour[d.cluster]; })
         .on("mouseover", function(d) {    
             div.transition()    
                 .duration(200)    
@@ -91,7 +91,7 @@ define('scatter', ['d3'], function (d3) {
       ///////// set up legend
 
       var legend = svg.selectAll(".legend")
-          .data(color.domain())
+          .data(data.cluster_data.cluster_colour)
         .enter().append("g")
           .attr("class", "legend")
           .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
@@ -100,7 +100,7 @@ define('scatter', ['d3'], function (d3) {
           .attr("x", width + 18)
           .attr("width", 18)
           .attr("height", 18)
-          .style("fill", color);
+          .style("fill", function(d) { return d; });
 
       legend.append("text")
           .attr("x", width + 16)
@@ -108,7 +108,7 @@ define('scatter', ['d3'], function (d3) {
           .attr("dy", ".35em")
           .style("text-anchor", "end")
           .style("color", "white")
-          .text(function(d) { return d; });
+          .text(function(d, i) { return i; });
           
     }
     return draw;

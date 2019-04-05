@@ -46,7 +46,7 @@ define('scatter', ['d3'], function (d3) {
 
       var colorHeat = d3.scaleLinear()
         .domain(d3.extent(data.cluster_topography))
-        .interpolate(d => d3.interpolateMagma)
+        .range(["#606060","#F5F5F5"])
 
       // Define the div for the tooltip
       var div = d3.select("body").append("div") 
@@ -56,7 +56,8 @@ define('scatter', ['d3'], function (d3) {
 
       svg.append("g")
           .attr("fill", "none")
-          .attr("stroke", "none")
+          .attr("stroke", "#ccc")
+          .attr("strok-weight", "1px")
           .attr("stroke-linejoin", "round")
           //.attr("clip-path", "url(#clip)")
         .selectAll("path")
@@ -70,7 +71,7 @@ define('scatter', ['d3'], function (d3) {
         .data(data.project_data)
         .enter().append("circle")
         .attr("class", "dot")
-        .attr("r", 5)
+        .attr("r", 8)
         .attr("cx", function(d) { return x(accessor(d, viztype, 0)); })
         .attr("cy", function(d) { return y(accessor(d, viztype, 1)); })
         .style("fill", function(d) { return data.cluster_data.cluster_colour[d.cluster]; })

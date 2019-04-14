@@ -53,15 +53,6 @@ services:
       - ssl_crt
       - ikoncode_secrets
 
-  tenn:
-    container_name: TopicExtractionService
-    build:
-      context: ./src/topicextraction/
-      dockerfile: Dockerfile
-    ports:
-      - "5435:8501"
-
-
 secrets:
   postgres_password:
     file: ./assets/IKON-backend-config/secrets/postgres_password

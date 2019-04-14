@@ -18,6 +18,7 @@ plotly = "*"
 line-profiler = "*"
 multicoretsne = "*"
 lapjv = "*"
+"py-d3" = "*"
 
 [dev-packages]
 

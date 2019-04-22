@@ -117,3 +117,6 @@ dmypy.json
 # Dumps
 nlp/dumps/*.json
 dump.*
+
+# BERT
+nlp/model/

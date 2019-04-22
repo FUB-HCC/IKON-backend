@@ -4,3 +4,6 @@
 [submodule "assets/IKON-backend-config"]
 	path = assets/IKON-backend-config
 	url = https://github.com/FUB-HCC/IKON-backend-config
+[submodule "src/topicextraction/nlp/bert"]
+	path = src/topicextraction/nlp/bert
+	url = https://github.com/google-research/bert.git

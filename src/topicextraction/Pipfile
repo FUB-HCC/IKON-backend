@@ -19,6 +19,7 @@ line-profiler = "*"
 multicoretsne = "*"
 lapjv = "*"
 "py-d3" = "*"
+tensorflow = "*"
 
 [dev-packages]
 

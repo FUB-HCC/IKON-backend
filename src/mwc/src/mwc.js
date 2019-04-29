@@ -5,12 +5,13 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const https = require('https');
 const MediaWikiConnector = require('./MediaWikiConnector/MediaWikiConnector.js');
-const WTAFakerClass = require('./WTAFaker/generateFakeWTA.js');
+const WTAFaker = require('./WTAFaker/generateFakeWTA.js');
 
 const server = express();
 
 const loginPromise = MediaWikiConnector.wikiLogin();
-const WTAFaker = MediaWikiConnector.getAllProjects(loginPromise).then(data => {return new WTAFakerClass(data);});
+const data = MediaWikiConnector.getAllProjects(loginPromise).then(data => {return data;});
+const faker = new WTAFaker(data);
 
 
 // set server middleware
@@ -48,7 +49,8 @@ router.get('/projects', async (req, res) => {
 
 router.get('/wtas', async (req, res) => {
   try {
-    const result = WTAFaker.generateFakeWTAs();
+    console.log(Object.getOwnPropertyNames(Object.getPrototypeOf(faker)));
+    const result = await faker.generateFakeWTAs();
     res.status(200).send(result);
   } catch (e) {
     console.log(e);

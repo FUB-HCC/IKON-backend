@@ -49,7 +49,6 @@ const fetchAllProjects = async (login) => {
   }
   // for some reason this is necessary
   await Promise.all(results);
-  console.log(results);
   return Promise.all(results);
 };
 

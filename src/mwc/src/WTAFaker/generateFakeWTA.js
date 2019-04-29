@@ -10,22 +10,22 @@ class WTAFaker{
     return Math.random() < prob;
   }
 
-  getRandomInt([min, max]) {
-    const min = Math.ceil(min);
-    const max = Math.floor(max);
+  getRandomInt([mins, maxs]) {
+    const min = Math.ceil(mins);
+    const max = Math.floor(maxs);
     return Math.floor(Math.random() * (max - min)) + min;
   };
 
   getRandomArrayElement(projects) {
-    return projects[Math.floor(Math.random()*projects.length)];
+    return projects[Math.floor(Math.random()*(projects.length-1))];
   }
 
-  getFakeData(type) {
+  getFakeData(type, list) {
     switch (type) {
       case 2:
         return faker.lorem.word();
       case 3:
-        return getRandomArrayElement(this.projects).id;
+        return this.getRandomArrayElement(list).subject;
       case 4:
         return faker.random.boolean();
       case 6:
@@ -37,7 +37,7 @@ class WTAFaker{
     }
   };
 
-  generateEntry() {
+  generateEntry(list) {
     const config = [
       {
         name: 'Description', prob: 1.0, type: 2, amount: [1, 2],
@@ -98,6 +98,8 @@ class WTAFaker{
       },
     ];
 
+    /////// LO AND BEHOLD! THIS IS TERRIBLE CODE!!!
+
     return () => ({
       query: {
         subject: faker.lorem.words(),
@@ -107,7 +109,7 @@ class WTAFaker{
               property: entry.name,
               dataitem: [...Array(this.getRandomInt(entry.amount)).keys()].map(field => ({
                 type: entry.type,
-                item: this.getFakeData(entry.type, ids),
+                item: this.getFakeData(entry.type, list),
               })),
             };
           }
@@ -118,8 +120,22 @@ class WTAFaker{
     });
   };
 
-  generateFakeWTAs() {
-    return [...Array(this.getRandomInt([90, 100])).keys()].map(this.generateEntry())
+  async generateFakeWTAs() {
+    let projects = (await this.projects);
+    let fakewtas = [...Array(this.getRandomInt([90, 100])).keys()].map(this.generateEntry(projects));
+    return fakewtas.map( entry => {
+      let connectedProject = entry.query.data.find(attribute => {return attribute.property === 'HasProject'});
+      if(connectedProject !== undefined){
+        let keywords = projects.find(project => {return project.subject === connectedProject.dataitem[0].item}).HatSchlagwort;
+        if (keywords !== undefined) {
+          entry.query.data.push({
+            property: 'HasKeywords',
+            dataitem: keywords.map(keyword => {return {type: '1', item: keyword}})
+          });
+        }
+      }
+      return entry
+    })
   }
 }
 

@@ -1,14 +1,14 @@
-FROM tensorflow/serving
+FROM tiangolo/uvicorn-gunicorn-fastapi
 
 # Create app directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY src/ /src/
+# We copy just the requirements.txt first to leverage Docker cache
+# COPY ./requirements.txt ./requirements.txt
+
+# RUN pip install -r requirements.txt
 
 # Bundle app source
-COPY . .
+COPY ./src/ .
 
-EXPOSE 8051
+EXPOSE 80

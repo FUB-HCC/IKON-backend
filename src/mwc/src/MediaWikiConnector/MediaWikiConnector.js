@@ -66,3 +66,7 @@ exports.getNameMapping = (name) => {
 
   return (Object.keys(mapping).includes(name)) ? mapping[name] : name;
 };
+
+exports.parseMediaWikiResponse = (response) => {
+ 
+ }

@@ -75,3 +75,7 @@ exports.getAllProjects = async (loginPromise) => {
       return dict;
     }, { subject }));
 } 
+
+exports.parseMediaWikiResponse = (response) => {
+ 
+}

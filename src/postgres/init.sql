@@ -122,8 +122,8 @@ CREATE TABLE IF NOT EXISTS MFNProjects (
 
 CREATE TABLE IF NOT EXISTS ktas (
   id INTEGER PRIMARY KEY REFERENCES projects(id),
-  external_initiative BOOLEAN,
-  format INTEGER REFERENCES formats(id),
+  external_initiative BOOLEAN NOT NULL ,
+  format INTEGER NOT NULL REFERENCES formats(id),
   social_goals TEXT,
   field_of_action TEXT,
   goal TEXT NOT NULL

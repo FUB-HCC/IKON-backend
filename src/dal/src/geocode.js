@@ -23,20 +23,20 @@ const geocodeLocation = async (loc) => {
   return result.data || { lat: null, lon: null };
 };
 
-exports.initGeolocations = async (pool, {insertGeolocation, getAllInstitutions }) => {
+exports.initGeolocations = async (pool, { insertGeolocation, getAllInstitutions }) => {
   // check if all institutions are geolocated
   try {
     const rows = (await pool.query(getAllInstitutions)).rows;
-    const missingGeocodes = rows.map((row, index) =>{return [index, row]})
-      .filter(([index, {lat, lon}]) => !(lat && lon))
-      .map(([index, {address}]) => {return [index, address]});
+    const missingGeocodes = rows.map((row, index) => [index, row])
+      .filter(([index, { lat, lon }]) => !(lat && lon))
+      .map(([index, { address }]) => [index, address]);
 
     for (const [index, address] of missingGeocodes) {
       const gecode = await geocodeLocation(address); // eslint-disable-line no-await-in-loop
       pool.query(insertGeolocation, [rows[index].id, gecode[0].lat, gecode[0].lon]);
     }
   } catch (e) {
-  console.log(e);
-  return e;
+    console.log(e);
+    return e;
   }
-}
+};

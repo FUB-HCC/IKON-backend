@@ -13,12 +13,11 @@ ipykernel = "*"
 bokeh = "*"
 ipywidgets = "*"
 plotly = "*"
-line-profiler = "*"
-multicoretsne = "*"
 lapjv = "*"
 tensorflow = "*"
 "psycopg2" = "*"
 gensim = "*"
+cmake = "*"
 
 [dev-packages]
 

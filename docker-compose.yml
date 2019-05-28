@@ -59,13 +59,29 @@ services:
       context: ./src/topicextraction/
       dockerfile: Dockerfile
     ports:
-      - "5435:80"
+      - "5435:8082"
     environment:
       SSL_KEY: /run/secrets/ssl_key
       SSL_CRT: /run/secrets/ssl_crt
     secrets:
       - ssl_key
       - ssl_crt
+
+  notebook:
+    container_name: NLPNotebook
+    build:
+      context: .
+      dockerfile: ./src/topicextraction/nlp/Dockerfile
+    volumes:
+      - ./src/topicextraction/nlp:/home/jovyan/work/nlp
+    ports:
+      - "5436:8888"
+    depends_on:
+      - postgres
+    environment:
+      PG_PASSWORD: /run/secrets/postgres_password
+    secrets:
+      - postgres_password
 
 secrets:
   postgres_password:

@@ -8,7 +8,6 @@ numpy = "*"
 scikit-learn = {extras = ["alldeps"]}
 spacy = "*"
 langdetect = "*"
-matplotlib = "*"
 ipykernel = "*"
 bokeh = "*"
 ipywidgets = "*"
@@ -18,8 +17,9 @@ tensorflow = "*"
 "psycopg2" = "*"
 gensim = "*"
 cmake = "*"
+certifi = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.6"
+python_version = "3.5"

@@ -8,7 +8,6 @@ services:
       dockerfile: ./src/postgres/Dockerfile
     volumes:
       - ./database:/var/lib/postgresql/data
-    user: ${CURRENT_UID}
     ports:
       - "5432:5432"
     environment:
@@ -77,7 +76,6 @@ services:
       - ./src/topicextraction/nlp:/tf
       - ./src/topicextraction/nlp/models:/var/tmp
       - ./src/topicextraction/nlp/models:/tmp
-      - ./assets/data/nlp/:/tf/data/
     ports:
       - "5436:8888"
     user: ${CURRENT_UID}

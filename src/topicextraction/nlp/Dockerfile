@@ -6,7 +6,6 @@ ENV PYTHONPATH="/usr/lib/python35.zip:/usr/lib/python3.5:/usr/lib/python3.5/plat
 
 RUN apt-get update
 RUN apt-get install -y libsm6 libxext6 libxrender-dev libglib2.0-0 postgresql libpq-dev
-RUN pip install --user certifi
 
 # We copy just the requirements.txt first to leverage Docker cache
 COPY ./src/topicextraction/Pipfile ./Pipfile
@@ -17,3 +16,5 @@ RUN python -m spacy download xx
 
 # Bundle data
 COPY /assets/data/nlp/ ./data/
+
+RUN pip install --user certifi

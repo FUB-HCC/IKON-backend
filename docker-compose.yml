@@ -75,9 +75,7 @@ services:
       dockerfile: ./src/topicextraction/nlp/Dockerfile
     volumes:
       - ./src/topicextraction/nlp:/tf
-      - ./src/topicextraction/nlp/models:/var/tmp
-      - ./src/topicextraction/nlp/models:/tmp
-      - ./assets/data/nlp/:/tf/data/
+      - ./assets/data/nlp:/tf/data
     ports:
       - "5436:8888"
     user: ${CURRENT_UID}

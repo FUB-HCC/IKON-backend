@@ -18,6 +18,7 @@ tensorflow = "*"
 gensim = "*"
 cmake = "*"
 certifi = "*"
+sklearn = "*"
 
 [dev-packages]
 

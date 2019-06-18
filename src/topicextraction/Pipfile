@@ -17,10 +17,8 @@ tensorflow = "*"
 "psycopg2" = "*"
 gensim = "*"
 cmake = "*"
-certifi = "*"
-sklearn = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.5"
+python_version = "3.6"

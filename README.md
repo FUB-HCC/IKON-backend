@@ -14,7 +14,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-You will need [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installed in order to run the backend. 
+You will need [Docker](https://docs.docker.com/install/), [Docker Compose](https://docs.docker.com/compose/install/) and [Git LFS](https://git-lfs.github.com/) installed in order to run the backend. 
 
 
 ### Installing
@@ -29,7 +29,7 @@ In order to do that navigate to the folder where you want to save the project an
 ```
 git clone --recurse-submodules -j8 https://github.com/FUB-HCC/IKON-backend.git
 ```
-
+Afterwards you need to either generate new SSL/TLS certificates for development or paste your own one in /assets/ssl/
 Then proceed by building and running the containers:
 ```
 cd IKON-backend/

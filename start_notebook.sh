@@ -96,9 +96,9 @@ parse_commandline "$@"
 
 if [ "$_arg_gpu" = on ];
 then
-    CURRENT_UID=$(id -u):$(id -g) docker-compose up --build notebook
+    CURRENT_UID=$(id -u):$(id -g) docker-compose up --build notebook postgres
 else
-    CURRENT_UID=$(id -u):$(id -g) docker-compose up --build notebook
+    CURRENT_UID=$(id -u):$(id -g) docker-compose up --build notebook postgres
 fi
 
 # ] <-- needed because of Argbash

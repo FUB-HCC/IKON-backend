@@ -71,7 +71,7 @@ services:
     container_name: NLPNotebook
     build:
       context: .
-      dockerfile: ./src/topicextraction/nlp/Dockerfile
+      dockerfile: ./src/topicextraction/nlp/Dockerfile.cpu
     volumes:
       - ./src/topicextraction/nlp:/tf/notebooks
       - ./assets/data/nlp:/tf/data

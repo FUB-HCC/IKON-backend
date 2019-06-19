@@ -71,11 +71,13 @@ services:
     container_name: NLPNotebook
     build:
       context: .
-      dockerfile: ./src/topicextraction/nlp/Dockerfile
+      dockerfile: ./src/topicextraction/nlp/Dockerfile.cpu
     volumes:
-      - ./src/topicextraction/nlp:/home/jovyan/work/nlp
+      - ./src/topicextraction/nlp:/tf/notebooks
+      - ./assets/data/nlp:/tf/data
     ports:
       - "5436:8888"
+    user: ${CURRENT_UID}
     depends_on:
       - postgres
     environment:

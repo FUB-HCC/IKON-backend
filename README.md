@@ -19,6 +19,8 @@ You will need [Docker](https://docs.docker.com/install/), [Docker Compose](https
 
 ### Installing
 
+#### Running all containers
+
 A step by step series of examples that tell you how to get a development env running
 
 First you need to clone the repository.
@@ -33,6 +35,13 @@ Then proceed by building and running the containers:
 cd IKON-backend/
 docker-compose up --build
 ```
+#### Running the notebook
+
+If you want to explore the topic extraction pipeline, you can execute the bash script in the root folder with or without the ```--gpu``` flag. If you want to use the GPU, you have to install [Nvidia-Docker2](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)) as well and set the nvidia runtime as your default in your docker daemon config. (See [this](https://stackoverflow.com/questions/47465696/how-do-i-specify-nvidia-runtime-from-docker-compose-yml)).
+```
+bash ./start_notebook [--gpu]
+```
+
 ### Coding style
 
 This project uses ESLint and (Pylint) for code-style checking. 

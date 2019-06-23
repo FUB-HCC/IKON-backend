@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 numpy = "*"
 scikit-learn = {extras = ["alldeps"]}
-spacy = "*"
 ipykernel = "*"
 bokeh = "*"
 ipywidgets = "*"
@@ -17,6 +16,7 @@ tensorflow = "*"
 gensim = "*"
 cmake = "*"
 spacy-langdetect = "*"
+spacy = "*"
 
 [dev-packages]
 

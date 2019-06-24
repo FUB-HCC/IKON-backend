@@ -77,6 +77,7 @@ services:
       dockerfile: ./src/topicextraction/nlp/Dockerfile.cpu
     volumes:
       - ./src/topicextraction/nlp:/tf/notebooks
+      - ./src/topicextraction/nlp/dumps:/tf/notebooks/dumps
       - ./assets/data/nlp:/tf/data
     ports:
       - "5436:8888"

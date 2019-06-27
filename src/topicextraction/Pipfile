@@ -17,6 +17,8 @@ gensim = "*"
 cmake = "*"
 spacy-langdetect = "*"
 spacy = "*"
+keras = "*"
+matplotlib = "*"
 
 [dev-packages]
 

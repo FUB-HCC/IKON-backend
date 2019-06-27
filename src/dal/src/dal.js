@@ -4,6 +4,7 @@ const fs = require('fs');
 const express = require('express');
 const compression = require('compression');
 const helmet = require('helmet');
+const cors = require('cors')
 const bodyParser = require('body-parser');
 const https = require('https');
 const { Pool } = require('pg');
@@ -24,6 +25,7 @@ const server = express();
 
 // set server middleware
 server.use(helmet());
+server.use(cors())
 server.use(compression({ level: 3 }));
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));

@@ -25,7 +25,7 @@ const server = express();
 
 // set server middleware
 server.use(helmet());
-server.use(cors({ origin: 'localhost' }))
+server.use(cors())
 server.use(compression({ level: 3 }));
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));

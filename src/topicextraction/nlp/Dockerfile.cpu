@@ -6,8 +6,9 @@ ENV PIPENV_VENV_IN_PROJECT="enabled"
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH="/.local/bin:${HOME}/.local/bin:/root/.local/bin:${PATH}"
 
+RUN apt-get clean
 RUN apt-get update 
-RUN apt-get install -y libsm6 libxext6 libxrender-dev libglib2.0-0 postgresql libpq-dev python3-dev
+RUN apt-get install --fix-missing -y libsm6 libxext6 libxrender-dev libglib2.0-0 postgresql libpq-dev python3-dev build-essential chrpath libssl-dev libxft-dev libfreetype6-dev libfreetype6 libfontconfig1-dev libfontconfig1
 RUN pip install --user pipenv setuptools
 
 # We copy just the requirements.txt first to leverage Docker cache
@@ -18,4 +19,11 @@ RUN pipenv install
 RUN pipenv run python -m ipykernel install --user --name=ikon
 RUN jupyter kernelspec install /root/.local/share/jupyter/kernels/ikon
 RUN pipenv run python -m spacy download de
+
+ENV PHANTOM_JS="phantomjs-2.1.1-linux-x86_64"
+ADD https://bitbucket.org/ariya/phantomjs/downloads/$PHANTOM_JS.tar.bz2 .
+RUN tar xvjf $PHANTOM_JS.tar.bz2
+RUN mv $PHANTOM_JS /usr/local/share
+RUN ln -sf /usr/local/share/$PHANTOM_JS/bin/phantomjs /usr/local/bin
+
 

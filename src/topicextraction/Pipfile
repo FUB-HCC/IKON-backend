@@ -19,6 +19,7 @@ spacy-langdetect = "*"
 spacy = "*"
 keras = "*"
 matplotlib = "*"
+selenium = "*"
 
 [dev-packages]
 

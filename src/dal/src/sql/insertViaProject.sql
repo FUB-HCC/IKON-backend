@@ -1,0 +1,2 @@
+INSERT INTO mfnprojects (id, organisational_unit, acronyme, hatantragsteller, foerderkennzeichendrittmittelprojekt, hatmittelgeber, ispartof, hatleitthema, project_leader, projekttrager, redaktionelle_beschreibung, status, summary, titelprojekt, titelen, weitere_informationen, zusammenfassung)
+VALUES ($1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, $3, $2, NULL, NULL, NULL);

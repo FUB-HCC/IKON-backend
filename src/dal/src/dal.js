@@ -1,15 +1,15 @@
-
 const fs = require('fs');
 // const hash = require('object-hash')
 const express = require('express');
 const compression = require('compression');
 const helmet = require('helmet');
-const cors = require('cors')
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const https = require('https');
 const { Pool } = require('pg');
 
 // custom imports
+const { initVia } = require('./via.js');
 const { initGeolocations } = require('./geocode.js');
 
 // connect to database
@@ -24,8 +24,8 @@ const pool = new Pool({
 const server = express();
 
 // set server middleware
+server.use(cors());
 server.use(helmet());
-server.use(cors())
 server.use(compression({ level: 3 }));
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
@@ -39,6 +39,8 @@ const queries = {
   getAllInstitutions: fs.readFileSync('./src/sql/getAllInstitutions.sql', 'utf8').trim(),
   getConnectedInstitutions: fs.readFileSync('./src/sql/getConnectedInstitutions.sql', 'utf8').trim(),
   insertGeolocation: fs.readFileSync('./src/sql/insertGeolocation.sql', 'utf8').trim(),
+  insertViaProject: fs.readFileSync('./src/sql/insertViaProject.sql', 'utf-8').trim(),
+  insertProject: fs.readFileSync('./src/sql/insertProject.sql', 'utf-8').trim(),
 };
 
 // Configure router
@@ -87,6 +89,15 @@ router.get('/institutions', async (req, res) => {
 router.patch('/institutions', async (req, res) => {
   try {
     initGeolocations(pool, queries);
+    res.status(200).send();
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+router.patch('/projects', async (req, res) => {
+  try {
+    initVia(pool, queries);
     res.status(200).send();
   } catch (err) {
     res.status(500).send(err);

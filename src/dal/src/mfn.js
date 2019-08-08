@@ -1,11 +1,19 @@
 const https = require('https');
 const axios = require('axios');
 
-function extractValue(array, key) {
-  if (!(key in array)) {
-    return false;
+function arrayCleaner(array) {
+  const cleanArray = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key of Object.keys(array)) {
+    if (Array.isArray(array[key])) {
+      if (array[key].length === 0) {
+        cleanArray[key] = null;
+      } else {
+        cleanArray[key] = array[key].pop();
+      }
+    }
   }
-  return array[key][0];
+  return cleanArray;
 }
 
 const viaProjects = async () => {
@@ -31,16 +39,18 @@ exports.initVia = async (pool, { insertMfNProject, insertProject }) => {
 
     // eslint-disable-next-line no-restricted-syntax
     for (const [i, project] of projects.entries()) {
-      const projectAbstract = extractValue(project, 'project_summary');
-      const title = extractValue(project, 'title');
-      const fundingStartYear = extractValue(project, 'funding_start_year');
-      const fundingEndYear = extractValue(project, 'funding_end_year');
-      const description = extractValue(project, 'description');
-      if (projectAbstract) {
+      const p = arrayCleaner(project);
+
+      if (p.project_summary != null) {
         pool.query(insertProject, [
-          i, title, projectAbstract, fundingStartYear, fundingEndYear, description,
+          i, p.title, p.project_summary, p.funding_start_year, p.funding_end_year, p.description,
         ]).then(() => {
-          pool.query(insertMfNProject, [i, projectAbstract, title]);
+          pool.query(insertMfNProject, [
+            i, p.organisational_unit, p.acronym, p.HatAntragsteller,
+            p.FoerderkennzeichenDrittmittelprojekt, p.HatMittelgeber, p.HatProjektleiter,
+            p.HatProjekttraeger, p.EditorialEntry, p.Status, p.project_summary,
+            p.title, p.TitelEN, p.WeitereInformationen, p.description,
+          ]);
         });
       }
     }

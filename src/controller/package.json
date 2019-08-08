@@ -1,11 +1,8 @@
 {
   "name": "controller",
-  "version": "1.0.0",
-  "description": "",
+  "private": true,
   "main": "server.js",
   "scripts": {
     "start": "node src/server.js"
-  },
-  "author": "",
-  "license": "AGPL-3.0"
+  }
 }

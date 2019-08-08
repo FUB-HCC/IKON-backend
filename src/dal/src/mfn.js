@@ -43,10 +43,11 @@ exports.initVia = async (pool, { insertMfNProject, insertProject }) => {
 
       if (p.project_summary != null) {
         pool.query(insertProject, [
-          i, p.title, p.project_summary, p.funding_start_year, p.funding_end_year, p.description,
+          p.Identifier, p.title, p.project_summary, p.funding_start_year, p.funding_end_year,
+          p.description,
         ]).then(() => {
           pool.query(insertMfNProject, [
-            i, p.organisational_unit, p.acronym, p.HatAntragsteller,
+            p.Identifier, p.organisational_unit, p.acronym, p.HatAntragsteller,
             p.FoerderkennzeichenDrittmittelprojekt, p.HatMittelgeber, p.HatProjektleiter,
             p.HatProjekttraeger, p.EditorialEntry, p.Status, p.project_summary,
             p.title, p.TitelEN, p.WeitereInformationen, p.description,

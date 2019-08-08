@@ -117,6 +117,15 @@ router.patch('/projects', async (req, res) => {
   }
 });
 
+router.patch('/knowledgeTransferActivities', async (req, res) => {
+  try {
+    // TODO insert kta in DB
+    res.status(200).send();
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
 // exit strategy
 process.on('SIGINT', async (err) => {
   console.log(err);

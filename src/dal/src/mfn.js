@@ -25,7 +25,7 @@ const viaProjects = async () => {
   return result.data || [];
 };
 
-exports.initVia = async (pool, { insertViaProject, insertProject }) => {
+exports.initVia = async (pool, { insertMfNProject, insertProject }) => {
   try {
     const projects = await viaProjects(); // eslint-disable-line no-await-in-loop
 
@@ -35,7 +35,7 @@ exports.initVia = async (pool, { insertViaProject, insertProject }) => {
       const title = extractValue(project, 'title');
       if (projectAbstract) {
         pool.query(insertProject, [i, title, projectAbstract]);
-        // pool.query(insertViaProject, [i, title, projectAbstract]);
+        pool.query(insertMfNProject, [i, title, projectAbstract]);
       }
     }
   } catch (e) {

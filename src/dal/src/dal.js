@@ -9,7 +9,7 @@ const https = require('https');
 const { Pool } = require('pg');
 
 // custom imports
-const { initVia } = require('./via.js');
+const { initVia } = require('./mfn.js');
 const { initGeolocations } = require('./geocode.js');
 
 // connect to database
@@ -39,7 +39,7 @@ const queries = {
   getAllInstitutions: fs.readFileSync('./src/sql/getAllInstitutions.sql', 'utf8').trim(),
   getConnectedInstitutions: fs.readFileSync('./src/sql/getConnectedInstitutions.sql', 'utf8').trim(),
   insertGeolocation: fs.readFileSync('./src/sql/insertGeolocation.sql', 'utf8').trim(),
-  insertViaProject: fs.readFileSync('./src/sql/insertViaProject.sql', 'utf-8').trim(),
+  insertMfNProject: fs.readFileSync('./src/sql/insertMfNProject.sql', 'utf-8').trim(),
   insertProject: fs.readFileSync('./src/sql/insertProject.sql', 'utf-8').trim(),
 };
 

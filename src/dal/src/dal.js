@@ -37,6 +37,9 @@ const PORT = process.env.PORT || 8080;
 const queries = {
   getAllProjects: fs.readFileSync('./src/sql/getAllProjects.sql', 'utf8').trim(),
   getAllInstitutions: fs.readFileSync('./src/sql/getAllInstitutions.sql', 'utf8').trim(),
+  // getAllCollections: fs.readFileSync('./src/sql/getAllCollections.sql', 'utf8').trim(),
+  // getAllInfrastructure: fs.readFileSync('./src/sql/getAllInfrastructure.sql', 'utf8').trim(),
+  getAllKnowledgeTransferActivities: fs.readFileSync('./src/sql/getAllKnowledgeTransferActivities.sql', 'utf8').trim(),
   getConnectedInstitutions: fs.readFileSync('./src/sql/getConnectedInstitutions.sql', 'utf8').trim(),
   insertGeolocation: fs.readFileSync('./src/sql/insertGeolocation.sql', 'utf8').trim(),
   insertMfNProject: fs.readFileSync('./src/sql/insertMfNProject.sql', 'utf-8').trim(),
@@ -54,7 +57,6 @@ https.createServer({
   console.log(`API Server Started On Port ${PORT}!`);
 });
 
-
 // Routes
 router.get('/projects', async (req, res) => {
   // define offset and limit
@@ -65,6 +67,17 @@ router.get('/projects', async (req, res) => {
   let rows = '';
   try {
     rows = (await pool.query(queries.getAllProjects, [institution, offset, limit])).rows;
+    res.status(200).json(rows);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+});
+
+router.get('/knowledgeTransferActivities', async (req, res) => {
+  let rows = '';
+  try {
+    rows = (await pool.query(queries.getAllKnowledgeTransferActivities, [])).rows;
     res.status(200).json(rows);
   } catch (err) {
     console.log(err);

@@ -33,9 +33,15 @@ exports.initVia = async (pool, { insertMfNProject, insertProject }) => {
     for (const [i, project] of projects.entries()) {
       const projectAbstract = extractValue(project, 'project_summary');
       const title = extractValue(project, 'title');
+      const fundingStartYear = extractValue(project, 'funding_start_year');
+      const fundingEndYear = extractValue(project, 'funding_end_year');
+      const description = extractValue(project, 'description');
       if (projectAbstract) {
-        pool.query(insertProject, [i, title, projectAbstract]);
-        pool.query(insertMfNProject, [i, title, projectAbstract]);
+        pool.query(insertProject, [
+          i, title, projectAbstract, fundingStartYear, fundingEndYear, description,
+        ]).then(() => {
+          pool.query(insertMfNProject, [i, projectAbstract, title]);
+        });
       }
     }
   } catch (e) {

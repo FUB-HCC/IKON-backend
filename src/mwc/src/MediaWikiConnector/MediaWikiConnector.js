@@ -53,7 +53,7 @@ const fetchAllProjects = async (login) => {
   return Promise.all(results);
 };
 
-const fetchAllWTAs = async (login) => {
+const fetchAllKTAs = async (login) => {
   try {
     await login;
   } catch (e) {
@@ -61,19 +61,21 @@ const fetchAllWTAs = async (login) => {
     process.exit(1);
   }
 
-  let WTAs = [];
+  let KTAs = [];
 
   try {
     const params = {
       action: 'ask',
-      query: '[[Category:KnowledgeTransferActivity]]|limit=10000',
+      query: '[[Category:KnowledgeTransferActivity]]|?ExternalInitiative|?Format|?Goal|?SocialGoals|?FieldOfAction|limit=10000',
     };
-    WTAs = await ikoncode.api.callAsync(params);
-    console.log(Object.keys(WTAs[2].query.results));
+    KTAs = await ikoncode.api.callAsync(params);
+    console.log(Object.keys(KTAs[2].query.results));
+    // console.log(Object.keys(KTAs));
   } catch (e) {
     console.log(e);
   }
-  return WTAs[2].query.results;
+  return KTAs[2].query.results;
+  //return KTAs;
 };
 
 const fetchAllCollections = async (login) => {
@@ -145,8 +147,8 @@ exports.getAllProjects = async (loginPromise) => {
   }, { subject }));
 };
 
-exports.getAllWTAs = async (loginPromise) => {
-  return fetchAllWTAs(loginPromise);
+exports.getAllKTAs = async (loginPromise) => {
+  return fetchAllKTAs(loginPromise);
 };
 
 exports.getAllCollections = async (loginPromise) => {

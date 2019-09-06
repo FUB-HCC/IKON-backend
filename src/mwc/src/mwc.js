@@ -47,7 +47,7 @@ router.get('/projects', async (req, res) => {
   }
 });
 
-/* router.get('/wtas', async (req, res) => {
+/* router.get('/ktas', async (req, res) => {
   try {
     console.log(Object.getOwnPropertyNames(Object.getPrototypeOf(faker)));
     const result = await faker.generateFakeWTAs();
@@ -58,9 +58,9 @@ router.get('/projects', async (req, res) => {
   }
 }); */
 
-router.get('/wtas', async (req, res) => {
+router.get('/ktas', async (req, res) => {
   try {
-    const result = (await MediaWikiConnector.getAllWTAs(loginPromise));
+    const result = (await MediaWikiConnector.getAllKTAs(loginPromise));
     console.log(result);
     res.status(200).send(result);
   } catch (e) {

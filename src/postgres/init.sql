@@ -129,6 +129,16 @@ CREATE TABLE IF NOT EXISTS ktas (
   goal TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS Infrastructure (
+    name VARCHAR PRIMARY KEY,
+    description TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Collections (
+    name VARCHAR PRIMARY KEY,
+    description TEXT
+);
+
 CREATE TABLE IF NOT EXISTS projectsTemp (
   id INTEGER PRIMARY KEY ,
   title TEXT,

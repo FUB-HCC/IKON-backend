@@ -35,19 +35,19 @@ const getKnowledgeTransferActivities = async () => {
 
 exports.initKnowledgeTransferActivities = async (pool, { insertKnowledgeTransferActivities }) => {
   try {
+    let i = 0;
     const ktas = await getKnowledgeTransferActivities(); // eslint-disable-line no-await-in-loop
     // eslint-disable-next-line no-restricted-syntax
-    for (const [i, kta] of Object.values(ktas)) {
-      // TODO find loop error
-      console.log(i);
-      console.log(kta);
+    for (const value of Object.values(ktas)) {
+      const kta = value.printouts;
       const k = arrayCleaner(kta);
       let externalInternal = true;
       if (k.ExternalInitiative === 'f') {
         externalInternal = false;
       }
       pool.query(insertKnowledgeTransferActivities, [
-        i, externalInternal, k.Format, k.SocialGoals, k.FieldOfAction, k.Goal,
+        // eslint-disable-next-line no-plusplus
+        ++i, externalInternal, k.Format, null, k.Handlungsfeld, k.Ziel,
       ]);
     }
   } catch (e) {

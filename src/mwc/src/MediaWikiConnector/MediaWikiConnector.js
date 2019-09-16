@@ -66,16 +66,14 @@ const fetchAllKTAs = async (login) => {
   try {
     const params = {
       action: 'ask',
-      query: '[[Category:KnowledgeTransferActivity]]|?ExternalInitiative|?Format|?Goal|?SocialGoals|?FieldOfAction|limit=10000',
+      query: '[[Category:KnowledgeTransferActivity]]|?ExternalInitiative|?Format|?Goal|?SocialGoals|?FieldOfAction|?TargetGroup|limit=10000',
     };
     KTAs = await ikoncode.api.callAsync(params);
     console.log(Object.keys(KTAs[2].query.results));
-    // console.log(Object.keys(KTAs));
   } catch (e) {
     console.log(e);
   }
   return KTAs[2].query.results;
-  //return KTAs;
 };
 
 const fetchAllCollections = async (login) => {

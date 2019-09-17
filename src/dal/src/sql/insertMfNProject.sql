@@ -1,5 +1,2 @@
-INSERT INTO projects (id, title, project_abstract, funding_start_year, funding_end_year, participating_subject_areas, description, origin)
-VALUES (:id, :title, :project_abstract, to_date(:funding_start_year, 'YYYY'), to_date(:funding_end_year, 'YYYY'), :participating_subject_areas, :description, 'MFN');
-
 INSERT INTO mfnprojects (id, organisational_unit, acronyme, hatantragsteller, foerderkennzeichendrittmittelprojekt, hatmittelgeber, ispartof, hatleitthema, project_leader, projekttrager, redaktionelle_beschreibung, status, summary, titelprojekt, titelen, weitere_informationen, zusammenfassung)
-VALUES (:id, :organisational_unit, :acronyme, :hatantragsteller, :foerderkennzeichendrittmittelprojekt, :hatmittelgeber, :ispartof, :hatleitthema, :project_leader, :projekttrager, :redaktionelle_beschreibung, :status, :summary, :titelprojekt, :titelen, :weitere_informationen, :zusammenfassung);
+VALUES ($1, $2, $3, $4, $5, $6, NULL, NULL, $7, $8, $9, $10, $11, $12, $13, $14, $15);

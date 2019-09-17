@@ -47,7 +47,7 @@ router.get('/projects', async (req, res) => {
   }
 });
 
-router.get('/wtas', async (req, res) => {
+/* router.get('/wtas', async (req, res) => {
   try {
     console.log(Object.getOwnPropertyNames(Object.getPrototypeOf(faker)));
     const result = await faker.generateFakeWTAs();
@@ -56,8 +56,40 @@ router.get('/wtas', async (req, res) => {
     console.log(e);
     res.status(500).send(e);
   }
+}); */
+
+router.get('/wtas', async (req, res) => {
+  try {
+    const result = (await MediaWikiConnector.getAllWTAs(loginPromise));
+    console.log(result);
+    res.status(200).send(result);
+  } catch (e) {
+    console.log(e);
+    res.status(500).send();
+  }
 });
 
+router.get('/collections', async (req, res) => {
+  try {
+    const result = (await MediaWikiConnector.getAllCollections(loginPromise));
+    console.log(result);
+    res.status(200).send(result);
+  } catch (e) {
+    console.log(e);
+    res.status(500).send();
+  }
+});
+
+router.get('/infrastructure', async (req, res) => {
+  try {
+    const result = (await MediaWikiConnector.getAllInfrastructure(loginPromise));
+    console.log(result);
+    res.status(200).send(result);
+  } catch (e) {
+    console.log(e);
+    res.status(500).send();
+  }
+});
 
 // exit strategy
 process.on('SIGINT', async (err) => {

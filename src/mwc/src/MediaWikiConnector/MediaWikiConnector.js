@@ -36,12 +36,13 @@ const fetchAllProjects = async (login) => {
   }
 
   const results = [];
+  // eslint-disable-next-line no-restricted-syntax
   for (const key of Object.keys(projects[2].query.results)) {
+    const params2 = {
+      action: 'browsebysubject',
+      subject: key,
+    };
     try {
-      const params2 = {
-        action: 'browsebysubject',
-        subject: key,
-      };
       results.push(ikoncode.api.callAsync(params2));
     } catch (e) {
       console.log(params2, e);
@@ -50,6 +51,75 @@ const fetchAllProjects = async (login) => {
   // for some reason this is necessary
   await Promise.all(results);
   return Promise.all(results);
+};
+
+const fetchAllWTAs = async (login) => {
+  try {
+    await login;
+  } catch (e) {
+    console.log(e);
+    process.exit(1);
+  }
+
+  let WTAs = [];
+
+  try {
+    const params = {
+      action: 'ask',
+      query: '[[Category:KnowledgeTransferActivity]]|limit=10000',
+    };
+    WTAs = await ikoncode.api.callAsync(params);
+    console.log(Object.keys(WTAs[2].query.results));
+  } catch (e) {
+    console.log(e);
+  }
+  return WTAs[2].query.results;
+};
+
+const fetchAllCollections = async (login) => {
+  try {
+    await login;
+  } catch (e) {
+    console.log(e);
+    process.exit(1);
+  }
+
+  let collections = [];
+
+  try {
+    const params = {
+      action: 'ask',
+      query: '[[Category:Sammlung]]|?BeschreibungDerSammlung|limit=10000',
+    };
+    collections = await ikoncode.api.callAsync(params);
+    console.log(Object.keys(collections[2].query.results));
+  } catch (e) {
+    console.log(e);
+  }
+  return collections[2].query.results;
+};
+
+const fetchAllInfrastructure = async (login) => {
+  try {
+    await login;
+  } catch (e) {
+    console.log(e);
+    process.exit(1);
+  }
+
+  let infrastructure = [];
+
+  try {
+    const params = {
+      action: 'ask',
+      query: '[[Category:Labor]]|?BeschreibungDerForschungsinfrastruktur|limit=10000',
+    };
+    infrastructure = await ikoncode.api.callAsync(params);
+    console.log(Object.keys(infrastructure[2].query.results));
+  } catch (e) {
+    console.log(e);
+  }
+  return infrastructure[2].query.results;
 };
 
 const getNameMapping = (name) => {
@@ -63,7 +133,6 @@ const getNameMapping = (name) => {
     TitelProjekt: 'title',
     HatOrganisationseinheit: 'organisational_unit',
     Akronym: 'acronym',
-    
   };
 
   return (Object.keys(mapping).includes(name)) ? mapping[name] : name;
@@ -71,11 +140,23 @@ const getNameMapping = (name) => {
 
 exports.getAllProjects = async (loginPromise) => {
   return (await fetchAllProjects(loginPromise)).map(([a, b, { query: { subject, data } }]) => data.reduce((dict, { property, dataitem }) => {
-      dict[getNameMapping(property)] = dataitem.map(({ item }) => item);
-      return dict;
-    }, { subject }));
-} 
+    dict[getNameMapping(property)] = dataitem.map(({ item }) => item);
+    return dict;
+  }, { subject }));
+};
+
+exports.getAllWTAs = async (loginPromise) => {
+  return fetchAllWTAs(loginPromise);
+};
+
+exports.getAllCollections = async (loginPromise) => {
+  return fetchAllCollections(loginPromise);
+};
+
+exports.getAllInfrastructure = async (loginPromise) => {
+  return fetchAllInfrastructure(loginPromise);
+};
 
 exports.parseMediaWikiResponse = (response) => {
  
-}
+};

@@ -19,6 +19,12 @@ spacy-langdetect = "*"
 spacy = "*"
 keras = "*"
 matplotlib = "*"
+selenium = "*"
+pyemd = "*"
+pandas = "*"
+psutil = "*"
+requests = "*"
+setuptools = "*"
 
 [dev-packages]
 

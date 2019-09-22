@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS institutions (
   internet TEXT
 );
 
-COPY institutions FROM '/dump_data/extracted_institution_data.csv' DELIMITER ',' CSV HEADER;
+COPY institutions FROM '/dump_data/gepris/extracted_institution_data.csv' DELIMITER ',' CSV HEADER;
 CREATE INDEX institutions_idx ON institutions (id);
 
 --------------------------------------------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS peopleTemp (
   institution_id INTEGER REFERENCES institutions(id)
 );
 
-COPY peopleTemp FROM '/dump_data/people_joined_with_institutions.csv' DELIMITER ',' CSV HEADER;
+COPY peopleTemp FROM '/dump_data/gepris/people_joined_with_institutions.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS people (
   id INTEGER PRIMARY KEY ,
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS formats (
   type TEXT NOT NULL
 );
 
-COPY formats(type) FROM '/dump_data/WTA-Formate.csv' DELIMITER ',' CSV HEADER;
+COPY formats(type) FROM '/dump_data/project_input/WTA-Formate.csv' DELIMITER ',' CSV HEADER;
 
 --------------------------------------------------------------------------------------------------------------------
 --- Create targetgroup table  and load data from a csv file
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS targetgroups (
   type TEXT NOT NULL
 );
 
-COPY targetgroups(type) FROM '/dump_data/WTA-Zielgruppen.csv' DELIMITER ',' CSV HEADER;
+COPY targetgroups(type) FROM '/dump_data/project_input/WTA-Zielgruppen.csv' DELIMITER ',' CSV HEADER;
 
 --------------------------------------------------------------------------------------------------------------------
 --- Create project inheritance hierarchy and copy DFG projects via temporary tables (TODO: Is there a better way?)
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS projectsTemp (
   origin TEXT
 );
 
-COPY projectsTemp FROM '/dump_data/extracted_project_data.csv' DELIMITER ',' CSV HEADER;
+COPY projectsTemp FROM '/dump_data/gepris/extracted_project_data.csv' DELIMITER ',' CSV HEADER;
 INSERT INTO projects (id, title, project_abstract, funding_start_year, funding_end_year, participating_subject_areas, description, origin)
 SELECT DISTINCT id, title, project_abstract, to_date(funding_start_year, 'YYYY'), to_date(funding_end_year, 'YYYY'), participating_subject_areas, description, 'GEPRIS'
 FROM projectsTemp;
@@ -163,7 +163,7 @@ CREATE TABLE IF NOT EXISTS subjects (
   research_area TEXT NOT NULL
 );
 
-COPY subjects FROM '/dump_data/subject_areas.csv' DELIMITER ',' CSV HEADER;
+COPY subjects FROM '/dump_data/gepris/subject_areas.csv' DELIMITER ',' CSV HEADER;
 
 --------------------------------------------------------------------------------------------------------------------
 --- Create countrycode table and load data from a csv file
@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS countryCodes (
   code TEXT NOT NULL
 );
 
-COPY countryCodes FROM '/dump_data/country_code.csv' DELIMITER ',' CSV HEADER;
+COPY countryCodes FROM '/dump_data/data_augmentation/country_code.csv' DELIMITER ',' CSV HEADER;
 
 --------------------------------------------------------------------------------------------------------------------
 --- Create quite a few m:n tables
@@ -208,14 +208,14 @@ CREATE TABLE IF NOT EXISTS projectsCountries (
   country TEXT REFERENCES countryCodes(country)
 );
 
-COPY projectsCountries FROM '/dump_data/projects_international_connections.csv' DELIMITER ',' CSV HEADER;
+COPY projectsCountries FROM '/dump_data/gepris/projects_international_connections.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projectsParticipatingSubjects (
   project_id INTEGER REFERENCES projects(id),
   subject TEXT NOT NULL
 );
 
-COPY projectsParticipatingSubjects FROM '/dump_data/project_ids_to_participating_subject_areas.csv' DELIMITER ',' CSV HEADER;
+COPY projectsParticipatingSubjects FROM '/dump_data/gepris/project_ids_to_participating_subject_areas.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projectsInstitutions (
   project_id INTEGER REFERENCES projects(id),
@@ -223,14 +223,14 @@ CREATE TABLE IF NOT EXISTS projectsInstitutions (
   relation_type TEXT
 );
 
-COPY projectsInstitutions FROM '/dump_data/project_institution_relations.csv' DELIMITER ',' CSV HEADER;
+COPY projectsInstitutions FROM '/dump_data/gepris/project_institution_relations.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS institutionsProjects (
   institution_id INTEGER REFERENCES institutions(id),
   project_id INTEGER REFERENCES projects(id)
 );
 
-COPY institutionsProjects FROM '/dump_data/projects_listed_on_institution_detail_pages.csv' DELIMITER ',' CSV HEADER;
+COPY institutionsProjects FROM '/dump_data/gepris/projects_listed_on_institution_detail_pages.csv' DELIMITER ',' CSV HEADER;
 
 INSERT INTO projectsInstitutions (project_id, institution_id, relation_type)
 SELECT project_id, institution_id, 'UNKNOWN'
@@ -244,14 +244,14 @@ CREATE TABLE IF NOT EXISTS projectsPeople (
   relation_type TEXT
 );
 
-COPY projectsPeople FROM '/dump_data/project_person_relations.csv' DELIMITER ',' CSV HEADER;
+COPY projectsPeople FROM '/dump_data/gepris/project_person_relations.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projectsSubjects (
   project_id INTEGER REFERENCES projects(id),
   subject_area TEXT
 );
 
-COPY projectsSubjects FROM '/dump_data/project_ids_to_subject_areas.csv' DELIMITER ',' CSV HEADER;
+COPY projectsSubjects FROM '/dump_data/gepris/project_ids_to_subject_areas.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS institutionsGeolocations (
   institution_id INTEGER REFERENCES institutions(id),

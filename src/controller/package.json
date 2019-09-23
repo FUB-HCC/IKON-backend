@@ -1,8 +1,0 @@
-{
-  "name": "controller",
-  "private": true,
-  "main": "server.js",
-  "scripts": {
-    "start": "node src/server.js"
-  }
-}

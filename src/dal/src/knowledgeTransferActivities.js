@@ -47,7 +47,7 @@ exports.initKnowledgeTransferActivities = async (pool, { insertKnowledgeTransfer
       }
       pool.query(insertKnowledgeTransferActivities, [
         // eslint-disable-next-line no-plusplus
-        ++i, externalInternal, k.Format, null, k.Handlungsfeld, k.Ziel,
+        ++i, externalInternal, k.Format, null, k.Handlungsfeld, k.Ziel, k.Drittmittelprojekt,
       ]);
     }
   } catch (e) {

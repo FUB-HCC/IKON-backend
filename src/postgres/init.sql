@@ -132,7 +132,8 @@ CREATE TABLE IF NOT EXISTS ktas (
   format TEXT,
   social_goals TEXT,
   field_of_action TEXT,
-  goal TEXT NOT NULL
+  goal TEXT NOT NULL,
+  project_id INTEGER REFERENCES projects(id)
 );
 
 CREATE TABLE IF NOT EXISTS Infrastructure (

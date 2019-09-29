@@ -16,7 +16,7 @@ function arrayCleaner(array) {
   return cleanArray;
 }
 
-const viaProjects = async () => {
+const getProjects = async () => {
   let result = {};
 
   const agent = new https.Agent({
@@ -33,9 +33,10 @@ const viaProjects = async () => {
   return result.data || [];
 };
 
-exports.initVia = async (pool, { insertMfNProject, insertProject }) => {
+exports.initProjects = async (pool, { insertMfNProject, insertProject }) => {
   try {
-    const projects = await viaProjects(); // eslint-disable-line no-await-in-loop
+    const projects = await getProjects(); // eslint-disable-line no-await-in-loop
+    console.log(projects);
 
     // eslint-disable-next-line no-restricted-syntax
     for (const [i, project] of projects.entries()) {
@@ -44,7 +45,7 @@ exports.initVia = async (pool, { insertMfNProject, insertProject }) => {
       if (p.project_summary != null) {
         pool.query(insertProject, [
           p.Identifier, p.title, p.project_summary, p.funding_start_year, p.funding_end_year,
-          p.description,
+          p.participating_subject_area, p.description,
         ]).then(() => {
           pool.query(insertMfNProject, [
             p.Identifier, p.organisational_unit, p.acronym, p.HatAntragsteller,

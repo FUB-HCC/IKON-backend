@@ -8,6 +8,9 @@ services:
       dockerfile: ./src/postgres/Dockerfile
     volumes:
       - ikon_database:/var/lib/postgresql/data:z
+      - ./assets/data/gepris:/dump_data/gepris
+      - ./assets/data/data_augmentation/:/dump_data/data_augmentation
+      - ./assets/data/project_input:/dump_data/project_input
       #- /etc/passwd:/etc/passwd:ro
     ports:
       - "5432:5432"

@@ -73,5 +73,6 @@ assets/data/database_dump/dump.sqlite
 assets/data/project_input/gepris.*
 
 .idea/
+.cache/
 .DS_Store
 database/

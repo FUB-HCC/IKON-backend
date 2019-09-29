@@ -45,7 +45,7 @@ exports.initProjects = async (pool, { insertMfNProject, insertProject }) => {
       if (p.project_summary != null) {
         pool.query(insertProject, [
           p.Identifier, p.title, p.project_summary, p.funding_start_year, p.funding_end_year,
-          p.description,
+          p.participating_subject_area, p.description,
         ]).then(() => {
           pool.query(insertMfNProject, [
             p.Identifier, p.organisational_unit, p.acronym, p.HatAntragsteller,

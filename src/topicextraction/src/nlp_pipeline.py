@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 # coding: utf-8
 
 # # Topic extraction from the GEPRiS dataset and creation of an user-centric visualisation
@@ -61,6 +61,7 @@ from sklearn.preprocessing import normalize
 # quality metrics of the clustering
 from sklearn.metrics import silhouette_samples
 
+# interactivity
 import pickle
 
 
@@ -68,7 +69,8 @@ import pickle
 # ## Loading and Cleaning
 # The first step in every NLP project which works with texts is always the preparation of the input data. In this example the Project dump from GEPRIS is loaded and the project descriptions are extracted. After that the texts get cleaned by removing all non-alphabetic chars and all stopwords from the texts. English texts are getting filtered in oder to make the analysis simpler and more comparable.
 
-# In[ ]:
+# In[17]:
+
 
 with open(os.environ['PG_PASSWORD']) as password_file:
     password = password_file.read().strip()
@@ -87,7 +89,7 @@ class DataLoader(object):
         if self.pos >= len(self.data):
             raise StopIteration
         self.pos += 1
-        return self.data[self.pos-1]
+        return self.__getitem__(self.pos-1)
     
     def  __getitem__(self, pos):
         text, *args = self.data[pos]
@@ -108,8 +110,9 @@ class DataPreprocessor(DataLoader):
     def __init__(self, query, clean=True, stream=False, workers=cpu_count()):
         self.query = query
         self.clean = clean
-        self.nlp = spacy.load('de', disable=["ner", "tagger"])                
+        self.nlp = spacy.load('de', disable=["ner", "tagger"])
 
+    
         data = self.chunkify(self.loadFromDB(self.query).fetchall(), workers)
         with Pool(workers) as pool:
             self.data = [item for sublist in pool.map(self.preprocessText, data) for item in sublist]
@@ -128,16 +131,12 @@ class DataPreprocessor(DataLoader):
     def  __getitem__(self, pos):
         text, *args = self.data[pos]
         return TaggedDocument(text, [pos])
-
-    def loadEnglishStopwords(self):
-        with open('../data/stopwords_eng.json', 'r') as datafile:
-            return set(json.load(datafile))
         
     def preprocessText(self, results):
         texts, *args = zip(*results)
         data = []
         for doc, *args in zip(self.nlp.pipe(texts, batch_size=100, n_threads=-1), *args):
-            if(doc._.language['language'] == 'de'):
+            if(doc.lang_ == 'de'):
                 data.append((tuple([token.lemma_ for token in doc if self.filterType(token)]), *args))
         return data
     
@@ -148,22 +147,12 @@ class DataPreprocessor(DataLoader):
         return token.is_alpha and not (token.is_stop or token.like_num or token.is_punct) and len(token.lemma_) > 3
 
 
-# In[3]:
+# In[18]:
 
 
-traindata = DataPreprocessor('''SELECT FIRST(project_abstract), FIRST(id), FIRST(title) FROM projects WHERE project_abstract NOT LIKE '%Keine Zusammenfassung%' GROUP BY project_abstract LIMIT 100;''')
+traindata = DataPreprocessor('''SELECT FIRST(project_abstract), FIRST(id), FIRST(title) FROM projects WHERE project_abstract NOT LIKE '%Keine Zusammenfassung%' GROUP BY project_abstract LIMIT 500;''')
+mfndata = DataPreprocessor('''SELECT abstract, id, title FROM project_view WHERE institution_id = 13232 AND abstract NOT LIKE '%Zusammenfassung%';''')
 
-
-# In[10]:
-
-
-mfndata = DataPreprocessor('''SELECT summary, id, titelprojekt FROM mfnprojects WHERE summary NOT LIKE '%Zusammenfassung%';''')
-
-
-# ## Data
-# Firstly we are going to have a look at the type of texts we have:
-
-# In[4]:
 
 
 # ## Document Embedding
@@ -172,7 +161,7 @@ mfndata = DataPreprocessor('''SELECT summary, id, titelprojekt FROM mfnprojects 
 # *Summary*:
 # This technique vectorizes a corpus, e.g. a collection of documents, by counting all appearences of words in the corpus and computing the tf-idf measure for each document, word pair.
 
-# In[ ]:
+# In[19]:
 
 
 class TfidfModelExtended(TfidfModel):
@@ -182,7 +171,7 @@ class TfidfModelExtended(TfidfModel):
         return [dct.get(entry) for entry in np.argpartition(np.asarray(vector).ravel(), -topn)[-topn:]]
 
 
-# In[ ]:
+# In[21]:
 
 
 dct = Dictionary(doc.words for doc in traindata)  # fit dictionary')
@@ -190,7 +179,7 @@ traincorpus = [dct.doc2bow(doc.words) for doc in traindata]  # convert corpus to
 tfidf_model = TfidfModelExtended(traincorpus)  # fit model')
 
 
-# In[ ]:
+# In[22]:
 
 
 mfncorpus = [dct.doc2bow(doc.words) for doc in mfndata]  # convert corpus to BoW format
@@ -201,7 +190,7 @@ docs_vectorized_tfidf = corpus2csc(tfidf_model[mfncorpus]).T
 # *Summary*:
 # This technique vectorizes a corpus, e.g. a collection of documents, by counting all appearences of words in the corpus and computing the tf-idf measure for each document, word pair.
 
-# In[ ]:
+# In[23]:
 
 
 class Doc2VecExtended(Doc2Vec):
@@ -209,7 +198,7 @@ class Doc2VecExtended(Doc2Vec):
         return [word for word, prob in self.wv.similar_by_vector(vector, topn=topn)]
 
 
-# In[ ]:
+# In[24]:
 
 
 print('Doc2Vec setup and vocabulary building:')
@@ -218,7 +207,7 @@ print('Doc2Vec training:')
 doc2vec_model.train(corpus_file=traindata.filepath, total_words=dct.num_pos, total_examples=doc2vec_model.corpus_count, epochs=doc2vec_model.epochs)
 
 
-# In[ ]:
+# In[25]:
 
 
 docs_vectorized_doc2vec = np.array([doc2vec_model.infer_vector(doc.words) for doc in mfndata])
@@ -230,7 +219,7 @@ docs_vectorized_doc2vec = np.array([doc2vec_model.infer_vector(doc.words) for do
 # *Summary*:
 # The LSA transforms an corpus from its word space given by the tf-idf matrice into its semantic space. In this semantic space the dimensions denote topics in the corpus and every document vector is a linear combination of all the implicitly extracted topics.
 
-# In[ ]:
+# In[26]:
 
 
 def LSA(tfs,num_topics=40):
@@ -241,7 +230,7 @@ def LSA(tfs,num_topics=40):
 # ## Autoencoder
 # Summary: **Coming soon**
 
-# In[ ]:
+# In[27]:
 
 
 from keras.layers import Input, Dense
@@ -273,7 +262,7 @@ def create_autoencoder(input_dim, encoding_dim=50):
     return autoencoder, encoder, decoder
 
 
-# In[ ]:
+# In[30]:
 
 
 input_train_doc2vec = normalize(doc2vec_model.docvecs.vectors_docs)
@@ -287,12 +276,15 @@ history = autoencoder_doc2vec.fit(input_train_doc2vec, input_train_doc2vec,
                 verbose=0)
 
 
+# In[31]:
+
+
 # ## Clustering
 
 # ### K-Means
 # Summary: Given a clustering the LDA can be used to find a projection into a lower dimensional space which maximizes inter-class variance and minimizes intra-class variance. This leads to neater cluster, but is grounded in the hypotheses that the clusters have some real semantic meaning. Otherwise it may enforce preexisting biases.
 
-# In[ ]:
+# In[32]:
 
 
 def clusterNumberHeuristic(tfs):
@@ -305,7 +297,7 @@ def clusterkm(tfs_reduced, num_topics=10):
 
 # ### Agglomerative Clustering
 
-# In[17]:
+# In[33]:
 
 
 ind = triu_indices(docs_vectorized_doc2vec.shape[0], 1)
@@ -326,7 +318,9 @@ with Pool(cpu_count()) as p:
 wmds = symmetrize(wmds)
 euds = symmetrize(euds)
 
-# In[19]:
+
+
+# In[35]:
 
 
 def clusterag(tfs_reduced, num_clusters=5):
@@ -340,7 +334,7 @@ def clusterag(tfs_reduced, num_clusters=5):
 # *Summary*:
 # Given a clustering the LDA can be used to find a projection into a lower dimensional space which maximizes inter-class variance and minimizes intra-class variance. This leads to neater cluster, but is grounded in the hypotheses that the clusters have some real semantic meaning. Otherwise it may enforce preexisting biases.
 
-# In[ ]:
+# In[36]:
 
 
 def dimReductionLDA(tfs_reduced, clusters, targetDim=2):
@@ -355,7 +349,7 @@ def dimReductionLDA(tfs_reduced, clusters, targetDim=2):
 # 
 # *In-depth explanation*:
 
-# In[ ]:
+# In[37]:
 
 
 def dimReductiontSNE(tfs_reduced, perplexity=30, learning_rate=100, targetDim=2):
@@ -366,7 +360,7 @@ def dimReductiontSNE(tfs_reduced, perplexity=30, learning_rate=100, targetDim=2)
 
 # # Linearize results into a grid
 
-# In[ ]:
+# In[38]:
 
 
 def mapToSpaceSampling(points):
@@ -380,7 +374,7 @@ def mapToSpaceSampling(points):
     return grid[row_ind_lapjv]
 
 
-# In[ ]:
+# In[39]:
 
 
 def computeClusterTopography(points, values, width, height, interpolation='linear'):
@@ -390,6 +384,12 @@ def computeClusterTopography(points, values, width, height, interpolation='linea
 
 
 # In[ ]:
+
+
+
+
+
+# In[40]:
 
 
 def compute(tfs, emb_model, targetDim, dimreduction, clustering, embedding, num_topics, num_clusters, perplexity, learning_rate, error, interpolation, viz, width, height):
@@ -435,3 +435,4 @@ def compute(tfs, emb_model, targetDim, dimreduction, clustering, embedding, num_
     interpolated_topography = computeClusterTopography(tfs_embedded if viz == 'scatter' else tfs_mapped, silhouette_samples(tfs_reduced, clusters.labels_), width, height, interpolation)
     #interpolated_topography = np.array([1])*len(interpolated_topography)
     return tfs_reduced, clusters, tfs_embedded, tfs_mapped, cluster_words, top_words, similarity_to_cluster_centers, interpolated_topography, cm
+

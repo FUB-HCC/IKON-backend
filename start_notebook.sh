@@ -97,9 +97,9 @@ finish()
 {
     if [ "$_arg_gpu" = on ];
 	then
-	    CURRENT_UID=$(id -u):$(id -g)  docker-compose -f docker-compose.yml -f docker-compose.notebook.yml  -f docker-compose.gpu.yml stop notebook postgres
-	else
-	    CURRENT_UID=$(id -u):$(id -g)  docker-compose -f docker-compose.yml -f docker-compose.notebook.yml  stop notebook postgres
+	    CURRENT_UID=$(id -u):$(id -g)  docker-compose -f docker-compose.yml -f docker-compose.notebook.yml  -f docker-compose.gpu.yml stop notebook postgres dal mwc
+	else 
+	    CURRENT_UID=$(id -u):$(id -g)  docker-compose -f docker-compose.yml -f docker-compose.notebook.yml  stop notebook postgres dal mwc
 	fi 
     exit
 }
@@ -108,9 +108,9 @@ trap finish SIGINT
 
 if [ "$_arg_gpu" = on ];
 then
-    CURRENT_UID=$(id -u):$(id -g) docker-compose -f docker-compose.yml -f docker-compose.notebook.yml -f docker-compose.gpu.yml up --build -d notebook postgres
+    CURRENT_UID=$(id -u):$(id -g) docker-compose -f docker-compose.yml -f docker-compose.notebook.yml -f docker-compose.gpu.yml up --build -d notebook postgres dal mwc
 else
-    CURRENT_UID=$(id -u):$(id -g) docker-compose -f docker-compose.yml -f docker-compose.notebook.yml up --build -d notebook postgres
+    CURRENT_UID=$(id -u):$(id -g) docker-compose -f docker-compose.yml -f docker-compose.notebook.yml up --build -d notebook postgres dal mwc
 fi
 
 time=$(date +"%s")

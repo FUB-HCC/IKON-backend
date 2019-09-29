@@ -1,4 +1,4 @@
-#from nlp_pipeline import compute
+from nlp_pipeline import *
 
 
 

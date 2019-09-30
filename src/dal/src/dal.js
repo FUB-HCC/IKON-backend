@@ -45,7 +45,9 @@ const queries = {
   insertGeolocation: fs.readFileSync('./src/sql/insertGeolocation.sql', 'utf8').trim(),
   insertMfNProject: fs.readFileSync('./src/sql/insertMfNProject.sql', 'utf-8').trim(),
   insertProject: fs.readFileSync('./src/sql/insertProject.sql', 'utf-8').trim(),
-  insertKnowledgeTransferActivities: fs.readFileSync('./src/sql/insertKnowledgeTransferActivities.sql', 'utf8').trim(),
+  insertTargetGroup: fs.readFileSync('./src/sql/insertTargetGroup.sql', 'utf-8').trim(),
+  insertKnowledgeTransferActivity: fs.readFileSync('./src/sql/insertKnowledgeTransferActivity.sql', 'utf8').trim(),
+  insertKnowledgeTransferActivityTargetGroup: fs.readFileSync('./src/sql/insertKnowledgeTransferActivityTargetGroup.sql', 'utf8').trim(),
 };
 
 // Configure router

@@ -81,11 +81,11 @@ COPY formats(type) FROM '/dump_data/project_input/WTA-Formate.csv' DELIMITER ','
 --- Create targetgroup table  and load data from a csv file
 
 CREATE TABLE IF NOT EXISTS targetgroups (
-  id SERIAL PRIMARY KEY ,
-  type TEXT NOT NULL
+  id SERIAL PRIMARY KEY,
+  type TEXT UNIQUE NOT NULL
 );
 
-COPY targetgroups(type) FROM '/dump_data/project_input/WTA-Zielgruppen.csv' DELIMITER ',' CSV HEADER;
+-- COPY targetgroups(type) FROM '/dump_data/project_input/WTA-Zielgruppen.csv' DELIMITER ',' CSV HEADER;
 
 --------------------------------------------------------------------------------------------------------------------
 --- Create project inheritance hierarchy and copy DFG projects via temporary tables (TODO: Is there a better way?)

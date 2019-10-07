@@ -64,12 +64,18 @@ DROP TABLE peopleTemp;
 --------------------------------------------------------------------------------------------------------------------
 --- Create format table  and load data from a csv file
 
+/*
+
+Sadly, the MfN doesn't provide a structured set of formats
+
 CREATE TABLE IF NOT EXISTS formats (
   id SERIAL PRIMARY KEY ,
   type TEXT NOT NULL
 );
 
 COPY formats(type) FROM '/dump_data/project_input/WTA-Formate.csv' DELIMITER ',' CSV HEADER;
+
+*/
 
 --------------------------------------------------------------------------------------------------------------------
 --- Create targetgroup table  and load data from a csv file
@@ -121,12 +127,23 @@ CREATE TABLE IF NOT EXISTS MFNProjects (
 );
 
 CREATE TABLE IF NOT EXISTS ktas (
-  id INTEGER PRIMARY KEY REFERENCES projects(id),
+  id INTEGER PRIMARY KEY,
   external_initiative BOOLEAN NOT NULL ,
-  format INTEGER NOT NULL REFERENCES formats(id),
+  format TEXT,
   social_goals TEXT,
   field_of_action TEXT,
-  goal TEXT NOT NULL
+  goal TEXT NOT NULL,
+  project_id INTEGER REFERENCES projects(id)
+);
+
+CREATE TABLE IF NOT EXISTS Infrastructure (
+    name VARCHAR PRIMARY KEY,
+    description TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Collections (
+    name VARCHAR PRIMARY KEY,
+    description TEXT
 );
 
 CREATE TABLE IF NOT EXISTS projectsTemp (

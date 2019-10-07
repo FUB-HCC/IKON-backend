@@ -9,8 +9,9 @@ const https = require('https');
 const { Pool } = require('pg');
 
 // custom imports
-const { initVia } = require('./mfn.js');
+const { initProjects } = require('./projects.js');
 const { initGeolocations } = require('./geocode.js');
+const { initKnowledgeTransferActivities } = require('./knowledgeTransferActivities.js');
 
 // connect to database
 const pool = new Pool({
@@ -44,6 +45,7 @@ const queries = {
   insertGeolocation: fs.readFileSync('./src/sql/insertGeolocation.sql', 'utf8').trim(),
   insertMfNProject: fs.readFileSync('./src/sql/insertMfNProject.sql', 'utf-8').trim(),
   insertProject: fs.readFileSync('./src/sql/insertProject.sql', 'utf-8').trim(),
+  insertKnowledgeTransferActivities: fs.readFileSync('./src/sql/insertKnowledgeTransferActivities.sql', 'utf8').trim(),
 };
 
 // Configure router
@@ -110,7 +112,7 @@ router.patch('/institutions', async (req, res) => {
 
 router.patch('/projects', async (req, res) => {
   try {
-    initVia(pool, queries);
+    initProjects(pool, queries);
     res.status(200).send();
   } catch (err) {
     res.status(500).send(err);
@@ -119,7 +121,7 @@ router.patch('/projects', async (req, res) => {
 
 router.patch('/knowledgeTransferActivities', async (req, res) => {
   try {
-    // TODO insert kta in DB
+    initKnowledgeTransferActivities(pool, queries);
     res.status(200).send();
   } catch (err) {
     res.status(500).send(err);

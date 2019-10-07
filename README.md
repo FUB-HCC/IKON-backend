@@ -33,6 +33,9 @@ Insert data from MfN VIA (see [API documentation](https://fub-hcc.github.io/IKON
 ```
 curl -X PATCH "https://localhost:5433/projects"
 curl -X PATCH "https://localhost:5433/knowledgeTransferActivities"
+```
+Insert geolocations of institutions from [nominatim.openstreetmap.org](http://nominatim.openstreetmap.org) (can take hours until completion):
+```
 curl -X PATCH "https://localhost:5433/institutions"
 ```
 #### Running the notebook

@@ -40,8 +40,8 @@ print_help()
 {
 	printf '%s\n' "The general script's help msg"
 	printf 'Usage: %s [-n|--(no-)notebook] [-g|--(no-)gpu] [-h|--help]\n' "$0"
-	printf '\t%s\n' "-n, --notebook, --no-notebook: boolean optional argument help msg (off by default)"
-	printf '\t%s\n' "-g, --gpu, --no-gpu: boolean optional argument help msg (off by default)"
+	printf '\t%s\n' "-n, --notebook, --no-notebook: Start the NLPNotebook to checkout the Topicextraction pipeline"
+	printf '\t%s\n' "-g, --gpu, --no-gpu: Start the NLPNotebook using a GPU"
 	printf '\t%s\n' "-h, --help: Prints help"
 }
 

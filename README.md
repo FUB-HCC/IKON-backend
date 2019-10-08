@@ -33,8 +33,15 @@ Insert data from MfN VIA (see [API documentation](https://fub-hcc.github.io/IKON
 ```
 curl -X PATCH "https://localhost:5433/projects"
 curl -X PATCH "https://localhost:5433/knowledgeTransferActivities"
+```
+Insert geolocations of institutions from [nominatim.openstreetmap.org](http://nominatim.openstreetmap.org) (can take hours until completion):
+```
 curl -X PATCH "https://localhost:5433/institutions"
 ```
+
+First check: 
+Run queries from [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html)
+
 #### Running the notebook
 
 If you want to explore the topic extraction pipeline, you can execute the bash script in the root folder with or without the ```--gpu``` flag. If you want to use the GPU, you have to install [Nvidia-Docker2](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)) as well and set the nvidia runtime as your default in your docker daemon config. (See [this](https://stackoverflow.com/questions/47465696/how-do-i-specify-nvidia-runtime-from-docker-compose-yml)).

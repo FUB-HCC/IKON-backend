@@ -33,7 +33,7 @@ const getKnowledgeTransferActivities = async () => {
   return result.data || [];
 };
 
-exports.initKnowledgeTransferActivities = async (pool, { insertKnowledgeTransferActivities }) => {
+exports.initKnowledgeTransferActivities = async (pool, { insertTargetGroup, insertKnowledgeTransferActivity, insertKnowledgeTransferActivityTargetGroup }) => {
   try {
     let i = 0;
     const ktas = await getKnowledgeTransferActivities(); // eslint-disable-line no-await-in-loop
@@ -45,9 +45,21 @@ exports.initKnowledgeTransferActivities = async (pool, { insertKnowledgeTransfer
       if (k.ExternalInitiative === 'f') {
         externalInternal = false;
       }
-      pool.query(insertKnowledgeTransferActivities, [
+// eslint-disable-next-line no-restricted-syntax
+      for (const type of Object.values(kta.Zielgruppe)) {
+
+        pool.query(insertTargetGroup, [
+          type,
+        ]);
+
+        pool.query(insertKnowledgeTransferActivityTargetGroup, [
+          i, type,
+        ]);
+      }
+
+      pool.query(insertKnowledgeTransferActivity, [
         // eslint-disable-next-line no-plusplus
-        ++i, externalInternal, k.Format, null, k.Handlungsfeld, k.Ziel, k.Drittmittelprojekt,
+        i++, externalInternal, k.Format, null, k.Handlungsfeld, k.Ziel, k.Drittmittelprojekt,
       ]);
     }
   } catch (e) {

@@ -65,7 +65,8 @@ assets/ssl/server.key
 assets/ssl/server.crt
 
 #secrets
-assets/config/secrets.json
+assets/secrets/ikoncode_secrets
+assets/secrets/postgres_password
 
 #data
 assets/data/data_augmentation/institutions.csv

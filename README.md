@@ -23,12 +23,17 @@ In order to do that navigate to the folder where you want to save the project an
 ```
 git clone --recurse-submodules -j8 https://github.com/FUB-HCC/IKON-backend.git
 ```
-Afterwards you need to either generate new SSL/TLS certificates for development or paste your own one in /assets/ssl/
 Then proceed by building and running the containers:
 ```
 cd IKON-backend/
-docker-compose up --build
+bash ./start
 ```
+
+In order to discover all possible options run
+```
+bash ./start -h
+```
+
 Insert data from MfN VIA (see [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html#doc-general-notes)):
 ```
 curl -X PATCH "https://localhost:5433/projects"
@@ -46,7 +51,7 @@ Run queries from [API documentation](https://fub-hcc.github.io/IKON/docs/dal.htm
 
 If you want to explore the topic extraction pipeline, you can execute the bash script in the root folder with or without the ```--gpu``` flag. If you want to use the GPU, you have to install [Nvidia-Docker2](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)) as well and set the nvidia runtime as your default in your docker daemon config. (See [this](https://stackoverflow.com/questions/47465696/how-do-i-specify-nvidia-runtime-from-docker-compose-yml)).
 ```
-bash ./start_notebook [--gpu]
+bash ./start --notebook [--gpu]
 ```
 
 ### Coding style

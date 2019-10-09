@@ -6,8 +6,6 @@ USER $UID
 ENV PIPENV_VENV_IN_PROJECT="enabled"
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH="/.local/bin:${HOME}/.local/bin:/root/.local/bin:${PATH}"
-ADD https://dl.google.com/linux/linux_signing_key.pub .
-RUN apt-key add linux_signing_key.pub
 
 RUN apt-get clean
 RUN apt-get update 
@@ -24,14 +22,5 @@ RUN pipenv run python -m ipykernel install --user --name=ikon
 RUN jupyter kernelspec install /root/.local/share/jupyter/kernels/ikon
 RUN pipenv run python -m spacy download de
 
-# Download orca AppImage, extract it, and make it executable under xvfb
-ADD https://github.com/plotly/orca/releases/download/v1.2.1/orca-1.2.1-x86_64.AppImage /tf
-RUN chmod 777 /tf/orca-1.2.1-x86_64.AppImage 
-
-# To avoid the need for FUSE, extract the AppImage into a directory (name squashfs-root by default)
-RUN cd /tf && /tf/orca-1.2.1-x86_64.AppImage --appimage-extract
-RUN printf '#!/bin/bash \nxvfb-run --auto-servernum --server-args "-screen 0 640x480x24" /tf/squashfs-root/app/orca "$@"' > /usr/bin/orca
-RUN chmod 777 /usr/bin/orca
-RUN chmod -R 777 /tf/squashfs-root/
 
 

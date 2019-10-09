@@ -65,23 +65,43 @@ services:
       context: ./src/topicextraction/
       dockerfile: Dockerfile
     ports:
-      - "5435:8082"
+      - "80:80"
     environment:
       SSL_KEY: /run/secrets/ssl_key
       SSL_CRT: /run/secrets/ssl_crt
+      PG_PASSWORD: /run/secrets/postgres_password
     secrets:
       - ssl_key
       - ssl_crt
+      - postgres_password
+
+  notebook:
+    container_name: NLPNotebook
+    build:
+      context: .
+      dockerfile: ./src/topicextraction/nlp/Dockerfile.cpu
+    volumes:
+      - ./src/topicextraction/nlp:/tf/notebooks
+      - ./assets/data/nlp:/tf/data
+    ports:
+      - "5436:8888"
+    user: ${CURRENT_UID}
+    depends_on:
+      - postgres
+    environment:
+      PG_PASSWORD: /run/secrets/postgres_password
+    secrets:
+      - postgres_password
 
 secrets:
   postgres_password:
-    file: ./assets/IKON-backend-config/secrets/postgres_password
+    file: ./assets/IKON-backend-config/postgres_password
   ssl_crt:
     file: ./assets/ssl/server.crt
   ssl_key:
     file: ./assets/ssl/server.key
   ikoncode_secrets:
-    file: ./assets/IKON-backend-config/secrets/ikoncode_secrets
+    file: ./assets/IKON-backend-config/ikoncode_secrets
 
 volumes:
     ikon_database:

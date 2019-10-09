@@ -65,7 +65,7 @@ assets/ssl/server.key
 assets/ssl/server.crt
 
 #secrets
-assets/config/secrets.json
+assets/secrets/
 
 #data
 assets/data/data_augmentation/institutions.csv

@@ -114,7 +114,17 @@ shopt -s nullglob dotglob
 if [ ! ${#(./assets/IKON-backend-config/*)[@]} -gt 0 ];
 then
 	pwgen 200 1 > ./assets/IKON-backend-config/postgres_password
-	pwgen 200 1 > ./assets/IKON-backend-config/ikoncode_secrets
+	echo "{
+      \"protocol\": \"https\",
+      \"server\": \"via.naturkundemuseum.berlin\",
+      \"path\": \"/wiki\",
+      \"debug\": true,
+      \"username\": \"viz\",
+      \"password\": \"insert_password\",
+      \"userAgent\": \"IKON\",
+      \"domain\": \"MUSEUM\",
+      \"concurrency\": 5
+}" > ./assets/IKON-backend-config/ikoncode_secrets
 fi
 
 

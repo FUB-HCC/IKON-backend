@@ -111,7 +111,7 @@ then
 fi
 
 shopt -s nullglob dotglob
-if [ ! ${#(./assets/IKON-backend-config/*)[@]} -gt 0 ];
+if [ ! -f ./assets/secrets/ikoncode_secrets ] || [ ! -f ./assets/secrets/postgres_password ];
 then
 	pwgen 200 1 > ./assets/IKON-backend-config/postgres_password
 	echo "{

@@ -33,13 +33,13 @@ const getProjects = async () => {
   return result.data || [];
 };
 
-exports.initProjects = async (pool, { insertMfNProject, insertProject }) => {
+exports.initProjects = async (pool, { insertMfNProject, insertProject , insertProjectInstitutions }) => {
   try {
     const projects = await getProjects(); // eslint-disable-line no-await-in-loop
-    console.log(projects);
+    //console.log(projects);
 
     // eslint-disable-next-line no-restricted-syntax
-    for (const [i, project] of projects.entries()) {
+    for (const [i,project] of projects.entries()) {
       const p = arrayCleaner(project);
 
       if (p.project_summary != null) {
@@ -54,9 +54,17 @@ exports.initProjects = async (pool, { insertMfNProject, insertProject }) => {
             p.title, p.TitelEN, p.WeitereInformationen, p.description,
           ]);
         });
-        pool.query(insertProjectInstitutions, [p.Identifier,p.HatKooperationspartner] );
-      }
-    }
+        if (p.HatKooperationspartner != null){
+          pool.query(insertProjectInstitutions, [p.Identifier, p.HatKooperationspartner] );
+          // for (const coop of Object.values(p.HatKooperationspartner)) {
+          //
+          //   console.log(p.HatKooperationspartner);
+          // }
+
+        }
+          }
+        }
+
   } catch (e) {
     console.log(e);
   }

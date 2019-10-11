@@ -65,7 +65,7 @@ services:
       context: ./src/topicextraction/
       dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "81:80"
     environment:
       SSL_KEY: /run/secrets/ssl_key
       SSL_CRT: /run/secrets/ssl_crt
@@ -95,13 +95,13 @@ services:
 
 secrets:
   postgres_password:
-    file: ./assets/IKON-backend-config/postgres_password
+    file: ./assets/secrets/postgres_password
   ssl_crt:
     file: ./assets/ssl/server.crt
   ssl_key:
     file: ./assets/ssl/server.key
   ikoncode_secrets:
-    file: ./assets/IKON-backend-config/ikoncode_secrets
+    file: ./assets/secrets/ikoncode_secrets
 
 volumes:
     ikon_database:

@@ -27,13 +27,14 @@ const fetchAllProjects = async (login) => {
   try {
     const params1 = {
       action: 'ask',
-      query: '[[Category:Drittmittelprojekt]][[RedaktionelleBeschreibung::+]][[Status::Freigegeben]]|?Identifier|limit=100000',
+      query: '[[Category:Drittmittelprojekt]][[RedaktionelleBeschreibung::!%27%27]]|[[Status::Freigegeben]]|?Identifier|limit=100000',
     };
     projects = await ikoncode.api.callAsync(params1);
     console.log(Object.keys(projects[2].query.results));
   } catch (e) {
     console.log(e);
   }
+  //'[[Category:Drittmittelprojekt]][[RedaktionelleBeschreibung::+]][[Status::Freigegeben]]|?Identifier|limit=100000',
 
   const results = [];
   // eslint-disable-next-line no-restricted-syntax
@@ -158,5 +159,5 @@ exports.getAllInfrastructure = async (loginPromise) => {
 };
 
 exports.parseMediaWikiResponse = (response) => {
- 
+
 };

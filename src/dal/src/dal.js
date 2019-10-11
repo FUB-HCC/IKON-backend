@@ -72,7 +72,7 @@ router.get('/projects', async (req, res) => {
 
   let rows = '';
   try {
-    rows = (await pool.query(queries.getAllProjects, [institution, offset, limit])).rows;
+    rows = (await pool.query(queries.getAllProjects, [institution,offset, limit])).rows;
     res.status(200).json(rows);
   } catch (err) {
     console.log(err);

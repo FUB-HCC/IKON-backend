@@ -111,20 +111,20 @@ then
 fi
 
 shopt -s nullglob dotglob
-if [ ! ${#(./assets/IKON-backend-config/*)[@]} -gt 0 ];
+if [ ! -f ./assets/secrets/ikoncode_secrets ] || [ ! -f ./assets/secrets/postgres_password ];
 then
-	pwgen 200 1 > ./assets/IKON-backend-config/postgres_password
+	pwgen 200 1 > ./assets/secrets/postgres_password
 	echo "{
       \"protocol\": \"https\",
       \"server\": \"via.naturkundemuseum.berlin\",
       \"path\": \"/wiki\",
       \"debug\": true,
       \"username\": \"viz\",
-      \"password\": \"insert_password\",
+      \"password\": \"5bgn4m17p2e01n8m9kkhh05j968o0o0m\",
       \"userAgent\": \"IKON\",
       \"domain\": \"MUSEUM\",
       \"concurrency\": 5
-}" > ./assets/IKON-backend-config/ikoncode_secrets
+}" > ./assets/secrets/ikoncode_secrets
 fi
 
 

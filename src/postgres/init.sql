@@ -240,6 +240,8 @@ CREATE TABLE IF NOT EXISTS projectsInstitutions (
   relation_type TEXT
 );
 
+--create unique index indexPS on projectsInstitutions (project_id, institution_id,relation_type );
+
 --COPY projectsInstitutions FROM '/dump_data/gepris/project_institution_relations.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS institutionsProjects (

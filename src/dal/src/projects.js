@@ -9,7 +9,7 @@ function arrayCleaner(array) {
       if (array[key].length === 0) {
         cleanArray[key] = null;
       } else {
-        cleanArray[key] = array[key].pop();
+        cleanArray[key] = array[key][array[key].length-1];
       }
     }
   }
@@ -54,14 +54,12 @@ exports.initProjects = async (pool, { insertMfNProject, insertProject , insertPr
             p.title, p.TitelEN, p.WeitereInformationen, p.description,
           ]);
         });
-        if (p.HatKooperationspartner != null){
-          pool.query(insertProjectInstitutions, [p.Identifier, p.HatKooperationspartner] );
-          // for (const coop of Object.values(p.HatKooperationspartner)) {
-          //
-          //   console.log(p.HatKooperationspartner);
-          // }
-
-        }
+        if(typeof project.HatKooperationspartner != "undefined"){
+          for (const coop of Object.values(project.HatKooperationspartner)) {
+                  pool.query(insertProjectInstitutions, [p.Identifier, coop] );
+                  console.log(coop);
+                }
+              }
           }
         }
 

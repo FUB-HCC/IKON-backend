@@ -15,6 +15,9 @@ You will need [Docker](https://docs.docker.com/install/), [Docker Compose](https
 
 #### Running all containers
 
+Important note: 
+The project generates SSL/TLS certificates and passwords if none are found in the subrepo containing the secrets. If the VIA is going to accessed, insert the real password into ```ikoncode_secrets```.
+
 A step by step series of examples that tell you how to get a development env running
 
 First you need to clone the repository.
@@ -26,29 +29,26 @@ git clone --recurse-submodules -j8 https://github.com/FUB-HCC/IKON-backend.git
 Then proceed by building and running the containers:
 ```
 cd IKON-backend/
-bash ./start
+bash ./start.sh
 ```
 
 In order to discover all possible options run
 ```
-bash ./start -h
+bash ./start.sh -h
 ```
 
 Insert data from MfN VIA (see [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html#doc-general-notes)):
 ```
-curl -X PATCH "https://localhost:5433/projects"
-curl -X PATCH "https://localhost:5433/knowledgeTransferActivities"
+curl -X PATCH "https://localhost:5433/projects -k"
+curl -X PATCH "https://localhost:5433/knowledgeTransferActivities -k"
 ```
 Insert geolocations of institutions from [nominatim.openstreetmap.org](http://nominatim.openstreetmap.org) (can take hours until completion):
 ```
-curl -X PATCH "https://localhost:5433/institutions"
+curl -X PATCH "https://localhost:5433/institutions -k"
 ```
 
 First check: 
 Run queries from [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html)
-
-Important note: 
-The project generates SSL/TLS certificates and passwords if none are found in the subrepo containing the secrets. If the VIA is going to accessed, insert the real password into ```ikoncode-secrets```.
 
 #### Running the notebook
 

@@ -31,6 +31,8 @@ Then proceed by building and running the containers:
 cd IKON-backend/
 bash ./start.sh
 ```
+Important note: 
+The project generates SSL/TLS certificates and passwords if none are found in the subrepo containing the secrets. If the VIA is going to accessed, insert the real password into ```ikoncode-secrets```.
 
 In order to discover all possible options run
 ```

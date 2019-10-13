@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: ./src/controller/Dockerfile
     ports:
-      - "80:80"
+      - "80:443"
     secrets:
       - ssl_key
       - ssl_crt
@@ -74,7 +74,7 @@ services:
       context: ./src/topicextraction/
       dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "5435:80"
     environment:
       SSL_KEY: /run/secrets/ssl_key
       SSL_CRT: /run/secrets/ssl_crt

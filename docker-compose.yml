@@ -1,6 +1,17 @@
 version: '3.1'
 services:
 
+  nginx:
+    container_name: Controller
+    build:
+      context: .
+      dockerfile: ./src/controller/Dockerfile
+    ports:
+      - "80:443"
+    secrets:
+      - ssl_key
+      - ssl_crt
+
   postgres:
     container_name: Postgres
     build:
@@ -11,10 +22,8 @@ services:
       - ./assets/data/gepris:/dump_data/gepris
       - ./assets/data/data_augmentation/:/dump_data/data_augmentation
       - ./assets/data/project_input:/dump_data/project_input
-      #- /etc/passwd:/etc/passwd:ro
     ports:
       - "5432:5432"
-    #user: ${CURRENT_UID}:${CURRENT_UID}
     environment:
       POSTGRES_USER: ikonuser
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
@@ -65,7 +74,11 @@ services:
       context: ./src/topicextraction/
       dockerfile: Dockerfile
     ports:
+<<<<<<< HEAD
       - "81:80"
+=======
+      - "5435:80"
+>>>>>>> master
     environment:
       SSL_KEY: /run/secrets/ssl_key
       SSL_CRT: /run/secrets/ssl_crt

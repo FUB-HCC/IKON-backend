@@ -6,7 +6,9 @@
   "directories": {
     "doc": "docs"
   },
-  "dependencies": {},
+  "dependencies": {
+    "build": "^0.1.4"
+  },
   "devDependencies": {
     "eslint": "5.16",
     "eslint-config-airbnb-base": "13.1.0",

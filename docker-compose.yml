@@ -74,11 +74,7 @@ services:
       context: ./src/topicextraction/
       dockerfile: Dockerfile
     ports:
-<<<<<<< HEAD
-      - "81:80"
-=======
       - "5435:80"
->>>>>>> master
     environment:
       SSL_KEY: /run/secrets/ssl_key
       SSL_CRT: /run/secrets/ssl_crt

@@ -44,6 +44,7 @@ const queries = {
   getConnectedInstitutions: fs.readFileSync('./src/sql/getConnectedInstitutions.sql', 'utf8').trim(),
   getKtasTargetGroups: fs.readFileSync('./src/sql/getKtasTargetGroups.sql', 'utf8').trim(),
   getTargetGroups: fs.readFileSync('./src/sql/getTargetGroups.sql', 'utf8').trim(),
+  insertProjectInstitutions: fs.readFileSync('./src/sql/insertProjectInstitutions.sql', 'utf8').trim(),
   insertGeolocation: fs.readFileSync('./src/sql/insertGeolocation.sql', 'utf8').trim(),
   insertMfNProject: fs.readFileSync('./src/sql/insertMfNProject.sql', 'utf-8').trim(),
   insertProject: fs.readFileSync('./src/sql/insertProject.sql', 'utf-8').trim(),
@@ -72,7 +73,7 @@ router.get('/projects', async (req, res) => {
 
   let rows = '';
   try {
-    rows = (await pool.query(queries.getAllProjects, [institution, offset, limit])).rows;
+    rows = (await pool.query(queries.getAllProjects, [institution,offset, limit])).rows;
     res.status(200).json(rows);
   } catch (err) {
     console.log(err);

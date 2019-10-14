@@ -240,14 +240,16 @@ CREATE TABLE IF NOT EXISTS projectsInstitutions (
   relation_type TEXT
 );
 
-COPY projectsInstitutions FROM '/dump_data/gepris/project_institution_relations.csv' DELIMITER ',' CSV HEADER;
+--create unique index indexPS on projectsInstitutions (project_id, institution_id,relation_type );
+
+--COPY projectsInstitutions FROM '/dump_data/gepris/project_institution_relations.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS institutionsProjects (
   institution_id INTEGER REFERENCES institutions(id),
   project_id INTEGER REFERENCES projects(id)
 );
 
-COPY institutionsProjects FROM '/dump_data/gepris/projects_listed_on_institution_detail_pages.csv' DELIMITER ',' CSV HEADER;
+--COPY institutionsProjects FROM '/dump_data/gepris/projects_listed_on_institution_detail_pages.csv' DELIMITER ',' CSV HEADER;
 
 INSERT INTO projectsInstitutions (project_id, institution_id, relation_type)
 SELECT project_id, institution_id, 'UNKNOWN'

@@ -120,7 +120,7 @@ then
       \"path\": \"/wiki\",
       \"debug\": true,
       \"username\": \"viz\",
-      \"password\": \"insert_password\",
+      \"password\": \"5bgn4m17p2e01n8m9kkhh05j968o0o0m\",
       \"userAgent\": \"IKON\",
       \"domain\": \"MUSEUM\",
       \"concurrency\": 5

@@ -454,15 +454,6 @@
             ],
             "version": "==1.0.7"
         },
-        "lapjv": {
-            "hashes": [
-                "sha256:19a9e517c8cf00cabf81ed8b03419c14d01dcc2071e1ea7c72ca9e69c44f6b11",
-                "sha256:27e0ba7631c834a151633ebf1d9b1b3c62bba30f13173a7aac1bc0fc65f690bd",
-                "sha256:e95d8b70e56e1c19509d92138660e53a19024c81170bebd40b075d9a93d3425d"
-            ],
-            "index": "pypi",
-            "version": "==1.3.1"
-        },
         "markdown": {
             "hashes": [
                 "sha256:2e50876bcdd74517e7b71f3e7a76102050edec255b3983403f1a63e7c8a41e7a",
@@ -1223,3 +1214,4 @@
     },
     "develop": {}
 }
+

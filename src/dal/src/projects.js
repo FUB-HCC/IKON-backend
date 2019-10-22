@@ -33,7 +33,7 @@ const getProjects = async () => {
   return result.data || [];
 };
 
-exports.initProjects = async (pool, { insertMfNProject, insertProject , insertProjectInstitutions }) => {
+exports.initProjects = async (pool, { insertMfNProject, insertProject , insertProjectInstitutions, insertInstitution }) => {
   try {
     const projects = await getProjects(); // eslint-disable-line no-await-in-loop
     //console.log(projects);
@@ -56,8 +56,8 @@ exports.initProjects = async (pool, { insertMfNProject, insertProject , insertPr
         });
         if(typeof project.HatKooperationspartner != "undefined"){
           for (const coop of Object.values(project.HatKooperationspartner)) {
-                  pool.query(insertProjectInstitutions, [p.Identifier, coop] );
-                  console.log(coop);
+                  pool.query(insertInstitution, [coop] );
+                  pool.query(insertProjectInstitutions, [p.Identifier, coop]);
                 }
               }
           }

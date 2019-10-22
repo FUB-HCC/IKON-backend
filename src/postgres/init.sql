@@ -2,8 +2,8 @@
 --- Create institution table  and load data from a csv file
 
 CREATE TABLE IF NOT EXISTS institutions (
-  id INTEGER PRIMARY KEY ,
-  name TEXT,
+  id SERIAL PRIMARY KEY ,
+  name TEXT UNIQUE,
   address TEXT,
   phone TEXT,
   fax TEXT,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS institutions (
   internet TEXT
 );
 
-COPY institutions FROM '/dump_data/gepris/extracted_institution_data.csv' DELIMITER ',' CSV HEADER;
+--COPY institutions FROM '/dump_data/gepris/extracted_institution_data.csv' DELIMITER ',' CSV HEADER;
 CREATE INDEX institutions_idx ON institutions (id);
 
 --------------------------------------------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS peopleTemp (
   institution_id INTEGER REFERENCES institutions(id)
 );
 
-COPY peopleTemp FROM '/dump_data/gepris/people_joined_with_institutions.csv' DELIMITER ',' CSV HEADER;
+--COPY peopleTemp FROM '/dump_data/gepris/people_joined_with_institutions.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS people (
   id INTEGER PRIMARY KEY ,
@@ -225,14 +225,14 @@ CREATE TABLE IF NOT EXISTS projectsCountries (
   country TEXT REFERENCES countryCodes(country)
 );
 
-COPY projectsCountries FROM '/dump_data/gepris/projects_international_connections.csv' DELIMITER ',' CSV HEADER;
+--COPY projectsCountries FROM '/dump_data/gepris/projects_international_connections.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projectsParticipatingSubjects (
   project_id INTEGER REFERENCES projects(id),
   subject TEXT NOT NULL
 );
 
-COPY projectsParticipatingSubjects FROM '/dump_data/gepris/project_ids_to_participating_subject_areas.csv' DELIMITER ',' CSV HEADER;
+--COPY projectsParticipatingSubjects FROM '/dump_data/gepris/project_ids_to_participating_subject_areas.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projectsInstitutions (
   project_id INTEGER REFERENCES projects(id),
@@ -263,14 +263,14 @@ CREATE TABLE IF NOT EXISTS projectsPeople (
   relation_type TEXT
 );
 
-COPY projectsPeople FROM '/dump_data/gepris/project_person_relations.csv' DELIMITER ',' CSV HEADER;
+--COPY projectsPeople FROM '/dump_data/gepris/project_person_relations.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projectsSubjects (
   project_id INTEGER REFERENCES projects(id),
   subject_area TEXT
 );
 
-COPY projectsSubjects FROM '/dump_data/gepris/project_ids_to_subject_areas.csv' DELIMITER ',' CSV HEADER;
+--COPY projectsSubjects FROM '/dump_data/gepris/project_ids_to_subject_areas.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS institutionsGeolocations (
   institution_id INTEGER REFERENCES institutions(id),

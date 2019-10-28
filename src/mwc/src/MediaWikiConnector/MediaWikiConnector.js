@@ -46,7 +46,7 @@ const fetchAllProjects = async (login) => {
     try {
       results.push(ikoncode.api.callAsync(params2));
     } catch (e) {
-      console.log(params2, e);
+      //console.log(params2, e);
     }
   }
   // for some reason this is necessary
@@ -67,10 +67,10 @@ const fetchAllKTAs = async (login) => {
   try {
     const params = {
       action: 'ask',
-      query: '[[Category:KnowledgeTransferActivity]]|?ExternalInitiative|?Format|?Goal|?SocialGoals|?FieldOfAction|?TargetGroup|?HatProject|limit=10000',
+      query: '[[Category:KnowledgeTransferActivity]]|?End|?Start|?ExternalInitiative|?Format|?Goal|?SocialGoals|?FieldOfAction|?TargetGroup|?HatProject|limit=10000',
     };
     KTAs = await ikoncode.api.callAsync(params);
-    console.log(Object.keys(KTAs[2].query.results));
+    //console.log(Object.keys(KTAs[2].query.results));
   } catch (e) {
     console.log(e);
   }
@@ -93,7 +93,7 @@ const fetchAllCollections = async (login) => {
       query: '[[Category:Sammlung]]|?BeschreibungDerSammlung|limit=10000',
     };
     collections = await ikoncode.api.callAsync(params);
-    console.log(Object.keys(collections[2].query.results));
+    //console.log(Object.keys(collections[2].query.results));
   } catch (e) {
     console.log(e);
   }
@@ -116,7 +116,7 @@ const fetchAllInfrastructure = async (login) => {
       query: '[[Category:Labor]]|?BeschreibungDerForschungsinfrastruktur|limit=10000',
     };
     infrastructure = await ikoncode.api.callAsync(params);
-    console.log(Object.keys(infrastructure[2].query.results));
+    //console.log(Object.keys(infrastructure[2].query.results));
   } catch (e) {
     console.log(e);
   }

@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS institutions (
 );
 
 --COPY institutions FROM '/dump_data/gepris/extracted_institution_data.csv' DELIMITER ',' CSV HEADER;
+COPY institutions FROM '/dump_data/gepris/neueAdressen.csv' DELIMITER ',' CSV HEADER;
 CREATE INDEX institutions_idx ON institutions (id);
 
 --------------------------------------------------------------------------------------------------------------------

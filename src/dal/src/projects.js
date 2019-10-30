@@ -33,7 +33,8 @@ const getProjects = async () => {
   return result.data || [];
 };
 
-exports.initProjects = async (pool, { insertMfNProject, insertProject , insertProjectInstitutions, insertInstitution }) => {
+exports.initProjects = async (pool, { insertMfNProject, insertProject , insertProjectInstitutions, insertInstitution, insertProjectsInfrastructure,
+insertProjectsCollections }) => {
   try {
     const projects = await getProjects(); // eslint-disable-line no-await-in-loop
     //console.log(projects);
@@ -58,10 +59,20 @@ exports.initProjects = async (pool, { insertMfNProject, insertProject , insertPr
           for (const coop of Object.values(project.HatKooperationspartner)) {
                   pool.query(insertInstitution, [coop] );
                   pool.query(insertProjectInstitutions, [p.Identifier, coop]);
-                }
-              }
           }
         }
+        if(typeof project.BenutztInfrastruktur != "undefined"){
+          for (const inf of Object.values(project.BenutztInfrastruktur)) {
+                  pool.query(insertProjectsInfrastructure, [p.Identifier, inf]);
+          }
+        }
+        if(typeof project.HatSammlungsbezug != "undefined"){
+          for (const col of Object.values(project.HatSammlungsbezug)) {
+                  pool.query(insertProjectsCollections, [p.Identifier, col]);
+          }
+        }
+      }
+    }
 
   } catch (e) {
     console.log(e);

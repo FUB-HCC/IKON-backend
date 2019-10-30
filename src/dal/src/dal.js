@@ -52,6 +52,10 @@ const queries = {
   insertTargetGroup: fs.readFileSync('./src/sql/insertTargetGroup.sql', 'utf-8').trim(),
   insertKnowledgeTransferActivity: fs.readFileSync('./src/sql/insertKnowledgeTransferActivity.sql', 'utf8').trim(),
   insertKnowledgeTransferActivityTargetGroup: fs.readFileSync('./src/sql/insertKnowledgeTransferActivityTargetGroup.sql', 'utf8').trim(),
+  insertProjectsInfrastructure: fs.readFileSync('./src/sql/insertProjectsInfrastructure.sql', 'utf-8').trim(),
+  insertProjectsCollections: fs.readFileSync('./src/sql/insertProjectsCollections.sql', 'utf-8').trim(),
+
+
 };
 
 // Configure router
@@ -122,6 +126,28 @@ router.get('/institutions', async (req, res) => {
   let rows = '';
   try {
     rows = (await pool.query(queries.getAllInstitutions,[])).rows;
+    res.status(200).json(rows);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+});
+
+router.get('/collections', async (req, res) => {
+  let rows = '';
+  try {
+    rows = (await pool.query(queries.getAllCollections, [])).rows;
+    res.status(200).json(rows);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+});
+
+router.get('/infrastructure', async (req, res) => {
+  let rows = '';
+  try {
+    rows = (await pool.query(queries.getAllInfrastructure, [])).rows;
     res.status(200).json(rows);
   } catch (err) {
     console.log(err);

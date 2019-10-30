@@ -127,6 +127,16 @@ CREATE TABLE IF NOT EXISTS MFNProjects (
   Zusammenfassung TEXT
 );
 
+CREATE TABLE IF NOT EXISTS ProjectsInfrastructure (
+    infrastructure VARCHAR,
+    project_id INTEGER REFERENCES Projects(id)
+);
+
+CREATE TABLE IF NOT EXISTS ProjectsCollections (
+    collection VARCHAR,
+    project_id INTEGER REFERENCES Projects(id)
+);
+
 CREATE TABLE IF NOT EXISTS ktas (
   id INTEGER PRIMARY KEY,
   external_initiative BOOLEAN NOT NULL ,

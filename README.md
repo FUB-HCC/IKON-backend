@@ -46,7 +46,7 @@ curl -X PATCH "https://localhost:5433/knowledgeTransferActivities" -k
 ```
 Insert geolocations of institutions from [nominatim.openstreetmap.org](http://nominatim.openstreetmap.org) (can take hours until completion):
 ```
-curl -X PATCH "https://localhost:5433/institutions -k"
+curl -X PATCH "https://localhost:5433/institutions" -k
 ```
 
 First check: 

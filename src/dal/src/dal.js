@@ -10,8 +10,11 @@ const { Pool } = require('pg');
 
 // custom imports
 const { initProjects } = require('./projects.js');
+const { initInfrastructure } = require('./infrastructure.js');
+const { initCollections } = require('./collections.js');
 const { initGeolocations } = require('./geocode.js');
 const { initKnowledgeTransferActivities } = require('./knowledgeTransferActivities.js');
+
 
 // connect to database
 const pool = new Pool({
@@ -38,8 +41,8 @@ const PORT = process.env.PORT || 8080;
 const queries = {
   getAllProjects: fs.readFileSync('./src/sql/getAllProjects.sql', 'utf8').trim(),
   getAllInstitutions: fs.readFileSync('./src/sql/getAllInstitutions.sql', 'utf8').trim(),
-  // getAllCollections: fs.readFileSync('./src/sql/getAllCollections.sql', 'utf8').trim(),
-  // getAllInfrastructure: fs.readFileSync('./src/sql/getAllInfrastructure.sql', 'utf8').trim(),
+  getAllCollections: fs.readFileSync('./src/sql/getAllCollections.sql', 'utf8').trim(),
+  getAllInfrastructure: fs.readFileSync('./src/sql/getAllInfrastructure.sql', 'utf8').trim(),
   getAllKnowledgeTransferActivities: fs.readFileSync('./src/sql/getAllKnowledgeTransferActivities.sql', 'utf8').trim(),
   getConnectedInstitutions: fs.readFileSync('./src/sql/getConnectedInstitutions.sql', 'utf8').trim(),
   getKtasTargetGroups: fs.readFileSync('./src/sql/getKtasTargetGroups.sql', 'utf8').trim(),
@@ -54,6 +57,8 @@ const queries = {
   insertKnowledgeTransferActivityTargetGroup: fs.readFileSync('./src/sql/insertKnowledgeTransferActivityTargetGroup.sql', 'utf8').trim(),
   insertProjectsInfrastructure: fs.readFileSync('./src/sql/insertProjectsInfrastructure.sql', 'utf-8').trim(),
   insertProjectsCollections: fs.readFileSync('./src/sql/insertProjectsCollections.sql', 'utf-8').trim(),
+  insertInfrastructure: fs.readFileSync('./src/sql/insertInfrastructure.sql', 'utf-8').trim(),
+  insertCollections: fs.readFileSync('./src/sql/insertCollections.sql', 'utf-8').trim(),
 
 
 };
@@ -133,9 +138,21 @@ router.get('/institutions', async (req, res) => {
   }
 });
 
+// router.get('/collections', async (req, res) => {
+//   let rows = '';
+//   try {
+//     rows = (await pool.query(queries.getAllCollections, [])).rows;
+//     res.status(200).json(rows);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).send(err);
+//   }
+// });
+
 router.get('/collections', async (req, res) => {
   let rows = '';
   try {
+    let promise = await initCollections(pool, queries);
     rows = (await pool.query(queries.getAllCollections, [])).rows;
     res.status(200).json(rows);
   } catch (err) {
@@ -147,12 +164,14 @@ router.get('/collections', async (req, res) => {
 router.get('/infrastructure', async (req, res) => {
   let rows = '';
   try {
+    let promise = initInfrastructure(pool, queries);
     rows = (await pool.query(queries.getAllInfrastructure, [])).rows;
     res.status(200).json(rows);
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
   }
+
 });
 
 router.patch('/institutions', async (req, res) => {

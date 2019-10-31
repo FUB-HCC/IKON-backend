@@ -68,7 +68,7 @@ exports.initKnowledgeTransferActivities = async (pool, { insertTargetGroup, inse
       //console.log(k["Endet am"].raw);
       ktaend = k["Endet am"].raw;
     }
-    console.log(ktaend, ktastart);
+    //console.log(ktaend, ktastart);
       pool.query(insertKnowledgeTransferActivity, [
         // eslint-disable-next-line no-plusplus
         i++, externalInternal, k.Format, null, k.Handlungsfeld, k.Ziel, k.Drittmittelprojekt, ktastart, ktaend

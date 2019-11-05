@@ -120,12 +120,19 @@ then
       \"path\": \"/wiki\",
       \"debug\": true,
       \"username\": \"viz\",
-      \"password\": \"5bgn4m17p2e01n8m9kkhh05j968o0o0m\",
+      \"password\": \"insert_password_here_but_do_not_insert_into_start_script!!!\",
       \"userAgent\": \"IKON\",
       \"domain\": \"MUSEUM\",
       \"concurrency\": 5
 }" > ./assets/secrets/ikoncode_secrets
 fi
+
+# check if all data tars are unpacked
+if [[ -n $(echo ./assets/data/gepris/*.tar.xz) ]]    # or [ -n "$(echo *.flac)" ]
+then 
+    tar xf ./assets/data/gepris/*.tar.xz -C ./assets/data/gepris/
+fi
+
 
 
 SERVICES="postgres dal mwc topicextraction nginx"
@@ -158,7 +165,7 @@ if [ "$_arg_notebook" = on ];
 then
     time=$(date +"%s")
     until docker logs --since $time NLPNotebook 2>&1 | grep -m 1 "127.0.0.1"; do sleep 5 ; done
-    token=$(docker logs --since $time NLPNotebook 2>&1 | grep '127.0.0.1' | grep -m 1 -oP 'token=\K(.*)')
+    token=$(docker logs NLPNotebook 2>&1 | grep '127.0.0.1' | grep -m 1 -oP 'token=\K(.*)')
     xdg-open http://localhost:5436/?token=$token
 fi
 

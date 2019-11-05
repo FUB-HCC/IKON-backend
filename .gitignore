@@ -63,6 +63,7 @@ typings/
 # ssl certificates
 assets/ssl/server.key
 assets/ssl/server.crt
+assets/ssl/server.csr
 
 #secrets
 assets/secrets/ikoncode_secrets

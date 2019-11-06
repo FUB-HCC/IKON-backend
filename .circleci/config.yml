@@ -26,4 +26,4 @@ jobs:
       - run:
           name: Start container and verify it's working
           command: |
-            docker-compose up -d --build
+            bash ./start.sh

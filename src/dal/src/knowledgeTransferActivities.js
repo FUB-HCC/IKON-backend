@@ -57,9 +57,21 @@ exports.initKnowledgeTransferActivities = async (pool, { insertTargetGroup, inse
         ]);
       }
 
+      let ktastart = null;
+      let ktaend = null;
+
+    if(typeof k["Gestartet am"] != "undefined" && k["Gestartet am"] != null) {
+        //console.log(k["Gestartet am"].raw);
+       ktastart = k["Gestartet am"].raw;
+    }
+    if(typeof k["Endet am"] != "undefined" && k["Endet am"] != null)  {
+      //console.log(k["Endet am"].raw);
+      ktaend = k["Endet am"].raw;
+    }
+    console.log(ktaend, ktastart);
       pool.query(insertKnowledgeTransferActivity, [
         // eslint-disable-next-line no-plusplus
-        i++, externalInternal, k.Format, null, k.Handlungsfeld, k.Ziel, k.Drittmittelprojekt,
+        i++, externalInternal, k.Format, null, k.Handlungsfeld, k.Ziel, k.Drittmittelprojekt, ktastart, ktaend
       ]);
     }
   } catch (e) {

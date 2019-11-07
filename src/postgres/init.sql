@@ -3,7 +3,7 @@
 
 CREATE TABLE IF NOT EXISTS institutions (
   id SERIAL PRIMARY KEY ,
-  name TEXT UNIQUE,
+  name TEXT,
   address TEXT,
   phone TEXT,
   fax TEXT,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS institutions (
   internet TEXT
 );
 
---COPY institutions FROM '/dump_data/gepris/extracted_institution_data.csv' DELIMITER ',' CSV HEADER;
+COPY institutions FROM '/dump_data/gepris/extracted_institution_data.csv' DELIMITER ',' CSV HEADER;
 COPY institutions FROM '/dump_data/gepris/neueAdressen.csv' DELIMITER ',' CSV HEADER;
 CREATE INDEX institutions_idx ON institutions (id);
 
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS peopleTemp (
   institution_id INTEGER REFERENCES institutions(id)
 );
 
---COPY peopleTemp FROM '/dump_data/gepris/people_joined_with_institutions.csv' DELIMITER ',' CSV HEADER;
+COPY peopleTemp FROM '/dump_data/gepris/people_joined_with_institutions.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS people (
   id INTEGER PRIMARY KEY ,
@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS targetgroups (
   type TEXT UNIQUE NOT NULL
 );
 
---COPY targetgroups(type) FROM '/dump_data/project_input/WTA-Zielgruppen.csv' DELIMITER ',' CSV HEADER;
+COPY targetgroups(type) FROM '/dump_data/project_input/WTA-Zielgruppen.csv' DELIMITER ',' CSV HEADER;
 
 --------------------------------------------------------------------------------------------------------------------
 --- Create project inheritance hierarchy and copy DFG projects via temporary tables (TODO: Is there a better way?)
@@ -134,7 +134,9 @@ CREATE TABLE IF NOT EXISTS ktas (
   social_goals TEXT,
   field_of_action TEXT,
   goal TEXT NOT NULL,
-  project_id INTEGER REFERENCES projects(id)
+  project_id INTEGER REFERENCES projects(id),
+  start_date DATE,
+  end_date DATE
 );
 
 CREATE TABLE IF NOT EXISTS Infrastructure (
@@ -226,14 +228,14 @@ CREATE TABLE IF NOT EXISTS projectsCountries (
   country TEXT REFERENCES countryCodes(country)
 );
 
---COPY projectsCountries FROM '/dump_data/gepris/projects_international_connections.csv' DELIMITER ',' CSV HEADER;
+COPY projectsCountries FROM '/dump_data/gepris/projects_international_connections.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projectsParticipatingSubjects (
   project_id INTEGER REFERENCES projects(id),
   subject TEXT NOT NULL
 );
 
---COPY projectsParticipatingSubjects FROM '/dump_data/gepris/project_ids_to_participating_subject_areas.csv' DELIMITER ',' CSV HEADER;
+COPY projectsParticipatingSubjects FROM '/dump_data/gepris/project_ids_to_participating_subject_areas.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projectsInstitutions (
   project_id INTEGER REFERENCES projects(id),
@@ -243,14 +245,14 @@ CREATE TABLE IF NOT EXISTS projectsInstitutions (
 
 --create unique index indexPS on projectsInstitutions (project_id, institution_id,relation_type );
 
---COPY projectsInstitutions FROM '/dump_data/gepris/project_institution_relations.csv' DELIMITER ',' CSV HEADER;
+COPY projectsInstitutions FROM '/dump_data/gepris/project_institution_relations.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS institutionsProjects (
   institution_id INTEGER REFERENCES institutions(id),
   project_id INTEGER REFERENCES projects(id)
 );
 
---COPY institutionsProjects FROM '/dump_data/gepris/projects_listed_on_institution_detail_pages.csv' DELIMITER ',' CSV HEADER;
+COPY institutionsProjects FROM '/dump_data/gepris/projects_listed_on_institution_detail_pages.csv' DELIMITER ',' CSV HEADER;
 
 INSERT INTO projectsInstitutions (project_id, institution_id, relation_type)
 SELECT project_id, institution_id, 'UNKNOWN'
@@ -264,14 +266,14 @@ CREATE TABLE IF NOT EXISTS projectsPeople (
   relation_type TEXT
 );
 
---COPY projectsPeople FROM '/dump_data/gepris/project_person_relations.csv' DELIMITER ',' CSV HEADER;
+COPY projectsPeople FROM '/dump_data/gepris/project_person_relations.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projectsSubjects (
   project_id INTEGER REFERENCES projects(id),
   subject_area TEXT
 );
 
---COPY projectsSubjects FROM '/dump_data/gepris/project_ids_to_subject_areas.csv' DELIMITER ',' CSV HEADER;
+COPY projectsSubjects FROM '/dump_data/gepris/project_ids_to_subject_areas.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS institutionsGeolocations (
   institution_id INTEGER REFERENCES institutions(id),
@@ -284,20 +286,20 @@ CREATE OR REPLACE FUNCTION public.first_agg ( anyelement, anyelement )
 RETURNS anyelement LANGUAGE SQL IMMUTABLE STRICT AS $$
         SELECT $1;
 $$;
- 
+
 -- And then wrap an aggregate around it
 CREATE AGGREGATE public.FIRST (
         sfunc    = public.first_agg,
         basetype = anyelement,
         stype    = anyelement
 );
- 
+
 -- Create a function that always returns the last non-NULL item
 CREATE OR REPLACE FUNCTION public.last_agg ( anyelement, anyelement )
 RETURNS anyelement LANGUAGE SQL IMMUTABLE STRICT AS $$
         SELECT $2;
 $$;
- 
+
 -- And then wrap an aggregate around it
 CREATE AGGREGATE public.LAST (
         sfunc    = public.last_agg,
@@ -358,6 +360,3 @@ CREATE MATERIALIZED VIEW project_view AS
   ORDER BY proj.id;
 
 CREATE INDEX project_view_idx ON project_view (institution_id);
-
-
-

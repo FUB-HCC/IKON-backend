@@ -7,7 +7,11 @@ services:
       context: .
       dockerfile: ./src/controller/Dockerfile
     ports:
+<<<<<<< HEAD
       - "81:443"
+=======
+      - "443:443"
+>>>>>>> master
     secrets:
       - ssl_key
       - ssl_crt

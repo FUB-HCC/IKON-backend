@@ -9,7 +9,7 @@ function arrayCleaner(array) {
       if (array[key].length === 0) {
         cleanArray[key] = null;
       } else {
-        cleanArray[key] = array[key].pop();
+        cleanArray[key] = array[key][array[key].length-1];
       }
     }
   }
@@ -46,17 +46,6 @@ exports.initKnowledgeTransferActivities = async (pool, { insertTargetGroup, inse
         externalInternal = false;
       }
 // eslint-disable-next-line no-restricted-syntax
-      for (const type of Object.values(kta.Zielgruppe)) {
-
-        pool.query(insertTargetGroup, [
-          type,
-        ]);
-
-        pool.query(insertKnowledgeTransferActivityTargetGroup, [
-          i, type,
-        ]);
-      }
-
       let ktastart = null;
       let ktaend = null;
 
@@ -71,8 +60,20 @@ exports.initKnowledgeTransferActivities = async (pool, { insertTargetGroup, inse
     //console.log(ktaend, ktastart);
       pool.query(insertKnowledgeTransferActivity, [
         // eslint-disable-next-line no-plusplus
-        i++, externalInternal, k.Format, null, k.Handlungsfeld, k.Ziel, k.Drittmittelprojekt, ktastart, ktaend
+        i, externalInternal, k.Format, null, k.Handlungsfeld, k.Ziel, k.Drittmittelprojekt, ktastart, ktaend
       ]);
+      for (const type of Object.values(kta.Zielgruppe)) {
+
+        pool.query(insertTargetGroup, [
+          type,
+        ]);
+
+        pool.query(insertKnowledgeTransferActivityTargetGroup, [
+          i, type,
+        ]);
+      }
+
+      i++;
     }
   } catch (e) {
     console.log(e);

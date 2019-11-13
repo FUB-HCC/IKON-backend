@@ -54,23 +54,25 @@ insertProjectsCollections }) => {
             p.HatProjekttraeger, p.EditorialEntry, p.Status, p.project_summary,
             p.title, p.TitelEN, p.WeitereInformationen, p.description,
           ]);
+
+          if(typeof project.HatKooperationspartner != "undefined"){
+            for (const coop of Object.values(project.HatKooperationspartner)) {
+                    pool.query(insertInstitution, [coop] );
+                    pool.query(insertProjectInstitutions, [p.Identifier, coop]);
+            }
+          }
+          if(typeof project.BenutztInfrastruktur != "undefined"){
+            for (const inf of Object.values(project.BenutztInfrastruktur)) {
+                    pool.query(insertProjectsInfrastructure, [p.Identifier, inf]);
+            }
+          }
+          if(typeof project.HatSammlungsbezug != "undefined"){
+            for (const col of Object.values(project.HatSammlungsbezug)) {
+                    pool.query(insertProjectsCollections, [p.Identifier, col]);
+            }
+          }
         });
-        if(typeof project.HatKooperationspartner != "undefined"){
-          for (const coop of Object.values(project.HatKooperationspartner)) {
-                  pool.query(insertInstitution, [coop] );
-                  pool.query(insertProjectInstitutions, [p.Identifier, coop]);
-          }
-        }
-        if(typeof project.BenutztInfrastruktur != "undefined"){
-          for (const inf of Object.values(project.BenutztInfrastruktur)) {
-                  pool.query(insertProjectsInfrastructure, [p.Identifier, inf]);
-          }
-        }
-        if(typeof project.HatSammlungsbezug != "undefined"){
-          for (const col of Object.values(project.HatSammlungsbezug)) {
-                  pool.query(insertProjectsCollections, [p.Identifier, col]);
-          }
-        }
+
       }
     }
 

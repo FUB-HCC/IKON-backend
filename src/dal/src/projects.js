@@ -53,15 +53,17 @@ exports.initProjects = async (pool, { insertMfNProject, insertProject , insertPr
             p.HatProjekttraeger, p.EditorialEntry, p.Status, p.project_summary,
             p.title, p.TitelEN, p.WeitereInformationen, p.description,
           ]);
-        });
-        if(typeof project.HatKooperationspartner != "undefined"){
-          for (const coop of Object.values(project.HatKooperationspartner)) {
-                  pool.query(insertInstitution, [coop] );
-                  pool.query(insertProjectInstitutions, [p.Identifier, coop]);
-                }
-              }
+
+          if(typeof project.HatKooperationspartner != "undefined"){
+            for (const coop of Object.values(project.HatKooperationspartner)) {
+                    pool.query(insertInstitution, [coop] );
+                    pool.query(insertProjectInstitutions, [p.Identifier, coop]);
+            }
           }
+        });
+
         }
+      }
 
   } catch (e) {
     console.log(e);

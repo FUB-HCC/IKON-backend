@@ -17,7 +17,7 @@ LIMIT $3*/
 SELECT proj.*,
     ARRAY_AGG(DISTINCT projectsinstitutions.institution_id) AS cooperating_institutions,
     CONCAT('http://gepris.dfg.de/gepris/projekt/', proj.id) AS href,
-    (SELECT id AS institution_id FROM institutions WHERE name = 'Museum für Naturkunde Berlin'),
+    (SELECT id AS institution_id FROM institutions WHERE name = 'Museum für Naturkunde Berlin' LIMIT 1),
     FIRST(mfn.organisational_unit) AS Organisationseinheit,
     FIRST(mfn.acronyme) AS Akronym,
     FIRST(mfn.hatantragsteller) AS Antragsteller,
@@ -27,7 +27,7 @@ SELECT proj.*,
     FIRST(mfn.project_leader) AS Projektleiter,
     FIRST(mfn.projekttrager) AS projekttrager,
     FIRST(mfn.weitere_informationen) AS WeitereInformationen
-    
+
   FROM projects AS proj
   INNER JOIN mfnprojects AS mfn ON mfn.id = proj.id
 

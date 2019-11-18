@@ -61,18 +61,15 @@ exports.initKnowledgeTransferActivities = async (pool, { insertTargetGroup, inse
       pool.query(insertKnowledgeTransferActivity, [
         // eslint-disable-next-line no-plusplus
         i, externalInternal, k.Format, null, k.Handlungsfeld, k.Ziel, k.Drittmittelprojekt, ktastart, ktaend
-      ]);
+      ])
+
       for (const type of Object.values(kta.Zielgruppe)) {
 
-        pool.query(insertTargetGroup, [
-          type,
-        ]);
+        pool.query(insertTargetGroup, [type]);
 
-        pool.query(insertKnowledgeTransferActivityTargetGroup, [
-          i, type,
-        ]);
+        pool.query(insertKnowledgeTransferActivityTargetGroup,
+          [i, type]);
       }
-
       i++;
     }
   } catch (e) {

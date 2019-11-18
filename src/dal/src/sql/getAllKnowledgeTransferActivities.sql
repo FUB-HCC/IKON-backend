@@ -1,2 +1,3 @@
 SELECT *
 FROM ktas
+ORDER BY id;

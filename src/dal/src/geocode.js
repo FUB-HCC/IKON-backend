@@ -33,7 +33,10 @@ exports.initGeolocations = async (pool, { insertGeolocation, getAllInstitutions 
 
     for (const [index, address] of missingGeocodes) {
       const gecode = await geocodeLocation(address); // eslint-disable-line no-await-in-loop
-      pool.query(insertGeolocation, [rows[index].id, gecode[0].lat, gecode[0].lon]);
+      if (typeof gecode[0] != "undefined"){
+        console.log(gecode);
+        pool.query(insertGeolocation, [rows[index].id, gecode[0].lat, gecode[0].lon]);
+      }
     }
   } catch (e) {
     console.log(e);

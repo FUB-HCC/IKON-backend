@@ -38,6 +38,7 @@ exports.initKnowledgeTransferActivities = async (pool, { insertTargetGroup, inse
     let i = 0;
     const ktas = await getKnowledgeTransferActivities(); // eslint-disable-line no-await-in-loop
     // eslint-disable-next-line no-restricted-syntax
+    if (ktas.length === 0) throw "MWC did not return ktas data";
     for (const value of Object.values(ktas)) {
       const kta = value.printouts;
       const k = arrayCleaner(kta);

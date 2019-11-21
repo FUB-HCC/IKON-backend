@@ -37,7 +37,8 @@ exports.initProjects = async (pool, { insertMfNProject, insertProject , insertPr
 insertProjectsCollections }) => {
   try {
     const projects = await getProjects(); // eslint-disable-line no-await-in-loop
-    //console.log(projects);
+    if (projects.length === 0) throw "MWC did not return projects data";
+    if (projects.length < 50) throw "less than 50 projects loaded";
 
     // eslint-disable-next-line no-restricted-syntax
     for (const [i,project] of projects.entries()) {

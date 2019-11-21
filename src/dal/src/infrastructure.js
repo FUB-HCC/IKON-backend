@@ -36,6 +36,7 @@ const getInfrastructure = async () => {
 exports.initInfrastructure = async (pool, { insertInfrastructure }) => {
   try {
     const infrastructure = await getInfrastructure(); // eslint-disable-line no-await-in-loop
+    if (infrastructure.length === 0) throw "MWC did not return infrastructure data";
     // eslint-disable-next-line no-restricted-syntax
       for (const inf of Object.values(infrastructure)) {
         if (inf.fulltext != null && inf.printouts.Einleitung != null) {

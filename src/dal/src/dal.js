@@ -130,7 +130,7 @@ router.get('/institutions', async (req, res) => {
 
   let rows = '';
   try {
-    rows = (await pool.query(queries.getAllInstitutions,[])).rows;
+    rows = (await pool.query(queries.getConnectedInstitutions,[])).rows;
     res.status(200).json(rows);
   } catch (err) {
     console.log(err);
@@ -138,21 +138,10 @@ router.get('/institutions', async (req, res) => {
   }
 });
 
-// router.get('/collections', async (req, res) => {
-//   let rows = '';
-//   try {
-//     rows = (await pool.query(queries.getAllCollections, [])).rows;
-//     res.status(200).json(rows);
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).send(err);
-//   }
-// });
 
 router.get('/collections', async (req, res) => {
   let rows = '';
   try {
-    let promise = await initCollections(pool, queries);
     rows = (await pool.query(queries.getAllCollections, [])).rows;
     res.status(200).json(rows);
   } catch (err) {
@@ -164,7 +153,6 @@ router.get('/collections', async (req, res) => {
 router.get('/infrastructure', async (req, res) => {
   let rows = '';
   try {
-    let promise = initInfrastructure(pool, queries);
     rows = (await pool.query(queries.getAllInfrastructure, [])).rows;
     res.status(200).json(rows);
   } catch (err) {
@@ -186,6 +174,8 @@ router.patch('/institutions', async (req, res) => {
 router.patch('/projects', async (req, res) => {
   try {
     initProjects(pool, queries);
+    initCollections(pool, queries);
+    initInfrastructure(pool, queries);
     res.status(200).send();
   } catch (err) {
     res.status(500).send(err);

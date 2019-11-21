@@ -9,7 +9,7 @@ import json
 
 @app.route("/clustering")
 def read_root(targetDim: int=2,dimreduction: str='LSA', clustering: str='KMEANS', embedding: str='LDA', num_topics: int=20, granularity: int=5, perplexity: int=5, learning_rate: int=200, error: str='cluster_error', interpolation: str='linear', viz: str='scatter', width: int=400, height: int=600):
-    with open('/data/c4-t26_LDA.json') as file:
+    with open('/data/c5-t11_LDA.json') as file:
         return json.load(file)
 
 if __name__ == "__main__":

@@ -57,7 +57,7 @@ Run queries from [API documentation](https://fub-hcc.github.io/IKON/docs/dal.htm
 If new data is available in any datasource, delete and rebuild the database by executing:
 ```
 docker-compose down
-docker volume rm ikonbackend_ikon_database
+docker volume rm ikon-backend_ikon_database
 bash start.sh
 ```
 

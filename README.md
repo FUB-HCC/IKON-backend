@@ -57,6 +57,9 @@ curl -X GET "https://localhost:5433/projects" -k
 curl -X GET "https://localhost:5433/institutions" -k
 curl -X GET "https://localhost:5433/knowledgeTransferActivities" -k
 ```
+
+7. Start the frontend: [https://localhost](https://localhost)
+
 #### Updating the data
 
 If new data is available in any datasource, delete and rebuild the database by executing:

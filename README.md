@@ -80,8 +80,8 @@ npx eslint .
 
 ## Authors
 * [Tim Korjakow](https://github.com/wittenator)
-* [Christoph Kinkeldey](https://github.com/ckinkeldey)
 * [Lilli Joppien](https://github.com/lillijo)
+* [Christoph Kinkeldey](https://github.com/ckinkeldey)
 
 ## Built With
 

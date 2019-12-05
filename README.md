@@ -1,5 +1,3 @@
-[![CircleCI](https://circleci.com/gh/FUB-HCC/IKON-backend/tree/master.svg?style=svg)](https://circleci.com/gh/FUB-HCC/IKON-backend/tree/master)
-
 ![IKON logo](https://www.mi.fu-berlin.de/en/inf/groups/hcc/research/projects/ikon/IKON-Logo.png?width=500)
 
 ## Getting Started
@@ -79,6 +77,7 @@ npx eslint .
 ## Authors
 * [Tim Korjakow](https://github.com/wittenator)
 * [Christoph Kinkeldey](https://github.com/ckinkeldey)
+* [Lilli Joppien](https://github.com/lillijo)
 
 ## Built With
 
@@ -88,4 +87,4 @@ npx eslint .
 
 ## License
 
-This project is licensed under the APGL 3 License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the APGL 3 License - see the [LICENSE.md](LICENSE.md) file for detail

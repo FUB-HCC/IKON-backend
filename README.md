@@ -48,7 +48,11 @@ curl -X PATCH "https://localhost:5433/institutions" -k
 
 5. First check of installation: 
 Run queries from [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html)
-
+```
+curl -X GET "https://localhost:5433/projects" -k
+curl -X GET "https://localhost:5433/institutions" -k
+curl -X GET "https://localhost:5433/knowledgeTransferActivities" -k
+```
 #### Updating the data
 
 If new data is available in any datasource, delete and rebuild the database by executing:

@@ -7,6 +7,7 @@
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
+In the current form this software is tailored to retrieve data from the API at https://via.museumfuernaturkunde.berlin. You need a user account to get access to the data.
 
 You will need [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installed in order to run the backend.
 
@@ -59,7 +60,7 @@ bash start.sh
 
 #### Running the notebook
 
-If you want to explore the topic extraction pipeline, you can execute the bash script in the root folder with or without the ```--gpu``` flag. If you want to use the GPU, you have to install [Nvidia-Docker2](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)) as well and set the nvidia runtime as your default in your docker daemon config. (See [this](https://stackoverflow.com/questions/47465696/how-do-i-specify-nvidia-runtime-from-docker-compose-yml)).
+If you want to explore the topic extraction pipeline you can execute the bash script  in the root folder with or without the ```--gpu``` flag. If you want to use the GPU, you have to install [Nvidia-Docker2](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)) as well and set the nvidia runtime as your default in your docker daemon config. (See [this](https://stackoverflow.com/questions/47465696/how-do-i-specify-nvidia-runtime-from-docker-compose-yml)).
 ```
 bash ./start.sh --notebook [--gpu]
 ```
@@ -73,16 +74,15 @@ To run the linter execute the following line in the root folder of this reposito
 npx eslint .
 ```
 
+## Authors
+* [Tim Korjakow](https://github.com/wittenator)
+* [Christoph Kinkeldey](https://github.com/ckinkeldey)
+
 ## Built With
 
 * [Express](http://expressjs.com/de/) - The web framework used
 * [Scikit-Learn](http://scikit-learn.org/stable/index.html) - The framework for the NLP 
 * [Spacy](https://spacy.io/) - Used for text pre-processing
-
-
-## Authors
-* [Tim Korjakow](https://github.com/wittenator)
-* [Christoph Kinkeldey](https://github.com/ckinkeldey)
 
 ## License
 

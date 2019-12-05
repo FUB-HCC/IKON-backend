@@ -62,7 +62,7 @@ curl -X GET "https://localhost:5433/knowledgeTransferActivities" -k
 
 #### Updating the data
 
-If new data is available in any datasource, delete and rebuild the database by executing:
+In order to update the data, delete and rebuild the database by executing:
 ```
 docker-compose down
 docker volume rm ikon-backend_ikon_database

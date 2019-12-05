@@ -1,10 +1,10 @@
 ![IKON logo](https://www.mi.fu-berlin.de/en/inf/groups/hcc/research/projects/ikon/IKON-Logo.png?width=500)
 
-## Getting Started
+## Installation Guide
 
-This installation guide will lead you through the process of building the IKON prototype (backend and frontend) on your local machine for development and testing purposes. The deployment is done via [Docker](https://docs.docker.com/install/).
+This guide will lead you through the process of building the IKON prototype (backend and frontend) on your local machine for development and testing purposes. The deployment is done via [Docker](https://docs.docker.com/install/).
 
-This guide is tailored to Linux systems. It is explicitly tested on [Ubuntu](https://ubuntu.com/) 16 but will work on most other distributions as well.
+The guide is tailored to Linux systems. It is explicitly tested on [Ubuntu](https://ubuntu.com/) 16 but will work on most other distributions as well.
 
 ### Prerequisites
 In the current form this software is tailored to retrieve data from the API at https://via.museumfuernaturkunde.berlin. You need a user account to get access to the data.

@@ -2,9 +2,9 @@
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+This installation guide will lead you through the process of building the IKON prototype (backend and frontend) on your local machine for development and testing purposes. The deployment is done via [Docker](https://docs.docker.com/install/).
 
-This installation guide is tailored to Linux systems. It is explicitly tested on [Ubuntu](https://ubuntu.com/).
+This installation guide is tailored to Linux systems. It is explicitly tested on [Ubuntu](https://ubuntu.com/) 16 but will work on most other distributions as well.
 
 ### Prerequisites
 In the current form this software is tailored to retrieve data from the API at https://via.museumfuernaturkunde.berlin. You need a user account to get access to the data.
@@ -31,22 +31,22 @@ git clone --recurse-submodules -j8 https://github.com/FUB-HCC/IKON-backend.git
 cd IKON-backend/
 bash ./start.sh
 ```
-3. In order to display all possible options of the start script, run:
+In order to display all possible options of the start script, run:
 ```
 bash ./start.sh -h
 ```
 
-4. Insert data from MfN VIA (see [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html#doc-general-notes)):
+3. Insert data from MfN VIA (see [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html#doc-general-notes)):
 ```
 curl -X PATCH "https://localhost:5433/projects" -k
 curl -X PATCH "https://localhost:5433/knowledgeTransferActivities" -k
 ```
-5. Insert geolocations of institutions from [nominatim.openstreetmap.org](http://nominatim.openstreetmap.org) (can take hours until completion):
+4. Insert geolocations of institutions from [nominatim.openstreetmap.org](http://nominatim.openstreetmap.org) (can take hours until completion):
 ```
 curl -X PATCH "https://localhost:5433/institutions" -k
 ```
 
-6. First check of installation: 
+5. First check of installation: 
 Run queries from [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html)
 
 #### Updating the data

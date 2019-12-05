@@ -6,6 +6,8 @@
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
+This installation guide is tailored to Linux systems. It is explicitly tested on [Ubuntu](https://ubuntu.com/).
+
 ### Prerequisites
 In the current form this software is tailored to retrieve data from the API at https://via.museumfuernaturkunde.berlin. You need a user account to get access to the data.
 

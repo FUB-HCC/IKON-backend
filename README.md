@@ -82,7 +82,7 @@ npx eslint .
 
 ## Authors
 * [Tim Korjakow](https://github.com/wittenator)
-
+* [Christoph Kinkeldey](https://github.com/ckinkeldey)
 
 ## License
 

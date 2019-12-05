@@ -8,48 +8,44 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-You will need [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installed in order to run the backend. 
-
+You will need [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installed in order to run the backend.
 
 ### Installing
 
 #### Running all containers
 
 Important note: 
-The project generates SSL/TLS certificates and passwords if none are found in the subrepo containing the secrets. If the VIA is going to accessed, insert the real password into ```ikoncode_secrets```.
+The project generates SSL/TLS certificates and passwords if none are found in the subrepo containing the secrets. If the VIA Wiki is going to be accessed, insert the real password into ```ikoncode_secrets```.
 
-A step by step series of examples that tell you how to get a development env running
+Step by step installation guide:
 
-First you need to clone the repository.
+1. First you need to clone the repository.
 In order to do that navigate to the folder where you want to save the project and execute:
 
 ```
 git clone --recurse-submodules -j8 https://github.com/FUB-HCC/IKON-backend.git
 ```
-Then proceed by building and running the containers:
+2. Then proceed by building and running the containers:
 ```
 cd IKON-backend/
 bash ./start.sh
 ```
-Important note: 
-The project generates SSL/TLS certificates and passwords if none are found in the subrepo containing the secrets. If the VIA is going to accessed, insert the real password into ```ikoncode-secrets```.
-
-In order to discover all possible options run
+3. In order to display all possible options of the start script, run:
 ```
 bash ./start.sh -h
 ```
 
-Insert data from MfN VIA (see [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html#doc-general-notes)):
+4. Insert data from MfN VIA (see [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html#doc-general-notes)):
 ```
 curl -X PATCH "https://localhost:5433/projects" -k
 curl -X PATCH "https://localhost:5433/knowledgeTransferActivities" -k
 ```
-Insert geolocations of institutions from [nominatim.openstreetmap.org](http://nominatim.openstreetmap.org) (can take hours until completion):
+5. Insert geolocations of institutions from [nominatim.openstreetmap.org](http://nominatim.openstreetmap.org) (can take hours until completion):
 ```
 curl -X PATCH "https://localhost:5433/institutions" -k
 ```
 
-First check: 
+6. First check of installation: 
 Run queries from [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html)
 
 #### Updating the data

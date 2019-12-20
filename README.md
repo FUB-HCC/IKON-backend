@@ -26,13 +26,19 @@ In order to do that navigate to the folder where you want to save the project an
 ```
 git clone --recurse-submodules -j8 https://github.com/FUB-HCC/IKON-backend.git
 ```
+2. Generate the necessary configs and build the containers:
+```
+cd IKON-backend/
+bash ./start.sh
+```
+3. Once everything is build and all services are running, exit the process by pressing Ctrl+C.
+
 2. Insert the VIA passord into the secrets file:
 ```
 vi ./assets/secrets/ikoncode_secrets
 ```
-3. Then proceed by building and running the containers:
+3. Then proceed running the containers:
 ```
-cd IKON-backend/
 bash ./start.sh
 ```
 In order to display all possible options of the start script, run:

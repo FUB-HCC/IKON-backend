@@ -91,16 +91,17 @@ To run the linter execute the following line in the root folder of this reposito
 npx eslint .
 ```
 
+### FAQ
+
+#### Q: My GET requests return an error after starting the application. What could it be?
+
+Check the if the database is ready, by inspecting the logs via ```docker logs Postgres```. Try it again once the database server is ready and available, if it is not.
+
+
 ## Authors
 * [Tim Korjakow](https://github.com/wittenator)
 * [Lilli Joppien](https://github.com/lillijo)
 * [Christoph Kinkeldey](https://github.com/ckinkeldey)
-
-## Built With
-
-* [Express](http://expressjs.com/de/) - The web framework used
-* [Scikit-Learn](http://scikit-learn.org/stable/index.html) - The framework for the NLP 
-* [Spacy](https://spacy.io/) - Used for text pre-processing
 
 ## License
 

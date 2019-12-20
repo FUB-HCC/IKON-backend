@@ -105,4 +105,4 @@ Check the if the database is ready, by inspecting the logs via ```docker logs Po
 
 ## License
 
-This project is licensed under the APGL 3 License - see the [LICENSE.md](LICENSE.md) file for detail
+This project is licensed under the APGL 3 License - see the [LICENSE](LICENSE) file for detail

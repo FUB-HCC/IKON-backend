@@ -8,7 +8,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-You will need [Docker](https://docs.docker.com/install/), [Docker Compose](https://docs.docker.com/compose/install/) and [Git LFS](https://git-lfs.github.com/) installed in order to run the backend. 
+You will need [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installed in order to run the backend. 
 
 
 ### Installing
@@ -57,7 +57,7 @@ Run queries from [API documentation](https://fub-hcc.github.io/IKON/docs/dal.htm
 If new data is available in any datasource, delete and rebuild the database by executing:
 ```
 docker-compose down
-docker volume rm ikonbackend_ikon_database
+docker volume rm ikon-backend_ikon_database
 bash start.sh
 ```
 

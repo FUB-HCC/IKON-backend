@@ -127,8 +127,19 @@ CREATE TABLE IF NOT EXISTS MFNProjects (
   Zusammenfassung TEXT
 );
 
+CREATE TABLE IF NOT EXISTS ProjectsInfrastructure (
+    infrastructure VARCHAR,
+    project_id INTEGER REFERENCES Projects(id)
+);
+
+CREATE TABLE IF NOT EXISTS ProjectsCollections (
+    collection VARCHAR,
+    project_id INTEGER REFERENCES Projects(id)
+);
+
 CREATE TABLE IF NOT EXISTS ktas (
   id INTEGER PRIMARY KEY,
+  title TEXT,
   external_initiative BOOLEAN NOT NULL ,
   format TEXT,
   social_goals TEXT,
@@ -136,7 +147,10 @@ CREATE TABLE IF NOT EXISTS ktas (
   goal TEXT NOT NULL,
   project_id INTEGER REFERENCES projects(id),
   start_date DATE,
-  end_date DATE
+  end_date DATE,
+  href TEXT,
+  description TEXT,
+  organisational_unit TEXT
 );
 
 CREATE TABLE IF NOT EXISTS Infrastructure (

@@ -33,10 +33,12 @@ const getProjects = async () => {
   return result.data || [];
 };
 
-exports.initProjects = async (pool, { insertMfNProject, insertProject , insertProjectInstitutions, insertInstitution }) => {
+exports.initProjects = async (pool, { insertMfNProject, insertProject , insertProjectInstitutions, insertInstitution, insertProjectsInfrastructure,
+insertProjectsCollections }) => {
   try {
     const projects = await getProjects(); // eslint-disable-line no-await-in-loop
-    //console.log(projects);
+    if (projects.length === 0) throw "MWC did not return projects data";
+    if (projects.length < 50) throw "less than 50 projects loaded";
 
     // eslint-disable-next-line no-restricted-syntax
     for (const [i,project] of projects.entries()) {
@@ -60,10 +62,20 @@ exports.initProjects = async (pool, { insertMfNProject, insertProject , insertPr
                     pool.query(insertProjectInstitutions, [p.Identifier, coop]);
             }
           }
+          if(typeof project.BenutztInfrastruktur != "undefined"){
+            for (const inf of Object.values(project.BenutztInfrastruktur)) {
+                    pool.query(insertProjectsInfrastructure, [p.Identifier, inf]);
+            }
+          }
+          if(typeof project.HatSammlungsbezug != "undefined"){
+            for (const col of Object.values(project.HatSammlungsbezug)) {
+                    pool.query(insertProjectsCollections, [p.Identifier, col]);
+            }
+          }
         });
 
-        }
       }
+    }
 
   } catch (e) {
     console.log(e);

@@ -26,13 +26,19 @@ In order to do that navigate to the folder where you want to save the project an
 ```
 git clone --recurse-submodules -j8 https://github.com/FUB-HCC/IKON-backend.git
 ```
+2. Generate the necessary configs and build the containers:
+```
+cd IKON-backend/
+bash ./start.sh
+```
+3. Once everything is build and all services are running, exit the process by pressing Ctrl+C.
+
 2. Insert the VIA passord into the secrets file:
 ```
 vi ./assets/secrets/ikoncode_secrets
 ```
-3. Then proceed by building and running the containers:
+3. Then proceed running the containers:
 ```
-cd IKON-backend/
 bash ./start.sh
 ```
 In order to display all possible options of the start script, run:
@@ -85,16 +91,17 @@ To run the linter execute the following line in the root folder of this reposito
 npx eslint .
 ```
 
+### FAQ
+
+#### Q: My GET requests return an error after starting the application. What could it be?
+
+Check the if the database is ready, by inspecting the logs via ```docker logs Postgres```. Try it again once the database server is ready and available, if it is not.
+
+
 ## Authors
 * [Tim Korjakow](https://github.com/wittenator)
 * [Lilli Joppien](https://github.com/lillijo)
 * [Christoph Kinkeldey](https://github.com/ckinkeldey)
-
-## Built With
-
-* [Express](http://expressjs.com/de/) - The web framework used
-* [Scikit-Learn](http://scikit-learn.org/stable/index.html) - The framework for the NLP 
-* [Spacy](https://spacy.io/) - Used for text pre-processing
 
 ## License
 

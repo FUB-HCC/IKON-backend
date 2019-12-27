@@ -73,6 +73,10 @@ services:
     build:
       context: ./src/topicextraction/
       dockerfile: Dockerfile
+    volumes:
+    - ./assets/data/nlp:/data
+    - ./src/topicextraction/gunicorn_conf.py:/app/gunicorn_conf.py
+    - ./src/topicextraction/src:/app
     ports:
       - "5435:80"
     environment:

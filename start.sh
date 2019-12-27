@@ -133,6 +133,12 @@ then
     tar xf ./assets/data/gepris/*.tar.xz -C ./assets/data/gepris/
 fi
 
+# check if all data tars are unpacked
+if [[ -n $(echo ./assets/data/nlp/*.tar.xz) ]]    # or [ -n "$(echo *.flac)" ]
+then 
+    tar xf ./assets/data/nlp/*.tar.xz -C ./assets/data/nlp/
+fi
+
 
 
 SERVICES="postgres dal mwc topicextraction nginx"

@@ -41,12 +41,12 @@ bash ./start.sh -h
 
 Insert data from MfN VIA (see [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html#doc-general-notes)):
 ```
-curl -X PATCH "https://localhost:5433/projects" -k
-curl -X PATCH "https://localhost:5433/knowledgeTransferActivities" -k
+curl -X PATCH "https://localhost/api/projects" -k
+curl -X PATCH "https://localhost/api/knowledgeTransferActivities" -k
 ```
 Insert geolocations of institutions from [nominatim.openstreetmap.org](http://nominatim.openstreetmap.org) (can take hours until completion):
 ```
-curl -X PATCH "https://localhost:5433/institutions" -k
+curl -X PATCH "https://localhost/api/institutions" -k
 ```
 
 First check: 

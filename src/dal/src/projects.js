@@ -23,9 +23,9 @@ const getProjects = async () => {
     rejectUnauthorized: false,
   });
 
-  console.log('trying: ', encodeURI('https://mwc:8081/projects'));
+  console.log('trying: ', encodeURI('https://mwc/projects'));
   try {
-    result = await axios.get(encodeURI('https://mwc:8081/projects'), { httpsAgent: agent });
+    result = await axios.get(encodeURI('https://mwc/projects'), { httpsAgent: agent });
   } catch (e) {
     console.log(e);
   }

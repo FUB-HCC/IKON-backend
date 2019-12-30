@@ -74,6 +74,8 @@ assets/data/data_augmentation/institutions.csv
 assets/data/database_dump/dump.sqlite
 assets/data/project_input/gepris.*
 assets/data/gepris/extracted_project_data.csv
+assets/data/nlp/train
+joblib/
 
 .idea/
 .cache/

@@ -38,7 +38,7 @@ services:
       context: ./src/dal/
       dockerfile: Dockerfile
     ports:
-      - "5433:8080"
+      - "5433:443"
     depends_on:
       - postgres
       - mwc
@@ -47,6 +47,7 @@ services:
       PGHOST: Postgres
       PGDATABASE: ikon
       PGPORT: 5432
+      PORT: 443
     secrets:
       - postgres_password
       - ssl_key
@@ -58,11 +59,12 @@ services:
       context: ./src/mwc/
       dockerfile: Dockerfile
     ports:
-      - "5434:8081"
+      - "5434:443"
     environment:
       IKONCODE: /run/secrets/ikoncode_secrets
       SSL_KEY: /run/secrets/ssl_key
       SSL_CRT: /run/secrets/ssl_crt
+      PORT: 443
     secrets:
       - ssl_key
       - ssl_crt
@@ -74,11 +76,14 @@ services:
       context: ./src/topicextraction/
       dockerfile: Dockerfile
     ports:
-      - "5435:80"
+      - "5435:443"
     environment:
       SSL_KEY: /run/secrets/ssl_key
       SSL_CRT: /run/secrets/ssl_crt
       PG_PASSWORD: /run/secrets/postgres_password
+      PORT: 443
+    volumes:
+      - ./src/topicextraction/nlp/dumps:/data
     secrets:
       - ssl_key
       - ssl_crt

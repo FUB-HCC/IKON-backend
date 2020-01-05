@@ -11,72 +11,8 @@ CREATE TABLE IF NOT EXISTS institutions (
   internet TEXT
 );
 
-COPY institutions FROM '/dump_data/gepris/extracted_institution_data.csv' DELIMITER ',' CSV HEADER;
-COPY institutions FROM '/dump_data/gepris/neueAdressen.csv' DELIMITER ',' CSV HEADER;
+COPY institutions(name, address, phone, fax, email, internet) FROM '/dump_data/gepris/neueAdressen.csv' DELIMITER ',' CSV HEADER;
 CREATE INDEX institutions_idx ON institutions (id);
-
---------------------------------------------------------------------------------------------------------------------
---- Create people table  and load data from a csv file
---- Create connection between people and institutions
-
-CREATE TABLE IF NOT EXISTS peopleTemp (
-  num INTEGER,
-  id INTEGER NOT NULL,
-  name TEXT,
-  address TEXT,
-  phone TEXT,
-  fax TEXT,
-  email TEXT,
-  internet TEXT,
-  institution_name TEXT,
-  institution_id INTEGER REFERENCES institutions(id)
-);
-
-COPY peopleTemp FROM '/dump_data/gepris/people_joined_with_institutions.csv' DELIMITER ',' CSV HEADER;
-
-CREATE TABLE IF NOT EXISTS people (
-  id INTEGER PRIMARY KEY ,
-  name TEXT NOT NULL
-);
-
-INSERT INTO people (id, name)
-SELECT DISTINCT id, name
-FROM peopleTemp;
-
-CREATE INDEX people_idx ON people (id);
-
-CREATE TABLE IF NOT EXISTS peopleInstitutions (
-  people_id INTEGER REFERENCES people(id),
-  address TEXT,
-  phone TEXT,
-  fax TEXT,
-  email TEXT,
-  internet TEXT,
-  institution_name TEXT,
-  institution_id INTEGER REFERENCES institutions(id)
-);
-
-INSERT INTO peopleInstitutions (people_id, address, phone, fax, email, internet, institution_name, institution_id)
-SELECT DISTINCT id, address, phone, fax, email, internet, institution_name, institution_id
-FROM peopleTemp;
-
-DROP TABLE peopleTemp;
-
---------------------------------------------------------------------------------------------------------------------
---- Create format table  and load data from a csv file
-
-/*
-
-Sadly, the MfN doesn't provide a structured set of formats
-
-CREATE TABLE IF NOT EXISTS formats (
-  id SERIAL PRIMARY KEY ,
-  type TEXT NOT NULL
-);
-
-COPY formats(type) FROM '/dump_data/project_input/WTA-Formate.csv' DELIMITER ',' CSV HEADER;
-
-*/
 
 --------------------------------------------------------------------------------------------------------------------
 --- Create targetgroup table  and load data from a csv file
@@ -145,7 +81,7 @@ CREATE TABLE IF NOT EXISTS ktas (
   social_goals TEXT,
   field_of_action TEXT,
   goal TEXT NOT NULL,
-  project_id INTEGER REFERENCES projects(id),
+  project_id INTEGER,
   start_date DATE,
   end_date DATE,
   href TEXT,
@@ -189,27 +125,6 @@ DROP TABLE projectsTemp;
 CREATE INDEX projects_idx ON projects (id);
 
 --------------------------------------------------------------------------------------------------------------------
---- Create subjects table  and load data from a csv file
-
-CREATE TABLE IF NOT EXISTS subjects (
-  subject_area TEXT PRIMARY KEY ,
-  review_board TEXT NOT NULL,
-  research_area TEXT NOT NULL
-);
-
-COPY subjects FROM '/dump_data/gepris/subject_areas.csv' DELIMITER ',' CSV HEADER;
-
---------------------------------------------------------------------------------------------------------------------
---- Create countrycode table and load data from a csv file
-
-CREATE TABLE IF NOT EXISTS countryCodes (
-  country TEXT PRIMARY KEY,
-  code TEXT NOT NULL
-);
-
-COPY countryCodes FROM '/dump_data/data_augmentation/country_code.csv' DELIMITER ',' CSV HEADER;
-
---------------------------------------------------------------------------------------------------------------------
 --- Create quite a few m:n tables
 
 CREATE TABLE IF NOT EXISTS ktasTargetgroups (
@@ -237,57 +152,12 @@ CREATE TABLE IF NOT EXISTS ktasCooperationsInstitution (
   institution_id INTEGER REFERENCES institutions(id)
 );
 
-CREATE TABLE IF NOT EXISTS projectsCountries (
-  project_id INTEGER REFERENCES projects(id),
-  country TEXT REFERENCES countryCodes(country)
-);
-
-COPY projectsCountries FROM '/dump_data/gepris/projects_international_connections.csv' DELIMITER ',' CSV HEADER;
-
-CREATE TABLE IF NOT EXISTS projectsParticipatingSubjects (
-  project_id INTEGER REFERENCES projects(id),
-  subject TEXT NOT NULL
-);
-
-COPY projectsParticipatingSubjects FROM '/dump_data/gepris/project_ids_to_participating_subject_areas.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS projectsInstitutions (
-  project_id INTEGER REFERENCES projects(id),
-  institution_id INTEGER REFERENCES institutions(id),
+  project_id INTEGER ,
+  institution_id INTEGER,
   relation_type TEXT
 );
-
---create unique index indexPS on projectsInstitutions (project_id, institution_id,relation_type );
-
-COPY projectsInstitutions FROM '/dump_data/gepris/project_institution_relations.csv' DELIMITER ',' CSV HEADER;
-
-CREATE TABLE IF NOT EXISTS institutionsProjects (
-  institution_id INTEGER REFERENCES institutions(id),
-  project_id INTEGER REFERENCES projects(id)
-);
-
-COPY institutionsProjects FROM '/dump_data/gepris/projects_listed_on_institution_detail_pages.csv' DELIMITER ',' CSV HEADER;
-
-INSERT INTO projectsInstitutions (project_id, institution_id, relation_type)
-SELECT project_id, institution_id, 'UNKNOWN'
-FROM institutionsProjects;
-
-DROP TABLE institutionsProjects;
-
-CREATE TABLE IF NOT EXISTS projectsPeople (
-  project_id INTEGER REFERENCES projects(id),
-  person_id INTEGER REFERENCES people(id),
-  relation_type TEXT
-);
-
-COPY projectsPeople FROM '/dump_data/gepris/project_person_relations.csv' DELIMITER ',' CSV HEADER;
-
-CREATE TABLE IF NOT EXISTS projectsSubjects (
-  project_id INTEGER REFERENCES projects(id),
-  subject_area TEXT
-);
-
-COPY projectsSubjects FROM '/dump_data/gepris/project_ids_to_subject_areas.csv' DELIMITER ',' CSV HEADER;
 
 CREATE TABLE IF NOT EXISTS institutionsGeolocations (
   institution_id INTEGER REFERENCES institutions(id),
@@ -321,56 +191,3 @@ CREATE AGGREGATE public.LAST (
         stype    = anyelement
 );
 
-CREATE MATERIALIZED VIEW project_view AS
-    SELECT proj.id AS id,
-    FIRST(projectsinstitutions.institution_id) AS institution_id,
-    ARRAY_AGG(DISTINCT countryCode.code) AS region,
-    ARRAY_AGG(DISTINCT peopleinstitutions.institution_id) AS cooperating_institutions,
-    FIRST(subjects.subject_area) AS subject_area,
-    FIRST(subjects.review_board) AS review_board,
-    FIRST(subjects.research_area) AS research_area,
-    'Anonym' AS applicant,
-    'DFG' AS sponsor,
-    ARRAY_AGG(DISTINCT p.subject) AS side_topics,
-    'Anonym' AS project_leader,
-    FIRST(proj.funding_start_year) AS start_date,
-    FIRST(proj.funding_end_year) AS end_date,
-    FIRST(proj.title) AS title,
-    FIRST(proj.project_abstract) AS abstract,
-    CONCAT('http://gepris.dfg.de/gepris/projekt/', proj.id) AS href
-
-
-  FROM projects AS proj
-
-  -- Match the hosting institution to projects
-  LEFT JOIN projectsinstitutions
-  ON proj.id = projectsinstitutions.project_id
-
-  -- Match the participatingsubject areas to projects
-  LEFT JOIN projectsparticipatingsubjects p
-  ON proj.id = p.project_id
-
-  -- Match the country codes to projects
-  LEFT JOIN projectsCountries AS countries
-  ON proj.id = countries.project_id
-  LEFT JOIN countryCodes AS countryCode
-  ON countries.country = countryCode.country
-
-  -- Match participating people to projects
-  LEFT JOIN projectsPeople
-  ON proj.id = projectsPeople.project_id
-  LEFT JOIN people
-  ON projectsPeople.person_id = people.id
-  LEFT JOIN peopleinstitutions
-  ON people.id = peopleinstitutions.people_id
-
-  -- Match taxonomy
-  LEFT JOIN projectsSubjects AS subj
-  ON proj.id = subj.project_id
-  LEFT JOIN subjects
-  ON subj.subject_area = subjects.subject_area
-
-  GROUP BY proj.id
-  ORDER BY proj.id;
-
-CREATE INDEX project_view_idx ON project_view (institution_id);

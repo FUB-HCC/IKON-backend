@@ -23,9 +23,9 @@ const getInfrastructure = async () => {
     rejectUnauthorized: false,
   });
 
-  console.log('trying: ', encodeURI('https://mwc:8081/infrastructure'));
+  console.log('trying: ', encodeURI('https://mwc/infrastructure'));
   try {
-    result = await axios.get(encodeURI('https://mwc:8081/infrastructure'), { httpsAgent: agent });
+    result = await axios.get(encodeURI('https://mwc/infrastructure'), { httpsAgent: agent });
   } catch (e) {
     console.log(e);
   }

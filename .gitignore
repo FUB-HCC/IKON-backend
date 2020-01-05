@@ -79,3 +79,4 @@ assets/data/gepris/extracted_project_data.csv
 .cache/
 .DS_Store
 database/
+__pychache__/

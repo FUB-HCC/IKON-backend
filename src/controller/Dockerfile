@@ -2,8 +2,8 @@ FROM node:alpine AS builder
 
 RUN mkdir -p /IKON
 COPY IKON-projektor/ /IKON/
-RUN npm install --prefix /IKON/
-RUN npm run-script --prefix /IKON/ build
+RUN yarn install --cwd /IKON/
+RUN yarn --cwd /IKON/ build
 
 FROM nginx:latest
 

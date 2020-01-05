@@ -23,9 +23,9 @@ const getKnowledgeTransferActivities = async () => {
     rejectUnauthorized: false
   });
 
-  console.log("trying: ", encodeURI("https://mwc:8081/ktas"));
+  console.log("trying: ", encodeURI("https://mwc/ktas"));
   try {
-    result = await axios.get(encodeURI("https://mwc:8081/ktas"), {
+    result = await axios.get(encodeURI("https://mwc/ktas"), {
       httpsAgent: agent
     });
   } catch (e) {

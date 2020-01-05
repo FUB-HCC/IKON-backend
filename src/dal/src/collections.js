@@ -23,9 +23,9 @@ const getCollections = async () => {
     rejectUnauthorized: false,
   });
 
-  console.log('trying: ', encodeURI('https://mwc:8081/collections'));
+  console.log('trying: ', encodeURI('https://mwc/collections'));
   try {
-    result = await axios.get(encodeURI('https://mwc:8081/collections'), { httpsAgent: agent });
+    result = await axios.get(encodeURI('https://mwc/collections'), { httpsAgent: agent });
   } catch (e) {
     console.log(e);
   }

@@ -1,2 +1,2 @@
-INSERT INTO institutions(id, name, address )
-VALUES (DEFAULT, $1, $1);
+INSERT INTO institutions(name, address)
+VALUES ($1, $1);

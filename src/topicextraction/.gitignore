@@ -117,6 +117,7 @@ dmypy.json
 # Dumps
 nlp/dumps/*.json
 dump.*
+!nlp/dumps/c4-t26_tSNE_p22-lr450.json
 
 # BERT
 nlp/model/

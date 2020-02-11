@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: ./src/controller/Dockerfile
-    image: docker.pkg.github.com/FUB-HCC/IKON-backend/Controller
+    image: docker.pkg.github.com/fub-hcc/ikon-backend/controller:latest
     ports:
       - "443:443"
     secrets:
@@ -18,7 +18,7 @@ services:
     build:
       context: .
       dockerfile: ./src/postgres/Dockerfile
-    image: docker.pkg.github.com/FUB-HCC/IKON-backend/Postgres
+    image: docker.pkg.github.com/fub-hcc/ikon-backend/postgres:latest
     volumes:
       - ikon_database:/var/lib/postgresql/data:z
       - ./assets/data/gepris:/dump_data/gepris
@@ -39,7 +39,7 @@ services:
     build:
       context: ./src/dal/
       dockerfile: Dockerfile
-    image: docker.pkg.github.com/FUB-HCC/IKON-backend/DataAccessLayer
+    image: docker.pkg.github.com/fub-hcc/ikon-backend/dal:latest
     ports:
       - "5433:443"
     depends_on:
@@ -61,7 +61,7 @@ services:
     build:
       context: ./src/mwc/
       dockerfile: Dockerfile
-    image: docker.pkg.github.com/FUB-HCC/IKON-backend/MediaWikiConnector
+    image: docker.pkg.github.com/fub-hcc/ikon-backend/mwc:latest
     ports:
       - "5434:443"
     environment:
@@ -79,7 +79,7 @@ services:
     build:
       context: ./src/topicextraction/
       dockerfile: Dockerfile
-    image: docker.pkg.github.com/FUB-HCC/IKON-backend/TopicExtractionService
+    image: docker.pkg.github.com/fub-hcc/ikon-backend/tes:latest
     ports:
       - "5435:443"
     environment:

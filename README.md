@@ -1,3 +1,5 @@
+![Build images and push to registry](https://github.com/FUB-HCC/IKON-backend/workflows/Build%20images%20and%20push%20to%20registry/badge.svg)
+
 ![IKON logo](https://www.mi.fu-berlin.de/en/inf/groups/hcc/research/projects/ikon/IKON-Logo.png?width=500)
 
 ## Installation Guide

@@ -85,5 +85,8 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
+          proxy_host: ${{ secrets.PROXY_HOST }}
+          proxy_username: ${{ secrets.PROXY_USERNAME }}
+          proxy_password: ${{ secrets.PROXY_PASSWORD }}
           script: whoami
 

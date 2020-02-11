@@ -75,10 +75,8 @@ jobs:
 
 
   deploy:
-    needs: push
 
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
 
     steps:
       - name: executing remote ssh commands using password

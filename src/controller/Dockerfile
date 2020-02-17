@@ -5,7 +5,7 @@ COPY IKON-projektor/ /IKON/
 RUN yarn install --cwd /IKON/
 RUN yarn --cwd /IKON/ build
 
-FROM nginx:latest
+FROM nginx:1.17.8-alpine
 
 RUN mkdir -p /data/nginx/cache
 COPY --from=builder /IKON/build/ /var/www/

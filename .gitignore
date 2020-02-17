@@ -67,6 +67,7 @@ assets/ssl/server.csr
 
 #secrets
 assets/secrets/ikoncode_secrets
+assets/secrets/ikoncode_secrets.mfn
 assets/secrets/postgres_password
 
 #data

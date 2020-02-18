@@ -143,7 +143,7 @@ fi
 
 finish()
 {
-    CURRENT_UID=$(id -u):$(id -g)  docker-compose -f docker-compose.mfn.yml stop $SERVICES
+    CURRENT_UID=$(id -u):$(id -g)  docker-compose -f docker-compose.yml stop $SERVICES
     exit
 }
 trap finish SIGINT

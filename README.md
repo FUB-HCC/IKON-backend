@@ -9,7 +9,7 @@ This guide will lead you through the process of building the IKON prototype (bac
 The guide is tailored to Linux systems. It is explicitly tested on [Ubuntu](https://ubuntu.com/) 16 but will work on most other distributions as well.
 
 ### Prerequisites
-In the current form this software is tailored to retrieve data from the API at https://via.museumfuernaturkunde.berlin. You need a user account to get access to the data.
+In the current form this software needs internet access to retrieve data from https://via.museumfuernaturkunde.berlin and http://nominatim.openstreetmap.org. In addition, you need a user account for https://via.museumfuernaturkunde.berlin to access the data. 
 
 You will need [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installed in order to run the backend.
 

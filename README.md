@@ -4,7 +4,7 @@
 
 ## Installation Guide
 
-This guide will lead you through the process of building the IKON prototype (backend and frontend) on your local machine for development and testing purposes. The deployment is done via [Docker](https://docs.docker.com/install/).
+This guide will lead you through the process of building the IKON prototype (backend and frontend) for development and testing purposes. The deployment is done via [Docker](https://docs.docker.com/install/).
 
 The guide is tailored to Linux systems. It is explicitly tested on [Ubuntu](https://ubuntu.com/) 16 but will work on most other distributions as well.
 
@@ -18,12 +18,12 @@ You will need [Docker](https://docs.docker.com/install/) and [Docker Compose](ht
 #### Running all containers
 
 Important note: 
-The project generates SSL/TLS certificates and passwords if none are found in the subrepo containing the secrets. If the VIA Wiki is going to be accessed, insert the real password into ```ikoncode_secrets```. If you change the port mapping in the docker compose file, you have to adjust the urls in the followin tutorial.
+The project generates SSL/TLS certificates and passwords if none are found in the subrepo containing the secrets. For data retrieval from the VIA Wiki insert your password into the ```ikoncode_secrets``` file. If you change the port mapping in the docker compose file, you have to adjust the urls in the following installation guide.
 
 Step by step installation guide:
 
 1. First you need to clone the repository.
-In order to do that navigate to the folder where you want to save the project and execute:
+In order to do that navigate to the folder where you want to install the project and execute:
 
 ```
 git clone --recurse-submodules -j8 https://github.com/FUB-HCC/IKON-backend.git
@@ -33,14 +33,14 @@ git clone --recurse-submodules -j8 https://github.com/FUB-HCC/IKON-backend.git
 cd IKON-backend/
 bash ./start.sh
 ```
-3. Once everything is build and all services are running, exit the process by pressing Ctrl+C.
+3. Once everything is built and all services are running, exit the process by pressing Ctrl+C.
 
-2. Insert the VIA passord into the secrets fileand change the ```protocol``` attribute to http:
+4. Insert the VIA password into the secrets fileand change the ```protocol``` attribute to http:
 ```
 vi ./assets/secrets/ikoncode_secrets
 ```
 
-3. Then proceed running the containers:
+5. Then proceed running the containers:
 ```
 bash ./start.sh
 ```
@@ -49,17 +49,17 @@ In order to display all possible options of the start script, run:
 bash ./start.sh -h
 ```
 
-4. Insert data from MfN VIA (see [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html#doc-general-notes)):
+6. Insert data from MfN VIA (see [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html#doc-general-notes)):
 ```
 curl -X PATCH "https://localhost/api/projects" -k
 curl -X PATCH "https://localhost/api/knowledgeTransferActivities" -k
 ```
-5. Insert geolocations of institutions from [nominatim.openstreetmap.org](http://nominatim.openstreetmap.org) (can take hours until completion):
+7. Insert geolocations of institutions from [nominatim.openstreetmap.org](http://nominatim.openstreetmap.org):
 ```
 curl -X PATCH "https://localhost/api/institutions" -k
 ```
 
-6. First check of installation: 
+8. First check of installation: 
 Run queries from [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html)
 ```
 curl -X GET "https://localhost/api/projects" -k
@@ -67,7 +67,7 @@ curl -X GET "https://localhost/api/institutions" -k
 curl -X GET "https://localhost/api/knowledgeTransferActivities" -k
 ```
 
-7. Start the frontend: [https://localhost](https://localhost)
+9. Start the frontend: [https://localhost](https://localhost)
 
 #### Updating the data
 
@@ -91,7 +91,7 @@ npx eslint .
 
 #### Q: My GET requests return an error after starting the application. What could it be?
 
-Check the if the database is ready, by inspecting the logs via ```docker logs Postgres```. Try it again once the database server is ready and available, if it is not.
+Check if the database is ready by inspecting the logs via ```docker logs Postgres```.
 
 
 ## Authors

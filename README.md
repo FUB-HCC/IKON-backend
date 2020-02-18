@@ -18,7 +18,7 @@ You will need [Docker](https://docs.docker.com/install/) and [Docker Compose](ht
 #### Running all containers
 
 Important note: 
-The project generates SSL/TLS certificates and passwords if none are found in the subrepo containing the secrets. If the VIA Wiki is going to be accessed, insert the real password into ```ikoncode_secrets```.
+The project generates SSL/TLS certificates and passwords if none are found in the subrepo containing the secrets. If the VIA Wiki is going to be accessed, insert the real password into ```ikoncode_secrets```. If you change the port mapping in the docker compose file, you have to adjust the urls in the followin tutorial.
 
 Step by step installation guide:
 
@@ -35,10 +35,11 @@ bash ./start.sh
 ```
 3. Once everything is build and all services are running, exit the process by pressing Ctrl+C.
 
-2. Insert the VIA passord into the secrets file:
+2. Insert the VIA passord into the secrets fileand change the ```protocol``` attribute to http:
 ```
 vi ./assets/secrets/ikoncode_secrets
 ```
+
 3. Then proceed running the containers:
 ```
 bash ./start.sh
@@ -50,20 +51,20 @@ bash ./start.sh -h
 
 4. Insert data from MfN VIA (see [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html#doc-general-notes)):
 ```
-curl -X PATCH "https://localhost:5433/projects" -k
-curl -X PATCH "https://localhost:5433/knowledgeTransferActivities" -k
+curl -X PATCH "https://localhost/api/projects" -k
+curl -X PATCH "https://localhost/api/knowledgeTransferActivities" -k
 ```
 5. Insert geolocations of institutions from [nominatim.openstreetmap.org](http://nominatim.openstreetmap.org) (can take hours until completion):
 ```
-curl -X PATCH "https://localhost:5433/institutions" -k
+curl -X PATCH "https://localhost/api/institutions" -k
 ```
 
 6. First check of installation: 
 Run queries from [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html)
 ```
-curl -X GET "https://localhost:5433/projects" -k
-curl -X GET "https://localhost:5433/institutions" -k
-curl -X GET "https://localhost:5433/knowledgeTransferActivities" -k
+curl -X GET "https://localhost/api/projects" -k
+curl -X GET "https://localhost/api/institutions" -k
+curl -X GET "https://localhost/api/knowledgeTransferActivities" -k
 ```
 
 7. Start the frontend: [https://localhost](https://localhost)
@@ -75,13 +76,6 @@ In order to update the data, delete and rebuild the database by executing:
 docker-compose down
 docker volume rm ikon-backend_ikon_database
 bash start.sh
-```
-
-#### Running the notebook
-
-If you want to explore the topic extraction pipeline you can execute the bash script  in the root folder with or without the ```--gpu``` flag. If you want to use the GPU, you have to install [Nvidia-Docker2](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)) as well and set the nvidia runtime as your default in your docker daemon config. (See [this](https://stackoverflow.com/questions/47465696/how-do-i-specify-nvidia-runtime-from-docker-compose-yml)).
-```
-bash ./start.sh --notebook [--gpu]
 ```
 
 ### Coding style

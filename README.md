@@ -4,14 +4,14 @@
 
 ## Installation Guide
 
-This guide will lead you through the process of building the IKON prototype (backend and frontend) for development and testing purposes. The deployment is done via [Docker](https://docs.docker.com/install/).
+This guide will lead you through the process of building the IKON prototype (backend and frontend) for development and testing purposes. The deployment is done with [Docker](https://docs.docker.com/install/).
 
 The guide is tailored to Linux systems. It is explicitly tested on [Ubuntu](https://ubuntu.com/) 16 but will work on most other distributions as well.
 
 ### Prerequisites
-In the current form this software needs internet access to retrieve data from https://via.museumfuernaturkunde.berlin and http://nominatim.openstreetmap.org. In addition, you need a user account for https://via.museumfuernaturkunde.berlin to access the data. 
+In the current form this prototype needs internet access to retrieve data from https://via.museumfuernaturkunde.berlin and http://nominatim.openstreetmap.org. In addition, you need a user account for https://via.museumfuernaturkunde.berlin to access the data. 
 
-You will need [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installed in order to run the backend.
+You need [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installed in order to run the backend.
 
 ### Installing
 
@@ -22,25 +22,24 @@ The project generates SSL/TLS certificates and passwords if none are found in th
 
 Step by step installation guide:
 
-1. First you need to clone the repository.
-In order to do that navigate to the folder where you want to install the project and execute:
+1. First you need to clone the repository. Navigate to the installation folder and execute:
 
 ```
 git clone --recurse-submodules -j8 https://github.com/FUB-HCC/IKON-backend.git
 ```
-2. Generate the necessary configs and build the containers:
+2. Start the shell script to generate the necessary configuration files and build the containers:
 ```
 cd IKON-backend/
 bash ./start.sh
 ```
 3. Once everything is built and all services are running, exit the process by pressing Ctrl+C.
 
-4. Insert the VIA password into the secrets fileand change the ```protocol``` attribute to http:
+4. Insert your VIA credentials into the secrets file. Change the ```protocol``` attribute to http: if your environment does not suport https:
 ```
 vi ./assets/secrets/ikoncode_secrets
 ```
 
-5. Then proceed running the containers:
+5. Run the script again:
 ```
 bash ./start.sh
 ```
@@ -60,7 +59,7 @@ curl -X PATCH "https://localhost/api/institutions" -k
 ```
 
 8. First check of installation: 
-Run queries from [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html)
+Run queries from the [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html)
 ```
 curl -X GET "https://localhost/api/projects" -k
 curl -X GET "https://localhost/api/institutions" -k
@@ -89,7 +88,7 @@ npx eslint .
 
 ### FAQ
 
-#### Q: My GET requests return an error after starting the application. What could it be?
+#### Q: My GET requests return an error after starting the application. What could be the reason?
 
 Check if the database is ready by inspecting the logs via ```docker logs Postgres```.
 

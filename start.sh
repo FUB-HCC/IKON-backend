@@ -135,7 +135,7 @@ fi
 
 
 
-SERVICES="postgres dal mwc topicextraction nginx"
+SERVICES="postgres dal mwc topicextraction nginx logging"
 if [ "$_arg_notebook" = on ];
 then
     SERVICES+=" notebook"

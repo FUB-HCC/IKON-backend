@@ -10,6 +10,7 @@ services:
     ports:
       - "443:443"
       - "80:80"
+      - "8080:80"
     secrets:
       - ssl_key
       - ssl_crt

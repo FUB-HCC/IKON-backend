@@ -6,8 +6,11 @@ services:
     build:
       context: .
       dockerfile: ./src/controller/Dockerfile
+    image: docker.pkg.github.com/fub-hcc/ikon-backend/controller:latest
     ports:
       - "443:443"
+      - "80:80"
+      - "8080:80"
     secrets:
       - ssl_key
       - ssl_crt
@@ -17,6 +20,7 @@ services:
     build:
       context: .
       dockerfile: ./src/postgres/Dockerfile
+    image: docker.pkg.github.com/fub-hcc/ikon-backend/postgres:latest
     volumes:
       - ikon_database:/var/lib/postgresql/data:z
       - ./assets/data/gepris:/dump_data/gepris
@@ -37,6 +41,7 @@ services:
     build:
       context: ./src/dal/
       dockerfile: Dockerfile
+    image: docker.pkg.github.com/fub-hcc/ikon-backend/dal:latest
     ports:
       - "5433:443"
     depends_on:
@@ -58,6 +63,7 @@ services:
     build:
       context: ./src/mwc/
       dockerfile: Dockerfile
+    image: docker.pkg.github.com/fub-hcc/ikon-backend/mwc:latest
     ports:
       - "5434:443"
     environment:
@@ -70,11 +76,28 @@ services:
       - ssl_crt
       - ikoncode_secrets
 
+  logging:
+    container_name: LoggingService
+    build:
+      context: ./src/logging/
+      dockerfile: Dockerfile
+    volumes:
+      - ./src/logging/data/log.txt:/usr/src/app/log.txt
+    image: docker.pkg.github.com/fub-hcc/ikon-backend/logging:latest
+    environment:
+      SSL_KEY: /run/secrets/ssl_key
+      SSL_CRT: /run/secrets/ssl_crt
+      PORT: 443
+    secrets:
+      - ssl_key
+      - ssl_crt
+
   topicextraction:
     container_name: TopicExtractionService
     build:
       context: ./src/topicextraction/
       dockerfile: Dockerfile
+    image: docker.pkg.github.com/fub-hcc/ikon-backend/tes:latest
     ports:
       - "5435:443"
     environment:
@@ -87,24 +110,6 @@ services:
     secrets:
       - ssl_key
       - ssl_crt
-      - postgres_password
-
-  notebook:
-    container_name: NLPNotebook
-    build:
-      context: .
-      dockerfile: ./src/topicextraction/nlp/Dockerfile.cpu
-    volumes:
-      - ./src/topicextraction/nlp:/tf/notebooks
-      - ./assets/data/nlp:/tf/data
-    ports:
-      - "5436:8888"
-    user: ${CURRENT_UID}
-    depends_on:
-      - postgres
-    environment:
-      PG_PASSWORD: /run/secrets/postgres_password
-    secrets:
       - postgres_password
 
 secrets:

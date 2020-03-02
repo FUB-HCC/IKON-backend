@@ -135,7 +135,7 @@ fi
 
 
 
-SERVICES="postgres dal mwc topicextraction nginx"
+SERVICES="postgres dal mwc topicextraction nginx logging"
 if [ "$_arg_notebook" = on ];
 then
     SERVICES+=" notebook"
@@ -143,23 +143,13 @@ fi
 
 finish()
 {
-    if [ "$_arg_gpu" = on ];
-	then
-	    CURRENT_UID=$(id -u):$(id -g)  docker-compose -f docker-compose.yml -f docker-compose.gpu.yml  stop $SERVICES
-	else
-	    CURRENT_UID=$(id -u):$(id -g)  docker-compose -f docker-compose.yml stop $SERVICES
-	fi
+    CURRENT_UID=$(id -u):$(id -g)  docker-compose -f docker-compose.yml stop $SERVICES
     exit
 }
 trap finish SIGINT
 
 
-if [ "$_arg_gpu" = on ];
-then
-    CURRENT_UID=$(id -u):$(id -g) docker-compose -f docker-compose.yml -f docker-compose.gpu.yml  up --build -d $SERVICES
-else
-    CURRENT_UID=$(id -u):$(id -g) docker-compose -f docker-compose.yml up --build -d $SERVICES
-fi
+CURRENT_UID=$(id -u):$(id -g) docker-compose -f docker-compose.yml up --build -d $SERVICES
 
 if [ "$_arg_notebook" = on ];
 then

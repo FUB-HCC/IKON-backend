@@ -27,6 +27,6 @@ https.createServer({
 
 // Routes
 router.post('/logging', (req, res) => {
-  console.log(`${req.body.event},${req.body.user},${Date.now()}`)
+  console.log(`${req.body.event},${req.body.user},${Date.now()},${req.body.eventData}`)
   res.status(200).send()
 });

@@ -1,8 +1,9 @@
 const MWC = require('nodemw');
 const Promise = require('bluebird');
 
-const ikoncode = Promise.promisifyAll(new MWC(process.env.IKONCODE));
+ikoncode = Promise.promisifyAll(new MWC(process.env.IKONCODE));
 ikoncode.api = Promise.promisifyAll(ikoncode.api, { multiArgs: true });
+exports.ikoncode = ikoncode
 
 // connect to IKON CODE
 exports.wikiLogin = () => {
@@ -77,7 +78,7 @@ const fetchAllKTAs = async (login) => {
   return KTAs[2].query.results;
 };
 
-const fetchAllCollections = async (login) => {
+exports.fetchAllCollections = async (login) => {
   try {
     await login;
   } catch (e) {
@@ -97,7 +98,13 @@ const fetchAllCollections = async (login) => {
   } catch (e) {
     console.log(e);
   }
-  return collections[2].query.results;
+  console.log(collections[2].query.results)
+  return Object.values(collections[2].query.results)
+               .filter(coll => coll.fulltext != null)
+               .map(coll => ({
+                              name : coll.fulltext, 
+                              description : coll.printouts["Beschreibung der Sammlung"][0]
+                            }));
 };
 
 const fetchAllInfrastructure = async (login) => {
@@ -120,7 +127,12 @@ const fetchAllInfrastructure = async (login) => {
   } catch (e) {
     console.log(e);
   }
-  return infrastructure[2].query.results;
+  return Object.values(infrastructure[2].query.results)
+             .filter(infr => infr.fulltext != null && infr.printouts.Einleitung != null)
+             .map(infr => ({
+                            name : infr.fulltext, 
+                            description : infr.printouts.Einleitung[0]
+                          }));
 };
 
 const getNameMapping = (name) => {
@@ -132,8 +144,11 @@ const getNameMapping = (name) => {
     RedaktionelleBeschreibung: 'description',
     HatFach: 'participating_subject_area',
     TitelProjekt: 'title',
-    HatOrganisationseinheit: 'organisational_unit',
+    HatOrganisationseinheit: 'organisationseinheit',
     Akronym: 'acronym',
+    Identifier: 'id',
+    HatSammlungsBezug: 'sammlungen',
+    BenutztInfrastruktur: 'infrastruktur'
   };
 
   return (Object.keys(mapping).includes(name)) ? mapping[name] : name;
@@ -141,17 +156,13 @@ const getNameMapping = (name) => {
 
 exports.getAllProjects = async (loginPromise) => {
   return (await fetchAllProjects(loginPromise)).map(([a, b, { query: { subject, data } }]) => data.reduce((dict, { property, dataitem }) => {
-    dict[getNameMapping(property)] = dataitem.map(({ item }) => item);
+    dict[getNameMapping(property)] = (dataitem.length == 1) ? dataitem[0].item : dataitem.map(({ item }) => item);
     return dict;
   }, { subject }));
 };
 
 exports.getAllKTAs = async (loginPromise) => {
   return fetchAllKTAs(loginPromise);
-};
-
-exports.getAllCollections = async (loginPromise) => {
-  return fetchAllCollections(loginPromise);
 };
 
 exports.getAllInfrastructure = async (loginPromise) => {

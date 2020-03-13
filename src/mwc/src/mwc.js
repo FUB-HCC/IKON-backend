@@ -23,7 +23,7 @@ const fetchAllKTAs = async (login) => {
   try {
     const params = {
       action: 'ask',
-      query: '[[Category:Labor]]|?Identifier|?-BenutztInfrastruktur|limit=10000',
+      query: '[[Category:Drittmittelprojekt]][[RedaktionelleBeschreibung::!%27%27]]|[[Status::Freigegeben]]|?Identifier|?HatFach|?HatOrganisationseinheit|?HatAntragsteller|?Projektbeginn|?Projektende|?Zusammenfassung|?Projektleitung|?Akronym|?BenutztInfrastruktur|?HatSammlungsbezug|?HatKooperationspartner|?HatWtaSammlungsbezug|limit=100000',
     };
     KTAs = await MediaWikiConnector.ikoncode.api.callAsync(params);
   } catch (e) {
@@ -33,11 +33,7 @@ const fetchAllKTAs = async (login) => {
 };
 
 fetchAllKTAs(loginPromise).then(results => {
-  console.log(Object.keys(results).length)
-
-  for (const [key, value] of Object.entries(results)) {
-  console.log(value['printouts']['Forschungsinfrastruktur']);
-  }
+  console.log(results)
   process.exit()
 
 })

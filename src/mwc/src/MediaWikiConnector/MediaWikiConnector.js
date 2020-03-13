@@ -15,7 +15,7 @@ exports.wikiLogin = () => {
   }
 };
 
-const fetchAllProjects = async (login) => {
+const fetchGraph = async (login) => {
   try {
     await login;
   } catch (e) {
@@ -27,7 +27,7 @@ const fetchAllProjects = async (login) => {
 
   try {
     const params1 = {
-      action: 'ask',
+      action: 'generator=ask',
       query: '[[Category:Drittmittelprojekt]][[RedaktionelleBeschreibung::!%27%27]]|[[Status::Freigegeben]]|?Identifier|limit=100000',
     };
     projects = await ikoncode.api.callAsync(params1);

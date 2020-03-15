@@ -2,38 +2,46 @@ const fs = require('fs');
 const express = require('express');
 const compression = require('compression');
 const helmet = require('helmet');
-const bodyParser = require('body-parser');
 const https = require('https');
+const {stringify} = require('flatted/cjs');
 const MediaWikiConnector = require('./MediaWikiConnector/MediaWikiConnector.js');
 
 const server = express();
 
+// set server middleware
+server.use(helmet());
+server.use(compression({ level: 3 }));
+
 const loginPromise = MediaWikiConnector.wikiLogin();
 
-const fetchAllKTAs = async (login) => {
+// Server setting
+const PORT = process.env.PORT || 8081;
+
+// Configure router
+const router = express.Router();
+server.use('/', router);
+
+https.createServer({
+  key: fs.readFileSync(process.env.SSL_KEY),
+  cert: fs.readFileSync(process.env.SSL_CRT),
+}, server).listen(PORT, () => {
+  console.log(`API Server Started On Port ${PORT}!`);
+});
+
+router.get('/graph', async (req, res) => {
   try {
-    await login;
+    const result = (await MediaWikiConnector.fetchGraph(loginPromise));
+    res.status(200).send((result));
   } catch (e) {
     console.log(e);
-    process.exit(1);
+    res.status(500).send();
   }
+});
 
-  let KTAs = [];
+// exit strategy
+process.on('SIGINT', async (err) => {
+  console.log(err);
+  process.exit(0);
+});
 
-  try {
-    const params = {
-      action: 'ask',
-      query: '[[Category:Drittmittelprojekt]][[RedaktionelleBeschreibung::!%27%27]]|[[Status::Freigegeben]]|?Identifier|?HatFach|?HatOrganisationseinheit|?HatAntragsteller|?Projektbeginn|?Projektende|?Zusammenfassung|?Projektleitung|?Akronym|?BenutztInfrastruktur|?HatSammlungsbezug|?HatKooperationspartner|?HatWtaSammlungsbezug|limit=100000',
-    };
-    KTAs = await MediaWikiConnector.ikoncode.api.callAsync(params);
-  } catch (e) {
-    console.log(e);
-  }
-  return KTAs[2].query.results;
-};
 
-fetchAllKTAs(loginPromise).then(results => {
-  console.log(results)
-  process.exit()
-
-})

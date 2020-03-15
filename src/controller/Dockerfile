@@ -1,5 +1,5 @@
 FROM node:13.10.1-alpine3.10 AS builder
-RUN apk add --no-cache git
+RUN apk add git
 
 RUN mkdir -p /frontend
 RUN git clone -j4 -b master https://github.com/FUB-HCC/IKON-projektor.git /frontend

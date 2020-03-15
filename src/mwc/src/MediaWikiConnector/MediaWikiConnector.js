@@ -1,12 +1,17 @@
 const MWC = require('nodemw');
 const Promise = require('bluebird');
+const Nominatim = require('nominatim-geocoder');
 
+// promisify nodemw
 ikoncode = Promise.promisifyAll(new MWC(process.env.IKONCODE));
 ikoncode.api = Promise.promisifyAll(ikoncode.api, { multiArgs: true });
 exports.ikoncode = ikoncode
 
+// set up nominatim endpoint and warmup LRU cache
+const geocoder = new Nominatim();
+
 // connect to IKON CODE
-exports.wikiLogin = () => {
+wikiLogin = () => {
   try {
     return (ikoncode.logInAsync());
   } catch (e) {
@@ -15,7 +20,7 @@ exports.wikiLogin = () => {
   }
 };
 
-const fetchGraph = async (login) => {
+queryWiki = async (login, query) => {
   try {
     await login;
   } catch (e) {
@@ -23,152 +28,83 @@ const fetchGraph = async (login) => {
     process.exit(1);
   }
 
-  let projects = [];
-
   try {
-    const params1 = {
-      action: 'generator=ask',
-      query: '[[Category:Drittmittelprojekt]][[RedaktionelleBeschreibung::!%27%27]]|[[Status::Freigegeben]]|?Identifier|limit=100000',
-    };
-    projects = await ikoncode.api.callAsync(params1);
-    console.log(Object.keys(projects[2].query.results));
+    return (await ikoncode.api.callAsync({action: 'ask', query: query}))[2].query.results;
   } catch (e) {
     console.log(e);
   }
-  //'[[Category:Drittmittelprojekt]][[RedaktionelleBeschreibung::+]][[Status::Freigegeben]]|?Identifier|limit=100000',
+};
 
-  const results = [];
-  // eslint-disable-next-line no-restricted-syntax
-  for (const key of Object.keys(projects[2].query.results)) {
-    const params2 = {
-      action: 'browsebysubject',
-      subject: key,
-    };
-    try {
-      results.push(ikoncode.api.callAsync(params2));
-    } catch (e) {
-      //console.log(params2, e);
+const getDistinctEntries = (category, key) => {return Object.entries(Object.values(category).map(entry => entry[key] ? entry[key] : undefined).flat().reduce( (acc, o) => (acc[o] = (acc[o] || 0)+1, acc), {} )).map(([k, v]) => ({name: k, count: v}))}
+
+const replaceMentionsInTarget = (source, target, sourcekey, targetkey) => {return source.map(coll => ({...coll, ...{projects: target.filter(project => {return project[targetkey].includes(coll[sourcekey])})}}))}
+
+const replaceMentionsInSource = (source, target, sourcekey, targetkey) => {return source.map(project => ({...project, ...{[sourcekey]: project[sourcekey].map(partner => target.find(entry => entry[targetkey] === partner))} }))}
+
+const mergeDates = (source, beginning, end) => {return source.map(entry => ({...entry, ...{timeframe: [entry[beginning][0], entry[end][0]]}, ...{[beginning]: undefined}, ...{[end]: undefined}}))}
+
+const fetchGraph = async login => {
+
+  const queries = {
+    projects: '[[Category:Drittmittelprojekt]][[RedaktionelleBeschreibung::!""]][[Status::Freigegeben]]|?HatFach|?HatOrganisationseinheit|?HatAntragsteller|?Projektbeginn|?Projektende|?RedaktionelleBeschreibung|?Projektleitung|?Akronym|?BenutztInfrastruktur|?HatSammlungsbezug|?HatKooperationspartner|limit=100000',
+    missingprojects: '[[Category:Drittmittelprojekt]][[Status::!Freigegeben]]|?Projektbeginn|?Projektende|limit=100000',
+    collections: '[[Category:Sammlung]]|?BeschreibungDerSammlung|limit=10000',
+    infrastructure: '[[Category:Labor]]|?BeschreibungDerForschungsinfrastruktur|limit=10000',
+    ktas: '[[Category:KnowledgeTransferActivity]]|?End|?Start|?ExternalInitiative|?Format|?Goal|?SocialGoals|?FieldOfAction|?TargetGroup|?HatProject|?HatOrganisationseinheit|?Description|limit=10000'
+  }
+  // get all queries resolved
+  const fetch = Object.fromEntries(Object.entries(queries).map(([k, query]) => {return [k, queryWiki(login, query)]}))
+  let data = await Promise.props(fetch)
+
+  // flatten the printouts key into the parent object and set `printouts` to undefined so it vanishes once it is serialized
+  data = Object.fromEntries(Object.entries(data).map(([k, res]) => {return [k, Object.values(res).map(entry => ({...entry, ...entry.printouts, ...{printouts: undefined}}))]}))
+
+  // get all distinct occurences of cooperations and target groups
+  data.institutions = getDistinctEntries(data.projects, 'Kooperationspartner')
+  for(entry of data.institutions){
+    geo = await geocoder.search({q: entry.name})
+    if(geo.length == 0){
+      console.log(entry.name, entry.name.split(' ').pop())
+      geo = await geocoder.search({q: entry.name.split(' ').pop()})
     }
+    if(geo[0]){
+      entry.lon = geo[0].lon
+      entry.lat = geo[0].lat
+    }
+    console.log(entry.lon)
   }
-  // for some reason this is necessary
-  await Promise.all(results);
-  return Promise.all(results);
-};
+  data.targetgroups = getDistinctEntries(data.ktas, 'Zielgruppe')
 
-const fetchAllKTAs = async (login) => {
-  try {
-    await login;
-  } catch (e) {
-    console.log(e);
-    process.exit(1);
+  // 
+  data.projects = mergeDates(data.projects, 'Projektbeginn', 'Projektende')
+  data.missingprojects = mergeDates(data.missingprojects, 'Projektbeginn', 'Projektende')
+
+  // create unique ids by enumeration
+  let i = 0
+  for(key in data){
+    data[key] = data[key].map((entry, j) => ({...entry, ...{id: j + i}}))
+    i += data[key].length
   }
+  // map cooperations to projects
+  data.projects = replaceMentionsInSource(data.projects, data.institutions, 'Kooperationspartner', 'name')
 
-  let KTAs = [];
+  // map collections to projects
+  data.collections = replaceMentionsInTarget(data.collections, data.projects, 'fulltext', 'Sammlungsbezug') 
+  // map infrastructure to projects
+  data.infrastructure = replaceMentionsInTarget(data.infrastructure, data.projects, 'fulltext', 'Forschungsinfrastruktur')
 
-  try {
-    const params = {
-      action: 'ask',
-      query: '[[Category:KnowledgeTransferActivity]]|?End|?Start|?ExternalInitiative|?Format|?Goal|?SocialGoals|?FieldOfAction|?TargetGroup|?HatProject|?HatOrganisationseinheit|?Description|limit=10000',
-    };
-    KTAs = await ikoncode.api.callAsync(params);
-    //console.log(Object.keys(KTAs[2].query.results));
-  } catch (e) {
-    console.log(e);
-  }
-  return KTAs[2].query.results;
-};
+  data.ktas = replaceMentionsInSource(data.ktas, data.projects, 'Drittmittelprojekt', 'fulltext')
+  data.targetgroups = replaceMentionsInTarget(data.targetgroups, data.ktas, 'name', 'Zielgruppe')
 
-exports.fetchAllCollections = async (login) => {
-  try {
-    await login;
-  } catch (e) {
-    console.log(e);
-    process.exit(1);
-  }
 
-  let collections = [];
+  // from here on only inplace operations to keep the references alive
 
-  try {
-    const params = {
-      action: 'ask',
-      query: '[[Category:Sammlung]]|?BeschreibungDerSammlung|limit=10000',
-    };
-    collections = await ikoncode.api.callAsync(params);
-    //console.log(Object.keys(collections[2].query.results));
-  } catch (e) {
-    console.log(e);
-  }
-  console.log(collections[2].query.results)
-  return Object.values(collections[2].query.results)
-               .filter(coll => coll.fulltext != null)
-               .map(coll => ({
-                              name : coll.fulltext, 
-                              description : coll.printouts["Beschreibung der Sammlung"][0]
-                            }));
-};
+  return data
 
-const fetchAllInfrastructure = async (login) => {
-  try {
-    await login;
-  } catch (e) {
-    console.log(e);
-    process.exit(1);
-  }
+}
 
-  let infrastructure = [];
+// warmup LRU cache of geocoder
+fetchGraph(wikiLogin())
 
-  try {
-    const params = {
-      action: 'ask',
-      query: '[[Category:Labor]]|?BeschreibungDerForschungsinfrastruktur|limit=10000',
-    };
-    infrastructure = await ikoncode.api.callAsync(params);
-    //console.log(Object.keys(infrastructure[2].query.results));
-  } catch (e) {
-    console.log(e);
-  }
-  return Object.values(infrastructure[2].query.results)
-             .filter(infr => infr.fulltext != null && infr.printouts.Einleitung != null)
-             .map(infr => ({
-                            name : infr.fulltext, 
-                            description : infr.printouts.Einleitung[0]
-                          }));
-};
-
-const getNameMapping = (name) => {
-  const mapping = {
-    Projektbeginn: 'funding_start_year',
-    Projektende: 'funding_end_year',
-    Zusammenfassung: 'project_summary',
-    subject: 'id',
-    RedaktionelleBeschreibung: 'description',
-    HatFach: 'participating_subject_area',
-    TitelProjekt: 'title',
-    HatOrganisationseinheit: 'organisationseinheit',
-    Akronym: 'acronym',
-    Identifier: 'id',
-    HatSammlungsBezug: 'sammlungen',
-    BenutztInfrastruktur: 'infrastruktur'
-  };
-
-  return (Object.keys(mapping).includes(name)) ? mapping[name] : name;
-};
-
-exports.getAllProjects = async (loginPromise) => {
-  return (await fetchAllProjects(loginPromise)).map(([a, b, { query: { subject, data } }]) => data.reduce((dict, { property, dataitem }) => {
-    dict[getNameMapping(property)] = (dataitem.length == 1) ? dataitem[0].item : dataitem.map(({ item }) => item);
-    return dict;
-  }, { subject }));
-};
-
-exports.getAllKTAs = async (loginPromise) => {
-  return fetchAllKTAs(loginPromise);
-};
-
-exports.getAllInfrastructure = async (loginPromise) => {
-  return fetchAllInfrastructure(loginPromise);
-};
-
-exports.parseMediaWikiResponse = (response) => {
-
-};
+exports.fetchGraph = fetchGraph
+exports.wikiLogin = wikiLogin

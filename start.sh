@@ -133,34 +133,6 @@ then
     tar xf ./assets/data/gepris/*.tar.xz -C ./assets/data/gepris/
 fi
 
-
-
-SERVICES="postgres dal mwc topicextraction nginx logging"
-if [ "$_arg_notebook" = on ];
-then
-    SERVICES+=" notebook"
-fi
-
-finish()
-{
-    CURRENT_UID=$(id -u):$(id -g)  docker-compose -f docker-compose.yml stop $SERVICES
-    exit
-}
-trap finish SIGINT
-
-
-CURRENT_UID=$(id -u):$(id -g) docker-compose -f docker-compose.yml up --build -d $SERVICES
-
-if [ "$_arg_notebook" = on ];
-then
-    time=$(date +"%s")
-    until docker logs --since $time NLPNotebook 2>&1 | grep -m 1 "127.0.0.1"; do sleep 5 ; done
-    token=$(docker logs NLPNotebook 2>&1 | grep '127.0.0.1' | grep -m 1 -oP 'token=\K(.*)')
-    xdg-open http://localhost:5436/?token=$token
-fi
-
-while :; do
-    sleep 5
-done
+CURRENT_UID=$(id -u):$(id -g) docker-compose -f docker-compose.yml up --build
 
 # ] <-- needed because of Argbash

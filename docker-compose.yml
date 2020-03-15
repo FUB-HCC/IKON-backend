@@ -15,49 +15,6 @@ services:
       - ssl_key
       - ssl_crt
 
-  postgres:
-    container_name: Postgres
-    build:
-      context: .
-      dockerfile: ./src/postgres/Dockerfile
-    image: docker.pkg.github.com/fub-hcc/ikon-backend/postgres:latest
-    volumes:
-      - ikon_database:/var/lib/postgresql/data:z
-      - ./assets/data/gepris:/dump_data/gepris
-      - ./assets/data/data_augmentation/:/dump_data/data_augmentation
-      - ./assets/data/project_input:/dump_data/project_input
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: ikonuser
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
-      POSTGRES_DB: ikon
-      PGDATA: /usr/postgresql/data
-    secrets:
-      - postgres_password
-
-  dal:
-    container_name: DataAccessLayer
-    build:
-      context: ./src/dal/
-      dockerfile: Dockerfile
-    image: docker.pkg.github.com/fub-hcc/ikon-backend/dal:latest
-    ports:
-      - "5433:443"
-    depends_on:
-      - postgres
-      - mwc
-    environment:
-      PGUSER: ikonuser
-      PGHOST: Postgres
-      PGDATABASE: ikon
-      PGPORT: 5432
-      PORT: 443
-    secrets:
-      - postgres_password
-      - ssl_key
-      - ssl_crt
-
   mwc:
     container_name: MediaWikiConnector
     build:
@@ -110,18 +67,11 @@ services:
     secrets:
       - ssl_key
       - ssl_crt
-      - postgres_password
 
 secrets:
-  postgres_password:
-    file: ./assets/secrets/postgres_password
   ssl_crt:
     file: ./assets/ssl/server.crt
   ssl_key:
     file: ./assets/ssl/server.key
   ikoncode_secrets:
     file: ./assets/secrets/ikoncode_secrets
-
-volumes:
-    ikon_database:
-        external: false

@@ -36,7 +36,7 @@ class Embeddings(BaseModel):
 @app.post("/embedding")
 def topic_extraction(descriptions: List[Description]):
     bc = BertClient(ip=socket.gethostbyname_ex('BERTaaSIKON')[2][0])
-    embedding = bc.encode([x.text[:100] for x in descriptions])
+    embedding = bc.encode([x.text[:10] for x in descriptions])
     print(embedding.shape)
 
     pipe = Pipeline([('TopicExtraction', TopicExtraction(50, method='LSA')),

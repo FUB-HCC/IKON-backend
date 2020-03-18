@@ -6,7 +6,7 @@
 
 This guide will lead you through the process of building the IKON prototype (backend and frontend) for development and testing purposes. The deployment is done with [Docker](https://docs.docker.com/install/).
 
-The guide is tailored to Linux systems. It is explicitly tested on [Ubuntu](https://ubuntu.com/) 16 but will work on most other distributions as well.
+The guide is tailored to Linux systems. It is explicitly tested on [Ubuntu](https://ubuntu.com/) 18 but will work on most other distributions as well.
 
 ### Prerequisites
 In the current form this prototype needs internet access to retrieve data from https://via.museumfuernaturkunde.berlin and http://nominatim.openstreetmap.org. In addition, you need a user account for https://via.museumfuernaturkunde.berlin to access the data. 
@@ -48,34 +48,17 @@ In order to display all possible options of the start script, run:
 bash ./start.sh -h
 ```
 
-6. Insert data from MfN VIA (see [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html#doc-general-notes)):
-```
-curl -X PATCH "https://localhost/api/projects" -k
-curl -X PATCH "https://localhost/api/knowledgeTransferActivities" -k
-```
-7. Insert geolocations of institutions from [nominatim.openstreetmap.org](http://nominatim.openstreetmap.org):
-```
-curl -X PATCH "https://localhost/api/institutions" -k
-```
-
 8. First check of installation: 
 Run queries from the [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html)
 ```
-curl -X GET "https://localhost/api/projects" -k
-curl -X GET "https://localhost/api/institutions" -k
-curl -X GET "https://localhost/api/knowledgeTransferActivities" -k
+curl -X GET "https://localhost/api/graph" -k
 ```
 
 9. Start the frontend: [https://localhost](https://localhost)
 
 #### Updating the data
 
-In order to update the data, delete and rebuild the database by executing:
-```
-docker-compose down
-docker volume rm ikon-backend_ikon_database
-bash start.sh
-```
+The data automatically updates, because once the cache expires new data from the VIA is pulled and processed.
 
 ### Coding style
 
@@ -87,11 +70,6 @@ npx eslint .
 ```
 
 ### FAQ
-
-#### Q: My GET requests return an error after starting the application. What could be the reason?
-
-Check if the database is ready by inspecting the logs via ```docker logs Postgres```.
-
 
 ## Authors
 * [Tim Korjakow](https://github.com/wittenator)

@@ -63,10 +63,18 @@ services:
       PG_PASSWORD: /run/secrets/postgres_password
       PORT: 443
     volumes:
-      - ./src/topicextraction/nlp/dumps:/data
+      - ./src/topicextraction/src:/app
     secrets:
       - ssl_key
       - ssl_crt
+
+  bertikon:
+    container_name: BERTaaSIKON
+    build:
+      context: .
+      dockerfile: ./src/bert/Dockerfile
+    volumes:
+      - ./assets/model:/model
 
 secrets:
   ssl_crt:

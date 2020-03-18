@@ -31,7 +31,7 @@ https.createServer({
 router.get('/graph', async (req, res) => {
   try {
     const result = (await MediaWikiConnector.fetchGraph(loginPromise));
-    res.status(200).send((result));
+    res.status(200).send(stringify(result));
   } catch (e) {
     console.log(e);
     res.status(500).send();

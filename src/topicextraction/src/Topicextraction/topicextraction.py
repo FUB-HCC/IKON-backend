@@ -10,17 +10,15 @@ class TopicExtraction(BaseEstimator, TransformerMixin):
         self.selector = self.initSelector(method)
 
     def initSelector(self, method):
-        if method == 'lsa':
+        if method == 'LSA':
             return TruncatedSVD(n_components=self.features, random_state=0)
         else:
             raise Exception(f'{self.__class__.__name__}: No valid method selected!')
 
-    @functools.lru_cache(maxsize=None)
     def fit(self, X, y=None):
         self.selector = self.selector.fit(X)
         return self
 
-    @functools.lru_cache(maxsize=None)
     def transform(self, X, y=None):
         try:
             return self.selector.transform(X)

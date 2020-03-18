@@ -12,9 +12,9 @@ class PlaneReduction(BaseEstimator, TransformerMixin):
         self.selector = self.initSelector(method)
 
     def initSelector(self, method):
-        if method == 'tsne':
+        if method == 'TSNE':
             return TSNE(n_components=self.features, **self.kwargs)
-        elif method == 'lda':
+        elif method == 'LDA':
             return LinearDiscriminantAnalysis(n_components=self.features, **self.kwargs)
         else:
             raise Exception(f'{self.__class__.__name__}: No valid method selected!')

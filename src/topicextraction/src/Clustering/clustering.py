@@ -9,10 +9,8 @@ class Clustering(BaseEstimator, TransformerMixin):
         self.selector = self.initSelector(method)
 
     def initSelector(self, method):
-        if method == 'kmeans':
+        if method == 'KMEANS':
             return MiniBatchKMeans(n_clusters=self.features)
-        elif method == 'Agglo':
-            return None
         else:
             raise Exception(f'{self.__class__.__name__}: No valid method selected!')
 

@@ -128,9 +128,18 @@ then
 fi
 
 # check if all data tars are unpacked
-if [[ -n $(echo ./assets/data/gepris/*.tar.xz) ]]    # or [ -n "$(echo *.flac)" ]
+if [[ -n $(echo ./assets/data/model/model*) ]]    # or [ -n "$(echo *.flac)" ]
 then 
     tar xf ./assets/data/gepris/*.tar.xz -C ./assets/data/gepris/
+fi
+
+# check if all data tars are unpacked
+if [[ -n $(echo ./assets/data/gepris/*.tar.xz) ]]    # or [ -n "$(echo *.flac)" ]
+then
+    wget https://schweter.eu/cloud/berts/bert-base-german-dbmdz-cased.tar.gz -O ./assets/model/model.tar.gz --show-progress
+    tar xf ./assets/model/model.tar.gz -C ./assets/model/
+    wget https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-german-dbmdz-cased-vocab.txt -O ./assets/model/vocab.txt
+    wget https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-german-dbmdz-cased-config.json -O ./assets/model/bert_config.json
 fi
 
 CURRENT_UID=$(id -u):$(id -g) docker-compose -f docker-compose.yml up --build

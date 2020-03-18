@@ -1,6 +1,9 @@
 const MWC = require('nodemw');
 const Promise = require('bluebird');
 const Nominatim = require('nominatim-geocoder');
+const got = require('got');
+const {stringify} = require('flatted/cjs');
+
 
 // promisify nodemw
 ikoncode = Promise.promisifyAll(new MWC(process.env.IKONCODE));
@@ -37,9 +40,17 @@ queryWiki = async (login, query) => {
 
 const getDistinctEntries = (category, key) => {return Object.entries(Object.values(category).map(entry => entry[key] ? entry[key] : undefined).flat().reduce( (acc, o) => (acc[o] = (acc[o] || 0)+1, acc), {} )).map(([k, v]) => ({name: k, count: v}))}
 
-const replaceMentionsInTarget = (source, target, sourcekey, targetkey) => {return source.map(coll => ({...coll, ...{projects: target.filter(project => {return project[targetkey].includes(coll[sourcekey])})}}))}
+const replaceMentionsInTarget = (source, target, sourcekey, targetkey, newkey) => {
+  for(let coll of source){
+    Object.assign(coll, {[newkey]: target.filter(project => {return project[targetkey].includes(coll[sourcekey])})})
+  }
+}
 
-const replaceMentionsInSource = (source, target, sourcekey, targetkey) => {return source.map(project => ({...project, ...{[sourcekey]: project[sourcekey].map(partner => target.find(entry => entry[targetkey] === partner))} }))}
+const replaceMentionsInSource = (source, target, sourcekey, targetkey) => {
+  for(let project of source){
+    Object.assign(project, {[sourcekey]: project[sourcekey].map(partner => target.find(entry => entry[targetkey] === partner))})
+  }
+}
 
 const mergeDates = (source, beginning, end) => {return source.map(entry => ({...entry, ...{timeframe: [entry[beginning][0], entry[end][0]]}, ...{[beginning]: undefined}, ...{[end]: undefined}}))}
 
@@ -64,7 +75,6 @@ const fetchGraph = async login => {
   for(entry of data.institutions){
     geo = await geocoder.search({q: entry.name})
     if(geo.length == 0){
-      console.log(entry.name, entry.name.split(' ').pop())
       geo = await geocoder.search({q: entry.name.split(' ').pop()})
     }
     if(geo[0]){
@@ -75,7 +85,7 @@ const fetchGraph = async login => {
   }
   data.targetgroups = getDistinctEntries(data.ktas, 'Zielgruppe')
 
-  // 
+  // merge date columns
   data.projects = mergeDates(data.projects, 'Projektbeginn', 'Projektende')
   data.missingprojects = mergeDates(data.missingprojects, 'Projektbeginn', 'Projektende')
 
@@ -85,20 +95,29 @@ const fetchGraph = async login => {
     data[key] = data[key].map((entry, j) => ({...entry, ...{id: j + i}}))
     i += data[key].length
   }
+
+  // get embeddings
+  // TODO remove the rejection for release
+  const response = await got.post('https://TopicExtractionService/embedding', {rejectUnauthorized: false, timeout:100000, json: data.projects.map(entry => ({id: entry.id, text: entry['Redaktionelle Beschreibung'][0]}))}).json();
+  data.projects = data.projects.map((entry, i) => ({...entry, ...response.project_data[i]}))
+  data.cluster_topography = response.cluster_topography
+
   // map cooperations to projects
-  data.projects = replaceMentionsInSource(data.projects, data.institutions, 'Kooperationspartner', 'name')
+  replaceMentionsInSource(data.projects, data.institutions, 'Kooperationspartner', 'name')
 
   // map collections to projects
-  data.collections = replaceMentionsInTarget(data.collections, data.projects, 'fulltext', 'Sammlungsbezug') 
-  // map infrastructure to projects
-  data.infrastructure = replaceMentionsInTarget(data.infrastructure, data.projects, 'fulltext', 'Forschungsinfrastruktur')
+  replaceMentionsInTarget(data.collections, data.projects, 'fulltext', 'Sammlungsbezug', 'projects')
+  replaceMentionsInSource(data.projects, data.collections, 'Sammlungsbezug', 'fulltext')
 
-  data.ktas = replaceMentionsInSource(data.ktas, data.projects, 'Drittmittelprojekt', 'fulltext')
-  data.targetgroups = replaceMentionsInTarget(data.targetgroups, data.ktas, 'name', 'Zielgruppe')
+  // map infrastructure to projects
+  replaceMentionsInTarget(data.infrastructure, data.projects, 'fulltext', 'Forschungsinfrastruktur', 'projects')
+  replaceMentionsInSource(data.projects, data.infrastructure, 'Forschungsinfrastruktur', 'fulltext')
+
+  replaceMentionsInSource(data.ktas, data.projects, 'Drittmittelprojekt', 'fulltext')
+  replaceMentionsInTarget(data.targetgroups, data.ktas, 'name', 'Zielgruppe', 'ktas')
 
 
   // from here on only inplace operations to keep the references alive
-
   return data
 
 }

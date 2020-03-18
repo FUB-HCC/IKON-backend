@@ -76,6 +76,9 @@ assets/data/database_dump/dump.sqlite
 assets/data/project_input/gepris.*
 assets/data/gepris/extracted_project_data.csv
 
+#model
+!assets/model/.placeholder
+
 .idea/
 .cache/
 .DS_Store

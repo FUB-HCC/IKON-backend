@@ -60,7 +60,6 @@ services:
     environment:
       SSL_KEY: /run/secrets/ssl_key
       SSL_CRT: /run/secrets/ssl_crt
-      PG_PASSWORD: /run/secrets/postgres_password
       PORT: 443
     volumes:
       - ./src/topicextraction/src:/app
@@ -74,7 +73,25 @@ services:
       context: .
       dockerfile: ./src/bert/Dockerfile
     volumes:
-      - ./assets/model:/model
+      - ./assets/model/bert:/model
+
+  sharing:
+    container_name: SharingService
+    build:
+      context: ./src/sharing/
+      dockerfile: Dockerfile
+    image: docker.pkg.github.com/fub-hcc/ikon-backend/sharing:latest
+    ports:
+      - "5436:443"
+    environment:
+      SSL_KEY: /run/secrets/ssl_key
+      SSL_CRT: /run/secrets/ssl_crt
+      PORT: 443
+    volumes:
+      - ./src/sharing/src:/app
+    secrets:
+      - ssl_key
+      - ssl_crt
 
 secrets:
   ssl_crt:

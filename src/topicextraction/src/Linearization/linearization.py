@@ -17,7 +17,8 @@ def mapToSpaceSampling(points):
     cost = cdist(points, grid, "sqeuclidean").astype(np.float64)
     cost *= 100000 / cost.max()
     row_ind_lapjv, col_ind_lapjv, _ = lapjv(cost, verbose=True, force_doubles=True)
-    return grid[row_ind_lapjv]
+    points = grid[row_ind_lapjv]
+    return points - np.amin(points, axis=0)
 
 def computeClusterTopography(points, values, width, height, interpolation='linear'):
     # lay grid over the points so that all points are covered

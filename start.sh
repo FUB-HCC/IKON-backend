@@ -128,13 +128,13 @@ then
 fi
 
 # check if all data tars are unpacked
-if [[ -n $(echo ./assets/model/model*) ]]    # or [ -n "$(echo *.flac)" ]
+if [[ -n $(echo ./assets/data/gepris/*.tar.xz) ]]    # or [ -n "$(echo *.flac)" ]
 then 
     tar xf ./assets/data/gepris/*.tar.xz -C ./assets/data/gepris/
 fi
 
 # check if all data tars are unpacked
-if [[ -n $(echo ./assets/model/bert/*.tar.xz) ]]    # or [ -n "$(echo *.flac)" ]
+if [[ ! -f ./assets/model/bert/model.tar.gz ]]    # or [ -n "$(echo *.flac)" ]
 then
     wget https://schweter.eu/cloud/berts/bert-base-german-dbmdz-cased.tar.gz -O ./assets/model/bert/model.tar.gz --show-progress
     tar xf ./assets/model/bert/model.tar.gz -C ./assets/model/bert/

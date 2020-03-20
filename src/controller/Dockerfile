@@ -2,7 +2,7 @@ FROM node:13.10.1-alpine3.10 AS builder
 RUN apk add git
 
 RUN mkdir -p /frontend
-RUN git clone -j4 -b master https://github.com/FUB-HCC/IKON-projektor.git /frontend
+RUN git clone -j4 -b data-structure-changes https://github.com/FUB-HCC/IKON-projektor.git /frontend
 RUN yarn install --cwd /frontend/
 RUN yarn --cwd /frontend/ build
 

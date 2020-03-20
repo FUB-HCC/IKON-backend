@@ -14,5 +14,3 @@ RUN poetry install
 WORKDIR /app
 
 ADD ./src ./
-
-ENTRYPOINT /start-reload.sh

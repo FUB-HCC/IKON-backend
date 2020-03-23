@@ -1,6 +1,5 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.decomposition import TruncatedSVD
-import functools
 
 class TopicExtraction(BaseEstimator, TransformerMixin):
     def __init__(self, features, method='lsa', **kwargs):

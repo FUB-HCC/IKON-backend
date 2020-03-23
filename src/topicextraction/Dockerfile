@@ -9,8 +9,12 @@ ADD ./poetry.lock ./poetry.lock
 RUN poetry config virtualenvs.create false
 RUN poetry install
 
+RUN poetry run python -m spacy download de_core_news_sm
+
 
 # Create app directory
 WORKDIR /app
 
-ADD ./src ./
+#ADD ./src ./
+
+#ENTRYPOINT /start-reload.sh

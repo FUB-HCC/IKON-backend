@@ -5,7 +5,7 @@ import functools
 
 
 class PlaneReduction(BaseEstimator, TransformerMixin):
-    def __init__(self, features, method='tsne', **kwargs):
+    def __init__(self, features, method, **kwargs):
         self.kwargs = kwargs
         self.features = features
         self.method = method
@@ -15,7 +15,7 @@ class PlaneReduction(BaseEstimator, TransformerMixin):
         if method == 'TSNE':
             return TSNE(n_components=self.features, **self.kwargs)
         elif method == 'LDA':
-            return LinearDiscriminantAnalysis(n_components=self.features, **self.kwargs)
+            return LinearDiscriminantAnalysis(n_components=self.features)
         else:
             raise Exception(f'{self.__class__.__name__}: No valid method selected!')
 

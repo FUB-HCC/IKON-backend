@@ -63,6 +63,7 @@ services:
       PORT: 443
     volumes:
       - ./src/topicextraction/src:/app
+      - ./assets/models:/models
     secrets:
       - ssl_key
       - ssl_crt
@@ -73,7 +74,7 @@ services:
       context: .
       dockerfile: ./src/bert/Dockerfile
     volumes:
-      - ./assets/model/bert:/model
+      - ./assets/models/bert:/model
 
   sharing:
     container_name: SharingService

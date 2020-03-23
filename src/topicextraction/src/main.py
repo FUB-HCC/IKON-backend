@@ -1,19 +1,17 @@
-import json
 from typing import List
-import socket
+from enum import Enum
 
 from fastapi import FastAPI
 from starlette.middleware.gzip import GZipMiddleware
 from pydantic import BaseModel
 
-from bert_serving.client import BertClient
-
-from scipy.sparse import vstack, csr_matrix
 from sklearn.metrics import silhouette_samples
 from sklearn.pipeline import Pipeline
 import numpy as np
 from bokeh.palettes import d3
 
+from Preprocessing.preprocessing import Preprocessing
+from Embedding.embedding import Embedding
 from Topicextraction.topicextraction import TopicExtraction
 from Clustering.clustering import Clustering
 from Planereduction.planereduction import PlaneReduction
@@ -24,27 +22,43 @@ app = FastAPI()
 
 app.add_middleware(GZipMiddleware)
 
-class Description(BaseModel):
-    id: int
-    text: str
-
 class Embeddings(BaseModel):
     id: int
     description: str
 
+# preload preprocessor
+print('Starting to load the NLP engine')
+preprocessor = Preprocessing()
+
+# preload models
+print('Starting to load the models')
+
+models = {
+	'Doc2Vec': Embedding(method='Doc2Vec'),
+	'TfIdf': Embedding(method='TfIdf'),
+	'BERT': Embedding(method='BERT')
+}
+
+print('Finished loading')
+
+
+class Model(str, Enum):
+    TfIdf = "TfIdf"
+    Doc2Vec = "Doc2Vec"
+    BERT = "BERT"
+
 
 @app.post("/embedding")
-def topic_extraction(descriptions: List[Description]):
-    bc = BertClient(ip=socket.gethostbyname_ex('BERTaaSIKON')[2][0])
-    embedding = bc.encode([x.text[:10] for x in descriptions])
-    print(embedding.shape)
+def topic_extraction(descriptions: List[str], method: Model = Model.Doc2Vec):
+    
+    pipe = Pipeline([('Preprocessing', preprocessor),
+                 ('Embedding',  models[method]),
+                 ('TopicExtraction', TopicExtraction(50, method='LSA')),
+                 ('TopicExtractionData', Debug()),
+                 ('Clustering', Clustering(10, method='KMEANS')),
+                 ('PlaneReduction', PlaneReduction(2, method='TSNE', perplexity=10, learning_rate=100))], verbose=True)
 
-    pipe = Pipeline([('TopicExtraction', TopicExtraction(50, method='LSA')),
-    				 ('TopicExtractionData', Debug()),
-                     ('Clustering', Clustering(20, method='KMEANS')),
-                     ('PlaneReduction', PlaneReduction(2, method='TSNE', perplexity=10, learning_rate=100))], verbose=True)
-
-    tfs_plane, labels = pipe.fit_transform(embedding)
+    tfs_plane, labels = pipe.fit_transform(descriptions)
 
     tfs_reduced = pipe.named_steps.TopicExtractionData.data
 
@@ -57,8 +71,7 @@ def topic_extraction(descriptions: List[Description]):
     interpolated_topography = computeClusterTopography(tfs_mapped, silhouette_samples(tfs_reduced, labels), 200, 200, 'linear')
 
     return {
-            'project_data': [{'id':pid, 'mappoint':mappoint, 'cluster':cluster} for pid, mappoint, cluster in zip(
-                [x.id for x in descriptions],
+            'project_data': [{'mappoint':mappoint, 'cluster':cluster} for mappoint, cluster in zip(
                 tfs_mapped.tolist(),
                 labels.tolist(),
             )],

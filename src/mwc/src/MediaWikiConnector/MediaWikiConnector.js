@@ -57,7 +57,7 @@ const mergeDates = (source, beginning, end) => {return source.map(entry => ({...
 const fetchGraph = async login => {
 
   const queries = {
-    projects: '[[Category:Drittmittelprojekt]][[RedaktionelleBeschreibung::!""]][[Status::Freigegeben]]|?HatFach|?HatOrganisationseinheit|?HatAntragsteller|?Projektbeginn|?Projektende|?RedaktionelleBeschreibung|?Projektleitung|?Akronym|?BenutztInfrastruktur|?HatSammlungsbezug|?HatKooperationspartner|limit=100000',
+    projects: '[[Category:Drittmittelprojekt]][[RedaktionelleBeschreibung::!""]][[Status::Freigegeben]]|?HatFach|?HatOrganisationseinheit|?HatAntragsteller|?Projektbeginn|?Projektende|?RedaktionelleBeschreibung|?Projektleitung|?Akronym|?BenutztInfrastruktur|?HatSammlungsbezug|?HatKooperationspartner|?HatGeographischeVerschlagwortung|limit=100000',
     missingprojects: '[[Category:Drittmittelprojekt]][[Status::!Freigegeben]]|?Projektbeginn|?Projektende|limit=100000',
     collections: '[[Category:Sammlung]]|?BeschreibungDerSammlung|limit=10000',
     infrastructure: '[[Category:Labor]]|?BeschreibungDerForschungsinfrastruktur|limit=10000',
@@ -72,6 +72,8 @@ const fetchGraph = async login => {
 
   // get all distinct occurences of cooperations and target groups
   data.institutions = getDistinctEntries(data.projects, 'Kooperationspartner')
+  
+  // geocode the institutions first to give the Topicextraction time to load all models
   for(entry of data.institutions){
     geo = await geocoder.search({q: entry.name})
     if(geo.length == 0){
@@ -98,7 +100,7 @@ const fetchGraph = async login => {
 
   // get embeddings
   // TODO remove the rejection for release
-  const response = await got.post('https://TopicExtractionService/embedding', {rejectUnauthorized: false, timeout:100000, json: data.projects.map(entry => ({id: entry.id, text: entry['Redaktionelle Beschreibung'][0]}))}).json();
+  const response = await got.post('https://TopicExtractionService/embedding', {rejectUnauthorized: false, timeout:100000, json: data.projects.map(entry => entry['Redaktionelle Beschreibung'][0])}).json();
   data.projects = data.projects.map((entry, i) => ({...entry, ...response.project_data[i]}))
   data.cluster_topography = response.cluster_topography
 

@@ -1,0 +1,5 @@
+*.json
+model.*
+*.tar.gz
+*.txt
+doc2vec.*

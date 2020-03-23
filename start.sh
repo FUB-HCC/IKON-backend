@@ -128,18 +128,12 @@ then
 fi
 
 # check if all data tars are unpacked
-if [[ -n $(echo ./assets/data/gepris/*.tar.xz) ]]    # or [ -n "$(echo *.flac)" ]
-then 
-    tar xf ./assets/data/gepris/*.tar.xz -C ./assets/data/gepris/
-fi
-
-# check if all data tars are unpacked
-if [[ ! -f ./assets/model/bert/model.tar.gz ]]    # or [ -n "$(echo *.flac)" ]
+if [[ ! -f ./assets/models/bert/model.tar.gz ]]    # or [ -n "$(echo *.flac)" ]
 then
     wget https://schweter.eu/cloud/berts/bert-base-german-dbmdz-cased.tar.gz -O ./assets/model/bert/model.tar.gz --show-progress
-    tar xf ./assets/model/bert/model.tar.gz -C ./assets/model/bert/
-    wget https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-german-dbmdz-cased-vocab.txt -O ./assets/model/bert/vocab.txt
-    wget https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-german-dbmdz-cased-config.json -O ./assets/model/bert/bert_config.json
+    tar xf ./assets/models/bert/model.tar.gz -C ./assets/models/bert/
+    wget https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-german-dbmdz-cased-vocab.txt -O ./assets/models/bert/vocab.txt
+    wget https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-german-dbmdz-cased-config.json -O ./assets/models/bert/bert_config.json
 fi
 
 CURRENT_UID=$(id -u):$(id -g) docker-compose -f docker-compose.yml up --build

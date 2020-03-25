@@ -34,7 +34,7 @@ bash ./start.sh
 ```
 3. Once everything is built and all services are running, exit the process by pressing Ctrl+C.
 
-4. Insert your VIA credentials into the secrets file. Change the ```protocol``` attribute to http: if your environment does not suport https:
+4. Insert your credentials for the VIA-Wiki into the ```ikoncode_secrets``` file. Change the ```protocol``` attribute to http: if your environment does not suport https:
 ```
 vi ./assets/secrets/ikoncode_secrets
 ```

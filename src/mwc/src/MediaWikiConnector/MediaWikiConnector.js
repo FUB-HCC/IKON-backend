@@ -55,7 +55,7 @@ const replaceMentionsInSource = (source, target, sourcekey, targetkey) => {
 const mergeDates = (source, beginning, end) => {return source.map(entry => ({...entry, ...{timeframe: [entry[beginning][0].timestamp, entry[end][0].timestamp]}, ...{[beginning]: undefined}, ...{[end]: undefined}}))}
 
 const fetchGraph = async login => {
-  const geocoding = false
+  const geocoding = true
   const embedding = true
 
   const queries = {
@@ -110,7 +110,7 @@ const fetchGraph = async login => {
     let response = undefined
     while(retry){
       try{
-        response = await got.post('http://TopicExtractionService:443/embedding?method=Doc2Vec', {rejectUnauthorized: false, timeout:100000, json: data.projects.map(entry => entry['Redaktionelle Beschreibung'][0])}).json();
+        response = await got.post('https://TopicExtractionService/embedding?method=Doc2Vec', {rejectUnauthorized: false, timeout:100000, json: data.projects.map(entry => entry['Redaktionelle Beschreibung'][0])}).json();
         retry = false
       }
       catch(e){

@@ -24,14 +24,14 @@ else:
 
 # Gunicorn config variables
 loglevel = use_loglevel
-workers = 1
+workers = web_concurrency
 bind = use_bind
 keepalive = 120
 errorlog = "-"
 timeout = 300
 preload_app = True
-#keyfile = os.getenv("SSL_KEY", None)
-#certfile = os.getenv("SSL_CRT", None)
+keyfile = os.getenv("SSL_KEY", None)
+certfile = os.getenv("SSL_CRT", None)
 
 # For debugging and testing
 log_data = {

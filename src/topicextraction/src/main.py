@@ -33,7 +33,7 @@ class Model(str, Enum):
     Doc2Vec = "Doc2Vec"
     BERT = "BERT"
 
-preprocessing = Preprocessing()
+preprocessing = Preprocessing(workers=1)
 
 models = {
     'TfIdf': Embedding(method='TfIdf'),

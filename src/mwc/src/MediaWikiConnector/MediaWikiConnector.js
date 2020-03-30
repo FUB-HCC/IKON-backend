@@ -48,16 +48,18 @@ const replaceMentionsInTarget = (source, target, sourcekey, targetkey, newkey) =
 
 const replaceMentionsInSource = (source, target, sourcekey, targetkey) => {
   for(let project of source){
-    Object.assign(project, {[sourcekey]: project[sourcekey].map(partner => target.find(entry => entry[targetkey] === partner))})
+    Object.assign(project, {[sourcekey]: project[sourcekey].map(partner => target.find(entry => entry[targetkey] === partner)).filter(partner => partner)})
   }
 }
 
-const mergeDates = (source, beginning, end) => {return source.map(entry => ({...entry, ...{timeframe: [entry[beginning][0], entry[end][0]]}, ...{[beginning]: undefined}, ...{[end]: undefined}}))}
+const mergeDates = (source, beginning, end) => {return source.map(entry => ({...entry, ...{timeframe: [entry[beginning][0].timestamp, entry[end][0].timestamp]}, ...{[beginning]: undefined}, ...{[end]: undefined}}))}
 
 const fetchGraph = async login => {
+  const geocoding = false
+  const embedding = true
 
   const queries = {
-    projects: '[[Category:Drittmittelprojekt]][[RedaktionelleBeschreibung::!""]][[Status::Freigegeben]]|?HatFach|?HatOrganisationseinheit|?HatAntragsteller|?Projektbeginn|?Projektende|?RedaktionelleBeschreibung|?Projektleitung|?Akronym|?BenutztInfrastruktur|?HatSammlungsbezug|?HatKooperationspartner|?HatGeographischeVerschlagwortung|limit=100000',
+    projects: '[[Category:Drittmittelprojekt]][[RedaktionelleBeschreibung::!""]][[Status::Freigegeben]]|?HatFach|?HatOrganisationseinheit|?HatAntragsteller|?Projektbeginn|?Projektende|?RedaktionelleBeschreibung|?HatProjektleiter|?Akronym|?BenutztInfrastruktur|?HatSammlungsbezug|?HatKooperationspartner|?HatGeographischeVerschlagwortung|limit=100000',
     missingprojects: '[[Category:Drittmittelprojekt]][[Status::!Freigegeben]]|?Projektbeginn|?Projektende|limit=100000',
     collections: '[[Category:Sammlung]]|?BeschreibungDerSammlung|limit=10000',
     infrastructure: '[[Category:Labor]]|?BeschreibungDerForschungsinfrastruktur|limit=10000',
@@ -74,18 +76,21 @@ const fetchGraph = async login => {
   data.institutions = getDistinctEntries(data.projects, 'Kooperationspartner')
   
   // geocode the institutions first to give the Topicextraction time to load all models
-  for(entry of data.institutions){
-    geo = await geocoder.search({q: entry.name})
-    if(geo.length == 0){
-      geo = await geocoder.search({q: entry.name.split(' ').pop()})
+  if(geocoding){
+    for(entry of data.institutions){
+      geo = await geocoder.search({q: entry.name})
+      if(geo.length == 0){
+        geo = await geocoder.search({q: entry.name.split(' ').pop()})
+      }
+      if(geo[0]){
+        entry.lon = geo[0].lon
+        entry.lat = geo[0].lat
+      }
+      console.log(entry.lon)
     }
-    if(geo[0]){
-      entry.lon = geo[0].lon
-      entry.lat = geo[0].lat
-    }
-    console.log(entry.lon)
   }
   data.targetgroups = getDistinctEntries(data.ktas, 'Zielgruppe')
+  data.formats = getDistinctEntries(data.ktas, 'Format')
 
   // merge date columns
   data.projects = mergeDates(data.projects, 'Projektbeginn', 'Projektende')
@@ -100,9 +105,21 @@ const fetchGraph = async login => {
 
   // get embeddings
   // TODO remove the rejection for release
-  const response = await got.post('https://TopicExtractionService/embedding?method=BERT', {rejectUnauthorized: false, timeout:100000, json: data.projects.map(entry => entry['Redaktionelle Beschreibung'][0])}).json();
-  data.projects = data.projects.map((entry, i) => ({...entry, ...response.project_data[i]}))
-  data.cluster_topography = response.cluster_topography
+  if(embedding){
+    let retry = true
+    let response = undefined
+    while(retry){
+      try{
+        response = await got.post('http://TopicExtractionService:443/embedding?method=Doc2Vec', {rejectUnauthorized: false, timeout:100000, json: data.projects.map(entry => entry['Redaktionelle Beschreibung'][0])}).json();
+        retry = false
+      }
+      catch(e){
+        await new Promise(r => setTimeout(r, 2000));
+      }
+    }
+    data.projects = data.projects.map((entry, i) => ({...entry, ...response.project_data[i]}))
+    data.cluster_topography = response.cluster_topography
+  }
 
   // map cooperations to projects
   replaceMentionsInSource(data.projects, data.institutions, 'Kooperationspartner', 'name')
@@ -118,8 +135,9 @@ const fetchGraph = async login => {
   replaceMentionsInSource(data.ktas, data.projects, 'Drittmittelprojekt', 'fulltext')
   replaceMentionsInTarget(data.targetgroups, data.ktas, 'name', 'Zielgruppe', 'ktas')
 
+  replaceMentionsInTarget(data.formats, data.ktas, 'name', 'Format', 'ktas')
+  replaceMentionsInSource(data.ktas, data.formats, 'Format', 'name')
 
-  // from here on only inplace operations to keep the references alive
   return data
 
 }

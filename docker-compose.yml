@@ -61,6 +61,7 @@ services:
       SSL_KEY: /run/secrets/ssl_key
       SSL_CRT: /run/secrets/ssl_crt
       PORT: 443
+      LOG_LEVEL: debug
     volumes:
       - ./src/topicextraction/src:/app
       - ./assets/models:/models

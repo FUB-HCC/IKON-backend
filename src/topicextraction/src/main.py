@@ -33,17 +33,18 @@ class Model(str, Enum):
     Doc2Vec = "Doc2Vec"
     BERT = "BERT"
 
+preprocessing = Preprocessing()
 
 models = {
-	'TfIdf': Embedding(method='TfIdf'),
-	'Doc2Vec': Embedding(method='Doc2Vec'),
-	'BERT': Embedding(method='BERT')
+    'TfIdf': Embedding(method='TfIdf'),
+    'Doc2Vec': Embedding(method='Doc2Vec'),
+    'BERT': Embedding(method='BERT')
 }
 
 @app.post("/embedding")
 def topic_extraction(descriptions: List[str], method: Model = Model.Doc2Vec):
     
-    pipe = Pipeline([('Preprocessing', Preprocessing()),
+    pipe = Pipeline([('Preprocessing', preprocessing),
                  ('Embedding',  models[method]),
                  ('TopicExtraction', TopicExtraction(50, method='LSA')),
                  ('TopicExtractionData', Debug()),

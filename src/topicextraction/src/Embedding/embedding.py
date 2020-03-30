@@ -9,11 +9,12 @@ from multiprocessing import cpu_count
 from bert_serving.client import BertClient
 from joblib import load
 from gensim.matutils import corpus2csc
+import socket
 
 class TfIdf(object):
-    def __init__(self, dict_path='/models/tfidf/dict.lzma', model_path='/models/tfidf/tfidf.lzma', **kwargs):
-        self.model = load(model_path)
-        self.dict = load(dict_path)
+    def __init__(self, dict_path='/models/tfidf/dict.joblib', model_path='/models/tfidf/tfidf.joblib', **kwargs):
+        self.model = load(model_path, mmap_mode='r')
+        self.dict = load(dict_path, mmap_mode='r')
 
     def fit(self, X, y=None):
         return self
@@ -22,8 +23,8 @@ class TfIdf(object):
         return corpus2csc(self.model[[self.dict.doc2bow(doc) for doc in X]]).T
 
 class Doc2Vec(object):
-    def __init__(self, model_path='/models/doc2vec/doc2vec.lzma', **kwargs):
-        self.model = load(model_path)
+    def __init__(self, model_path='/models/doc2vec/doc2vec.joblib', **kwargs):
+        self.model = load(model_path, mmap_mode='r')
 
     def fit(self, X, y=None):
         return self
@@ -37,7 +38,7 @@ class BERT(object):
 
     def transform(self, X, y=None):
         bc = BertClient(ip=socket.gethostbyname_ex('BERTaaSIKON')[2][0])
-        return bc.encode([x.text[:10] for x in descriptions])
+        return bc.encode([list(x) for x in X], is_tokenized=True)
         pass
 
 

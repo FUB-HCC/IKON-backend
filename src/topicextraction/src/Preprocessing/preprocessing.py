@@ -7,7 +7,7 @@ import spacy
 
 class Preprocessing(BaseEstimator, TransformerMixin):
     def __init__(self, workers=-1, **kwargs):
-        self.nlp = spacy.load('de_core_news_sm', disable=["ner", "tagger"])
+        self.nlp = spacy.load('de_core_news_sm', disable=["ner", "tagger", "parser", "textcat"])
         self.workers = workers
 
     def fit(self, X, y=None):

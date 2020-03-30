@@ -17,4 +17,4 @@ WORKDIR /app
 
 #ADD ./src ./
 
-#ENTRYPOINT /start-reload.sh
+ENTRYPOINT /start-reload.sh

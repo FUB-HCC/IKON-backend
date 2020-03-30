@@ -100,7 +100,7 @@ const fetchGraph = async login => {
 
   // get embeddings
   // TODO remove the rejection for release
-  const response = await got.post('https://TopicExtractionService/embedding', {rejectUnauthorized: false, timeout:100000, json: data.projects.map(entry => entry['Redaktionelle Beschreibung'][0])}).json();
+  const response = await got.post('https://TopicExtractionService/embedding?method=BERT', {rejectUnauthorized: false, timeout:100000, json: data.projects.map(entry => entry['Redaktionelle Beschreibung'][0])}).json();
   data.projects = data.projects.map((entry, i) => ({...entry, ...response.project_data[i]}))
   data.cluster_topography = response.cluster_topography
 

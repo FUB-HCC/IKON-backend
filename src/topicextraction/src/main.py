@@ -9,6 +9,7 @@ from sklearn.metrics import silhouette_samples
 from sklearn.pipeline import Pipeline
 import numpy as np
 from bokeh.palettes import d3
+import functools
 
 from Preprocessing.preprocessing import Preprocessing
 from Embedding.embedding import Embedding
@@ -26,21 +27,6 @@ class Embeddings(BaseModel):
     id: int
     description: str
 
-# preload preprocessor
-print('Starting to load the NLP engine')
-preprocessor = Preprocessing()
-
-# preload models
-print('Starting to load the models')
-
-models = {
-	'Doc2Vec': Embedding(method='Doc2Vec'),
-	'TfIdf': Embedding(method='TfIdf'),
-	'BERT': Embedding(method='BERT')
-}
-
-print('Finished loading')
-
 
 class Model(str, Enum):
     TfIdf = "TfIdf"
@@ -48,10 +34,16 @@ class Model(str, Enum):
     BERT = "BERT"
 
 
+models = {
+	'TfIdf': Embedding(method='TfIdf'),
+	'Doc2Vec': Embedding(method='Doc2Vec'),
+	'BERT': Embedding(method='BERT')
+}
+
 @app.post("/embedding")
 def topic_extraction(descriptions: List[str], method: Model = Model.Doc2Vec):
     
-    pipe = Pipeline([('Preprocessing', preprocessor),
+    pipe = Pipeline([('Preprocessing', Preprocessing()),
                  ('Embedding',  models[method]),
                  ('TopicExtraction', TopicExtraction(50, method='LSA')),
                  ('TopicExtractionData', Debug()),

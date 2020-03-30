@@ -9,7 +9,7 @@ This guide will lead you through the process of building the IKON prototype (bac
 The guide is tailored to Linux systems. It is explicitly tested on [Ubuntu](https://ubuntu.com/) 18 but will work on most other distributions as well.
 
 ### Prerequisites
-In the current form this prototype needs internet access to retrieve data from https://via.museumfuernaturkunde.berlin and http://nominatim.openstreetmap.org. In addition, you need a user account for https://via.museumfuernaturkunde.berlin to access the data. 
+In the current form this prototype needs internet access to retrieve data from https://via.museumfuernaturkunde.berlin (VIA-Wiki, Museum für Naturkunde Berlin) and http://nominatim.openstreetmap.org (Geocoder, OpenStreetMap). In addition, you need a user account for the VIA-Wiki to access the data. 
 
 You need [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installed in order to run the backend.
 
@@ -18,7 +18,7 @@ You need [Docker](https://docs.docker.com/install/) and [Docker Compose](https:/
 #### Running all containers
 
 Important note: 
-The project generates SSL/TLS certificates and passwords if none are found in the subrepo containing the secrets. For data retrieval from the VIA Wiki insert your password into the ```ikoncode_secrets``` file. If you change the port mapping in the docker compose file, you have to adjust the urls in the following installation guide.
+The project generates SSL/TLS certificates and passwords if none are found in the subrepo containing the secrets. If you change the port mapping in the docker compose file, you have to adjust the urls in the following installation guide.
 
 Step by step installation guide:
 
@@ -34,7 +34,7 @@ bash ./start.sh
 ```
 3. Once everything is built and all services are running, exit the process by pressing Ctrl+C.
 
-4. Insert your VIA credentials into the secrets file. Change the ```protocol``` attribute to http: if your environment does not suport https:
+4. Insert your credentials for the VIA-Wiki into the ```ikoncode_secrets``` file. Change the ```protocol``` attribute to http: if your environment does not suport https:
 ```
 vi ./assets/secrets/ikoncode_secrets
 ```

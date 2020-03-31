@@ -11,7 +11,7 @@ The guide is tailored to Linux systems. It is explicitly tested on [Ubuntu](http
 ### Prerequisites
 In the current form this prototype needs internet access to retrieve data from https://via.museumfuernaturkunde.berlin (VIA-Wiki, Museum für Naturkunde Berlin) and http://nominatim.openstreetmap.org (Geocoder, OpenStreetMap). In addition, you need a user account for the VIA-Wiki to access the data. 
 
-You need [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installed in order to run the backend.
+You need [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/) and [Poetry](https://python-poetry.org/docs/) installed in order to run the backend.
 
 ### Installing
 
@@ -27,19 +27,28 @@ Step by step installation guide:
 ```
 git clone --recurse-submodules -j8 https://github.com/FUB-HCC/IKON-backend.git
 ```
-2. Start the shell script to generate the necessary configuration files and build the containers:
+2. Train all necssary models:
 ```
-cd IKON-backend/
+cd IKON-backend/src/topicextraction
+poetry install
+poetry shell
+cd ../../utils/
+python preprocess_and_train_models.py
+exit
+```
+3. Start the shell script to generate the necessary configuration files and build the containers:
+```
+cd ..
 bash ./start.sh
 ```
-3. Once everything is built and all services are running, exit the process by pressing Ctrl+C.
+4. Once everything is built and all services are running, exit the process by pressing Ctrl+C.
 
-4. Insert your credentials for the VIA-Wiki into the ```ikoncode_secrets``` file. Change the ```protocol``` attribute to http: if your environment does not suport https:
+5. Insert your credentials for the VIA-Wiki into the ```ikoncode_secrets``` file. Change the ```protocol``` attribute to http: if your environment does not suport https:
 ```
 vi ./assets/secrets/ikoncode_secrets
 ```
 
-5. Run the script again:
+6. Run the script again:
 ```
 bash ./start.sh
 ```
@@ -48,13 +57,13 @@ In order to display all possible options of the start script, run:
 bash ./start.sh -h
 ```
 
-8. First check of installation: 
+7. First check of installation: 
 Run queries from the [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html)
 ```
 curl -X GET "https://localhost/api/graph" -k
 ```
 
-9. Start the frontend: [https://localhost](https://localhost)
+8. Start the frontend: [https://localhost](https://localhost)
 
 #### Updating the data
 

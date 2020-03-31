@@ -63,7 +63,7 @@ Run queries from the [API documentation](https://fub-hcc.github.io/IKON/docs/dal
 curl -X GET "https://localhost/api/graph" -k
 ```
 
-8. Start the frontend: [https://localhost](https://localhost)
+8. Start the frontend: [https://localhost](https://localhost) or the touch version: [https://localhost/touch](https://localhost/touch)
 
 #### Updating the data
 

@@ -1,0 +1,5 @@
+*.json
+model.*
+*.tar.gz
+dict.*
+tfidf.*

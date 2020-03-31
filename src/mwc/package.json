@@ -4,16 +4,17 @@
   "main": "server.js",
   "scripts": {
     "start": "node src/mwc.js",
-    "local": "IKONCODE='../../assets/IKON-backend-config/secrets/ikoncode_secrets' NODE_ENV='dev' SSL_KEY='../../assets/ssl/server.key' SSL_CRT='../../assets/ssl/server.crt' node src/mwc.js"
+    "local": "IKONCODE='../../assets/secrets/ikoncode_secrets' NODE_ENV='dev' SSL_KEY='../../assets/ssl/server.key' SSL_CRT='../../assets/ssl/server.crt' node src/mwc.js"
   },
   "dependencies": {
     "bluebird": "3.5.3",
-    "body-parser": "1.18.3",
     "compression": "1.7.3",
     "express": "4.16.4",
-    "helmet": "3.15.0",
+    "flatted": "2.0.1",
+    "got": "10.6.0",
+    "helmet": "3.21.3",
     "nodemw": "0.12.2",
-    "pg": "7.7.1"
+    "nominatim-geocoder": "0.1.4"
   },
   "devDependencies": {
     "faker": "4.1.0"

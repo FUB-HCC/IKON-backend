@@ -29,6 +29,7 @@ bind = use_bind
 keepalive = 120
 errorlog = "-"
 timeout = 300
+preload_app = True
 keyfile = os.getenv("SSL_KEY", None)
 certfile = os.getenv("SSL_CRT", None)
 

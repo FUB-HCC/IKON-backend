@@ -1,0 +1,4 @@
+*.json
+model.*
+*.tar.gz
+*.txt

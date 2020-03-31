@@ -73,6 +73,7 @@ services:
     build:
       context: .
       dockerfile: ./src/bert/Dockerfile
+    image: docker.pkg.github.com/fub-hcc/ikon-backend/bertikon:latest
     volumes:
       - ./assets/models/bert:/model
 

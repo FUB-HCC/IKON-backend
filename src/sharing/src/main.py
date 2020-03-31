@@ -21,13 +21,13 @@ class Embeddings(BaseModel):
 
 @app.get("/sharing/")
 def get_all_keys() -> List[str]:
-    with OrderedShelf('/cache.db', size=2) as hashtable:
+    with OrderedShelf('/cache.db', size=100) as hashtable:
         return list(hashtable.keys())
 
 @app.get("/sharing/{state_name}")
 def get_state(state_name: constr(max_length=30)) -> str:
     state_name = unquote(state_name)
-    with OrderedShelf('/cache.db', size=2) as hashtable:
+    with OrderedShelf('/cache.db', size=100) as hashtable:
         try:
             return hashtable[state_name]
         except:
@@ -36,7 +36,7 @@ def get_state(state_name: constr(max_length=30)) -> str:
 @app.post("/sharing/{state_name}")
 def post_state(state_name: str, state: str = Body(...)) -> None:
     state_name = unquote(state_name)
-    with OrderedShelf('/cache.db', size=2) as hashtable:
+    with OrderedShelf('/cache.db', size=100) as hashtable:
         try:
             hashtable[state_name] = state
         except:

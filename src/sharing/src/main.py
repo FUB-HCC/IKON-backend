@@ -25,7 +25,7 @@ def get_all_keys() -> List[str]:
         return list(hashtable.keys())
 
 @app.get("/sharing/{state_name}")
-def get_state(state_name: constr(max_length=30)) -> str:
+def get_state(state_name: constr(max_length=60)) -> str:
     state_name = unquote(state_name)
     with OrderedShelf('/cache.db', size=100) as hashtable:
         try:

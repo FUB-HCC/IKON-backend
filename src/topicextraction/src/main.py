@@ -32,13 +32,15 @@ class Model(str, Enum):
     TfIdf = "TfIdf"
     Doc2Vec = "Doc2Vec"
     BERT = "BERT"
+    LDA = "LDA"
 
 preprocessing = Preprocessing(workers=1)
 
 models = {
     'TfIdf': Embedding(method='TfIdf'),
     'Doc2Vec': Embedding(method='Doc2Vec'),
-    'BERT': Embedding(method='BERT')
+    'BERT': Embedding(method='BERT'),
+    'LDA': Embedding(method='LDA')
 }
 
 @app.post("/embedding")

@@ -13,16 +13,18 @@ from gensim.models import TfidfModel
 from gensim.corpora import Dictionary
 from gensim.matutils import corpus2csc
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
-from gensim.models.ldamodel import LdaModel
+from gensim.models.hdpmodel import HdpModel
 from gensim.test.utils import get_tmpfile
 import bz2
 
 from src.Preprocessing.preprocessing import Preprocessing
 import itertools
         
+print('Loading and preprocessing data')
 with bz2.open('../../assets/data/train.txt.bz2', mode='rt') as f:
     traindata = Preprocessing().fit_transform(f)
 
+print('Building dict and training TfIdf model:')
 dct = Dictionary(doc for doc in traindata)  # fit dictionary
 traincorpus = [dct.doc2bow(doc) for doc in traindata]  # convert corpus to BoW format
 tfidf_model = TfidfModel(traincorpus)  # fit model
@@ -36,8 +38,8 @@ dump(dct, '../../assets/models/dict/dict.joblib')
 #doc2vec_model.delete_temporary_training_data(keep_doctags_vectors=False)
 #dump(doc2vec_model, '../assets/models/doc2vec/doc2vec.joblib')
 
-print('LDAModel training:')
-lda_model = LdaModel(traincorpus, num_topics=100, id2word=dct)
-dump(lda_model, '../../assets/models/lda/lda.joblib')
+print('HDPModel training:')
+hdp_model = HdpModel(traincorpus, dct)
+dump(hdp_model, '../../assets/models/hdp/hdp.joblib')
 
 

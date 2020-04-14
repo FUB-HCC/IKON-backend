@@ -110,7 +110,7 @@ const fetchGraph = async login => {
     let response = undefined
     while(retry){
       try{
-        response = await got.post('https://TopicExtractionService/embedding?method=LDA', {rejectUnauthorized: false, timeout:100000, json: data.projects.map(entry => entry['Redaktionelle Beschreibung'][0])}).json();
+        response = await got.post('https://TopicExtractionService/embedding?method=HDP', {rejectUnauthorized: false, timeout:100000, json: data.projects.map(entry => entry['Redaktionelle Beschreibung'][0])}).json();
         retry = false
       }
       catch(e){

@@ -12,7 +12,7 @@ from gensim.matutils import corpus2csc
 import socket
 
 class TfIdf(object):
-    def __init__(self, dict_path='/models/tfidf/dict.joblib', model_path='/models/tfidf/tfidf.joblib', **kwargs):
+    def __init__(self, dict_path='/models/dict/dict.joblib', model_path='/models/tfidf/tfidf.joblib', **kwargs):
         self.model = load(model_path, mmap_mode='r')
         self.dict = load(dict_path, mmap_mode='r')
 
@@ -31,6 +31,17 @@ class Doc2Vec(object):
 
     def transform(self, X, y=None):
         return np.array([self.model.infer_vector(doc) for doc in X])
+
+class HDP(object):
+    def __init__(self, dict_path='/models/dict/dict.joblib', model_path='/models/hdp/hdp.joblib', **kwargs):
+        self.model = load(model_path, mmap_mode='r')
+        self.dict = load(dict_path, mmap_mode='r')
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X, y=None):
+        return corpus2csc(self.model[[self.dict.doc2bow(doc) for doc in X]]).T
 
 class BERT(object):
     def fit(self, X, y=None):
@@ -55,6 +66,8 @@ class Embedding(BaseEstimator, TransformerMixin):
             return Doc2Vec(**kwargs)
         elif method == 'BERT':
             return BERT(**kwargs)
+        elif method == 'HDP':
+            return HDP(**kwargs)
         else:
             raise Exception(f'{self.__class__.__name__}: No valid method selected!')        
 

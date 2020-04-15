@@ -10,6 +10,7 @@ from sklearn.pipeline import Pipeline
 import numpy as np
 from bokeh.palettes import d3
 import functools
+from scipy.stats import entropy
 
 from Preprocessing.preprocessing import Preprocessing
 from Embedding.embedding import Embedding
@@ -32,46 +33,47 @@ class Model(str, Enum):
     TfIdf = "TfIdf"
     Doc2Vec = "Doc2Vec"
     BERT = "BERT"
+    HDP = "HDP"
 
 preprocessing = Preprocessing(workers=1)
 
 models = {
     'TfIdf': Embedding(method='TfIdf'),
     'Doc2Vec': Embedding(method='Doc2Vec'),
-    'BERT': Embedding(method='BERT')
+    'BERT': Embedding(method='BERT'),
+    'HDP': Embedding(method='HDP')
 }
 
 @app.post("/embedding")
-def topic_extraction(descriptions: List[str], method: Model = Model.Doc2Vec):
+def topic_extraction(descriptions: List[str], method: Model = Model.HDP):
     
     pipe = Pipeline([('Preprocessing', preprocessing),
                  ('Embedding',  models[method]),
+                 ('EmbeddingData', Debug()),
                  ('TopicExtraction', TopicExtraction(50, method='LSA')),
-                 ('TopicExtractionData', Debug()),
                  ('Clustering', Clustering(10, method='KMEANS')),
                  ('PlaneReduction', PlaneReduction(2, method='TSNE', perplexity=10, learning_rate=100))], verbose=True)
 
     tfs_plane, labels = pipe.fit_transform(descriptions)
 
-    tfs_reduced = pipe.named_steps.TopicExtractionData.data
-
     # compute linearization
     tfs_mapped = mapToSpaceSampling(tfs_plane)
 
     # compute cluster topography
-    similarity_to_cluster_centers = silhouette_samples(tfs_plane, labels=labels)
+    uncertainty = entropy(np.array(pipe.named_steps.EmbeddingData.data.todense()).T)
 
-    interpolated_topography = computeClusterTopography(tfs_mapped, silhouette_samples(tfs_reduced, labels), 200, 200, 'linear')
+    interpolated_topography = computeClusterTopography(tfs_mapped, uncertainty, 200, 200, 'cubic')
 
     return {
-            'project_data': [{'mappoint':mappoint, 'cluster':cluster} for mappoint, cluster in zip(
+            'project_data': [{'mappoint':mappoint, 'cluster':cluster, 'entropy': entropy} for mappoint, cluster, entropy in zip(
                 tfs_mapped.tolist(),
                 labels.tolist(),
+                uncertainty.tolist()
             )],
             'cluster_data': {
                 'cluster_colour': d3['Category20'][20]
             },
-            'cluster_topography': np.flip(interpolated_topography, axis=0).flatten().tolist(),
+            'cluster_topography': np.flip(interpolated_topography.T, axis=0).flatten().tolist(),
             'topography_width': 200,
             'topography_height': 200
         }

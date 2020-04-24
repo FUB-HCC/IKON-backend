@@ -50,15 +50,6 @@ services:
       - ssl_key
       - ssl_crt
 
-  bertikon:
-    container_name: BERTaaSIKON
-    build:
-      context: .
-      dockerfile: ./src/bert/Dockerfile
-    image: ikonresearch/bertikon:latest
-    volumes:
-      - ./assets/models/bert:/model
-
   sharing:
     container_name: SharingService
     build:

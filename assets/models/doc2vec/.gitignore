@@ -2,4 +2,4 @@
 model.*
 *.tar.gz
 *.txt
-doc2vec.*
+*.joblib

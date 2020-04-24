@@ -6,7 +6,6 @@ csr_matrix.__hash__ = object.__hash__
 import numpy as np
 import functools
 from multiprocessing import cpu_count
-from bert_serving.client import BertClient
 from joblib import load
 from gensim.matutils import corpus2csc
 import socket

@@ -39,8 +39,7 @@ preprocessing = Preprocessing(workers=1)
 
 models = {
     'TfIdf': Embedding(method='TfIdf'),
-    'Doc2Vec': Embedding(method='Doc2Vec'),
-    'BERT': Embedding(method='BERT'),
+#    'Doc2Vec': Embedding(method='Doc2Vec'),
     'HDP': Embedding(method='HDP')
 }
 

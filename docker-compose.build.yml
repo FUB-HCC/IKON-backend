@@ -1,0 +1,11 @@
+version: '3.1'
+services:
+
+  build:
+    container_name: BuildingService
+    build:
+      context: .
+      dockerfile: ./src/topicextraction/Dockerfile.build
+    volumes:
+      - ./assets/models:/models
+      - ./assets/data:/gepris_data

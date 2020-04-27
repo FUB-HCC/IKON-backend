@@ -21,7 +21,7 @@ from Preprocessing.preprocessing import Preprocessing
 import itertools
         
 print('Loading and preprocessing data')
-with bz2.open('/gepris_data/train_small.csv.bz2', mode='rt') as f:
+with bz2.open('/gepris_data/train.csv.bz2', mode='rt') as f:
     csvreader = csv.reader(f)
     traindata = Preprocessing().fit_transform((row[1] for row in csvreader))
     f.seek(0)

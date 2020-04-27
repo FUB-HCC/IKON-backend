@@ -29,10 +29,4 @@ then
 }" > ./assets/secrets/ikoncode_secrets
 fi
 
-
-if [[ ! -f ./src/topicextraction/models/dict/dict.joblib ]]    # or [ -n "$(echo *.flac)" ]
-then
-    docker-compose -f docker-compose.build.yml up --build
-fi
-
 docker-compose -f docker-compose.yml "$@" 

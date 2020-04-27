@@ -37,6 +37,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Train models
+        run: docker-compose -f docker-compose.build.yml up --build
+
       - name: Build image
         run: ./start.sh build
 
@@ -57,21 +60,4 @@ jobs:
           echo VERSION=$VERSION
           
           docker-compose push
-
-
-  deploy:
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          proxy_host: ${{ secrets.PROXY_HOST }}
-          proxy_username: ${{ secrets.PROXY_USERNAME }}
-          proxy_password: ${{ secrets.PROXY_PASSWORD }}
-          script: whoami
 

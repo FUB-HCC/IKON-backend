@@ -7,5 +7,5 @@ services:
       context: .
       dockerfile: ./src/topicextraction/Dockerfile.build
     volumes:
-      - ./assets/models:/models
+      - ./src/topicextraction/models:/models
       - ./assets/data:/gepris_data

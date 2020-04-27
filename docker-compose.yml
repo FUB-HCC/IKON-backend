@@ -43,9 +43,6 @@ services:
       SSL_KEY: /run/secrets/ssl_key
       SSL_CRT: /run/secrets/ssl_crt
       PORT: 443
-    volumes:
-      - ./src/topicextraction/src:/app
-      - ./assets/models:/models
     secrets:
       - ssl_key
       - ssl_crt
@@ -62,8 +59,6 @@ services:
       SSL_KEY: /run/secrets/ssl_key
       SSL_CRT: /run/secrets/ssl_crt
       PORT: 443
-    volumes:
-      - ./src/sharing/src:/app
     secrets:
       - ssl_key
       - ssl_crt

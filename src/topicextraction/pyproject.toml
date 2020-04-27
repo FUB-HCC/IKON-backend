@@ -5,7 +5,7 @@ description = ""
 authors = ["wittenator <wittenator@yahoo.de>"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.6"
 gensim = "^3.8.2"
 spacy = "^2.2.4"
 bokeh = "^2.0.2"

@@ -21,7 +21,7 @@ from Preprocessing.preprocessing import Preprocessing
 import itertools
         
 print('Loading and preprocessing data')
-with bz2.open('/gepris_data/train.csv.bz2', mode='rt') as f:
+with bz2.open('/gepris_data/train_small.csv.bz2', mode='rt') as f:
     csvreader = csv.reader(f)
     traindata = Preprocessing().fit_transform((row[1] for row in csvreader))
     f.seek(0)
@@ -32,13 +32,6 @@ dct = Dictionary(doc for doc in traindata)  # fit dictionary
 tfidf_model = TfidfModel((dct.doc2bow(doc) for doc in traindata))  # fit model
 dump(tfidf_model, '/models/tfidf/tfidf.joblib')
 dump(dct, '/models/dict/dict.joblib')
-
-#print('Doc2Vec setup and vocabulary building:')
-#doc2vec_model = Doc2Vec(corpus_file=traindata.filepath, total_words=dct.num_pos, vector_size=100, window=20, min_count=4, workers=cpu_count(), epochs=30)
-#print('Doc2Vec training:')
-#doc2vec_model.train(corpus_file=traindata.filepath, total_words=dct.num_pos, total_examples=doc2vec_model.corpus_count, epochs=doc2vec_model.epochs)
-#doc2vec_model.delete_temporary_training_data(keep_doctags_vectors=False)
-#dump(doc2vec_model, '../../assets/models/doc2vec/doc2vec.joblib')
 
 print('HDP training:')
 hdp_model = HdpModel([dct.doc2bow(doc) for doc in traindata], id2word=dct)

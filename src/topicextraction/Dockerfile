@@ -15,6 +15,7 @@ RUN poetry run python -m spacy download de_core_news_sm
 # Create app directory
 WORKDIR /app
 
-#ADD ./src ./
+ADD ./src ./
+ADD ./models /models
 
 #ENTRYPOINT /start-reload.sh

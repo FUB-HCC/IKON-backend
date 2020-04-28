@@ -14,22 +14,9 @@ on:
   pull_request:
 
 jobs:
-  # Run tests.
-  # See also https://docs.docker.com/docker-hub/builds/automated-testing/
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build network as a test
-        run: |
-          docker-compose build
-
-  # Push image to GitHub Package Registry.
+  # Push image to Docker Package Registry.
   # See also https://docs.docker.com/docker-hub/builds/
   push:
-    # Ensure test job passes before pushing image.
-    needs: test
 
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
@@ -39,6 +26,14 @@ jobs:
 
       - name: Train models
         run: docker-compose -f docker-compose.build.yml up --build
+
+      - name: free disk space
+        run: |
+          sudo swapoff -a
+          sudo rm -f /swapfile
+          sudo apt clean
+          docker rmi $(docker image ls -aq)
+          df -h
 
       - name: Build image
         run: ./start.sh build

@@ -22,11 +22,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      
+      - name: Set Env variables
+        run: |
+         export DOCKER_CLIENT_TIMEOUT=180
+         export COMPOSE_HTTP_TIMEOUT=180
 
       - name: Train models
         run: docker-compose -f docker-compose.build.yml up --build
       
-      - name: free disk space
+      - name: Free disk space
         run: |
           sudo swapoff -a
           sudo rm -f /swapfile

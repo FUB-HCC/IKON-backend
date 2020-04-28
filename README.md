@@ -27,21 +27,19 @@ Step by step installation guide:
 ```
 git clone --recurse-submodules -j8 https://github.com/FUB-HCC/IKON-backend.git
 ```
-2. Start the shell script to generate the necessary configuration files and build the containers:
+2. Start the shell script to generate the necessary configuration files and pull the containers:
 ```
 cd IKON-backend/
-bash ./start.sh
+bash ./start.sh pull
 ```
-3. Once everything is built and all services are running, exit the process by pressing Ctrl+C.
-
-4. Insert your credentials for the VIA-Wiki into the ```ikoncode_secrets``` file. Change the ```protocol``` attribute to http: if your environment does not suport https:
+3. Insert your credentials for the VIA-Wiki into the ```ikoncode_secrets``` file. Change the ```protocol``` attribute to http: if your environment does not suport https:
 ```
 vi ./assets/secrets/ikoncode_secrets
 ```
 
-5. Run the script again:
+4. Run the script again:
 ```
-bash ./start.sh
+bash ./start.sh up
 ```
 In order to display all possible options of the start script, run:
 ```
@@ -54,7 +52,11 @@ Run queries from the [API documentation](https://fub-hcc.github.io/IKON/docs/dal
 curl -X GET "https://localhost/api/graph" -k
 ```
 
-9. Start the frontend: [https://localhost](https://localhost)
+9. Start the frontend:
+
+Desktop version: [https://localhost](https://localhost)
+
+Touchscreen version: [https://localhost/touch](https://localhost/touch)
 
 #### Updating the data
 

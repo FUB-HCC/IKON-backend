@@ -9,6 +9,7 @@ services:
     image: ikonresearch/controller:latest
     ports:
       - "443:443"
+      - "80:80"
     secrets:
       - ssl_key
       - ssl_crt

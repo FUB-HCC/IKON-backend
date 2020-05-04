@@ -2,6 +2,9 @@
 
 ![IKON logo](https://www.mi.fu-berlin.de/en/inf/groups/hcc/research/projects/ikon/IKON-Logo.png?width=500)
 
+## User Documentation (in German)
+An introductory user documentation explaining the general functionality of the prototype can be found [here](https://github.com/FUB-HCC/IKON-backend/blob/master/docs/IKON-Prototyp-Nutzerdokumentation.pdf)
+
 ## Installation Guide
 
 This guide will lead you through the process of building the IKON prototype (backend and frontend) for development and testing purposes. The deployment is done with [Docker](https://docs.docker.com/install/).

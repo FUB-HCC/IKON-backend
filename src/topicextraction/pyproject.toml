@@ -8,13 +8,13 @@ authors = ["wittenator <wittenator@yahoo.de>"]
 python = "^3.6"
 gensim = "^3.8.2"
 spacy = "^2.2.4"
-bokeh = "^2.0.2"
 lapjv = "^1.3.1"
 scikit-learn = "^0.22.2"
-notebook = "^6.0.3"
-ipywidgets = "^7.5.1"
 
 [tool.poetry.dev-dependencies]
+pylint = "^2.5.0"
+notebook = "^6.0.3"
+ipywidgets = "^7.5.1"
 
 [build-system]
 requires = ["poetry>=0.12"]

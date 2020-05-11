@@ -5,6 +5,9 @@
 ## User Documentation (in German)
 An introductory user documentation explaining the general functionality of the prototype can be found [here](https://github.com/FUB-HCC/IKON-backend/blob/master/docs/IKON-Prototyp-Nutzerdokumentation.pdf)
 
+## API Documentation
+The application consists of three services: The Controller, a NGINX instance as a reverse proxy, the MediaWikiConnector (MWC), which pulls data from the VIA and the TopicextractionService (TES), which embeds the abstracts from the wiki. The controller caches and proxies the /graph GET request from the MWC at the path /api/graph. The documentation for both services can be found [here](https://fub-hcc.github.io/IKON-backend/mwc). The documentation of the TES is available [here](https://fub-hcc.github.io/IKON-backend/tes).
+
 ## Installation Guide
 
 This guide will lead you through the process of building the IKON prototype (backend and frontend) for development and testing purposes. The deployment is done with [Docker](https://docs.docker.com/install/).
@@ -61,20 +64,20 @@ Desktop version: [https://localhost](https://localhost)
 
 Touchscreen version: [https://localhost/touch](https://localhost/touch)
 
+#### Building locally
+
+Attention: Building locally requires atleast 8 GB of free RAM and will take up to 40 minutes.
+In order to build the containers locally, train the models after step one of the installation procedures via:
+```
+docker-compose -f docker-compose.build.yml up --build
+```
+and instead of pulling the images in step two, build the models via
+```
+bash ./start.sh build
+```
 #### Updating the data
 
 The data automatically updates, because once the cache expires new data from the VIA is pulled and processed.
-
-### Coding style
-
-This project uses ESLint and (Pylint) for code-style checking. 
-To run the linter execute the following line in the root folder of this repository:
-
-```
-npx eslint .
-```
-
-### FAQ
 
 ## Authors
 * [Tim Korjakow](https://github.com/wittenator)

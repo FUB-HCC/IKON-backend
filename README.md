@@ -53,7 +53,7 @@ bash ./start.sh -h
 ```
 
 8. First check of installation: 
-Run queries from the [API documentation](https://fub-hcc.github.io/IKON/docs/dal.html)
+Run queries from the [API documentation](https://fub-hcc.github.io/IKON-backend/mwc)
 ```
 curl -X GET "https://localhost/api/graph" -k
 ```

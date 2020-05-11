@@ -138,12 +138,9 @@ const fetchGraph = async login => {
   replaceMentionsInTarget(data.formats, data.ktas, 'name', 'Format', 'ktas')
   replaceMentionsInSource(data.ktas, data.formats, 'Format', 'name')
 
-  return data
+  return stringify(data)
 
 }
-
-// warmup LRU cache of geocoder
-fetchGraph(wikiLogin())
-
 exports.fetchGraph = fetchGraph
 exports.wikiLogin = wikiLogin
+

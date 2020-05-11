@@ -1,6 +1,6 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 
-# data wrangling
+from typing import List
 import spacy
     
 
@@ -10,10 +10,10 @@ class Preprocessing(BaseEstimator, TransformerMixin):
         self.nlp = spacy.load('de_core_news_sm', disable=["ner", "tagger", "parser", "textcat"])
         self.workers = workers
 
-    def fit(self, X, y=None):
+    def fit(self, X: List[str], y:List[str]=None, **kwargs):
         return self
 
-    def transform(self, X, y=None):
+    def transform(self, X: List[str], y:List[str]=None, **kwargs):
         try:
             return self.preprocessText(X)
         except Exception as err:
@@ -29,9 +29,3 @@ class Preprocessing(BaseEstimator, TransformerMixin):
         
     def filterType(self, token):
         return token.is_alpha and not (token.is_stop or token.like_num or token.is_punct) and len(token.lemma_) > 3
-
-
-
-    def fit_transform(self, X, y=None):
-        self.fit(X, y)
-        return self.transform(X, y)

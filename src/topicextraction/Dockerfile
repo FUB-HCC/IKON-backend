@@ -7,9 +7,9 @@ ADD ./pyproject.toml ./pyproject.toml
 ADD ./poetry.lock ./poetry.lock
 
 RUN poetry config virtualenvs.create false
-RUN poetry install
+RUN poetry install --no-dev
 
-RUN poetry run python -m spacy download de_core_news_sm
+RUN python -m spacy download de_core_news_sm
 
 
 # Create app directory

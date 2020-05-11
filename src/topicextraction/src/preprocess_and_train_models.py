@@ -23,7 +23,7 @@ import itertools
 print('Loading and preprocessing data')
 with bz2.open('/gepris_data/train.csv.bz2', mode='rt') as f:
     csvreader = csv.reader(f)
-    traindata = Preprocessing().fit_transform((row[1] for row in csvreader))
+    traindata = Preprocessing().fit_transform((row[1] for row in csvreader), )
     f.seek(0)
     doc2author = {i:row[3:] for i, row in enumerate(csvreader)}
 

@@ -2,15 +2,21 @@
 
 ![IKON logo](https://www.mi.fu-berlin.de/en/inf/groups/hcc/research/projects/ikon/IKON-Logo.png?width=500)
 
-## User Documentation (in German)
-An introductory user documentation explaining the general functionality of the prototype can be found [here](https://github.com/FUB-HCC/IKON-backend/blob/master/docs/IKON-Prototyp-Nutzerdokumentation.pdf)
+## User Documentation
+An introductory user documentation (in German) explaining the general functionality of the prototype can be found [here](https://github.com/FUB-HCC/IKON-backend/blob/master/docs/IKON-Prototyp-Nutzerdokumentation.pdf).
 
 ## API Documentation
-The application consists of three services: The Controller, a NGINX instance as a reverse proxy, the MediaWikiConnector (MWC), which pulls data from the VIA, the SharingService, which manages shares from the frontend, and the TopicextractionService (TES), which embeds the abstracts from the wiki. The controller caches and proxies the /graph GET request from the MWC at the path /api/graph. The documentation for both services can be found [here](https://fub-hcc.github.io/IKON-backend/mwc). The documentation of the TES is available [here](https://fub-hcc.github.io/IKON-backend/tes). Furthermore the Controller inherits all endpoints of the SharingService under the basepath /api. The documentation for the SharingService is found [here](https://fub-hcc.github.io/IKON-backend/sharing).
+The application consists of the following services: 
+1. The controller, an NGINX instance as a reverse proxy, 
+2. the MediaWikiConnector (MWC), which pulls the data from the VIA wiki,
+3. the SharingService, which manages shares from the frontend, and 
+4. the TopicExtractionService (TES), which embeds the abstracts from the wiki. 
+
+The controller caches and proxies the /graph GET request from the MWC at the path /api/graph. The documentation for both services can be found [here](https://fub-hcc.github.io/IKON-backend/mwc). The documentation of the TES is available [here](https://fub-hcc.github.io/IKON-backend/tes). Furthermore the Controller inherits all endpoints of the SharingService under the basepath /api. The documentation for the SharingService is found [here](https://fub-hcc.github.io/IKON-backend/sharing).
 
 ## Installation Guide
 
-This guide will lead you through the process of building the IKON prototype (backend and frontend) for development and testing purposes. The deployment is done with [Docker](https://docs.docker.com/install/).
+The following installation guide will lead you through the process of building the IKON prototype (backend and frontend) for development and testing purposes. The deployment is done with [Docker](https://docs.docker.com/install/).
 
 The guide is tailored to Linux systems. It is explicitly tested on [Ubuntu](https://ubuntu.com/) 18 but will work on most other distributions as well.
 

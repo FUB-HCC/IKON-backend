@@ -13,9 +13,6 @@ mediaWikiConnector.fetchGraph(loginPromise);
 
 
 const {apidocs} = require('./apidocs');
-
-
-
 const app = express();
 
 app.use(cors())

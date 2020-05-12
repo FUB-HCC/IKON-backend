@@ -13,7 +13,10 @@ exports.ikoncode = ikoncode
 // set up nominatim endpoint and warmup LRU cache
 const geocoder = new Nominatim();
 
-// connect to IKON CODE
+/**
+ * Creates a promise for the login to VIA. The login process is done once it resolves.
+ * @returns {Promise} - The promise
+ */
 wikiLogin = () => {
   try {
     return (ikoncode.logInAsync());
@@ -23,6 +26,12 @@ wikiLogin = () => {
   }
 };
 
+/**
+ * Represents a book.
+ * @param {Promise} login - The login promise.
+ * @param {string} query - The semantic Wiki query which is passed the VIA.
+ * @returns {Any} - The result from the VIA
+ */
 queryWiki = async (login, query) => {
   try {
     await login;
@@ -38,21 +47,55 @@ queryWiki = async (login, query) => {
   }
 };
 
+/**
+ * A general function to get all distinct entries in a dict and their counts
+ * @param {string} category - The title of the book.
+ * @param {string} key - The author of the book.
+ * @returns {Dict} - A dict of distinct entries and their counts as values
+ */
 const getDistinctEntries = (category, key) => {return Object.entries(Object.values(category).map(entry => entry[key] ? entry[key] : undefined).flat().reduce( (acc, o) => (acc[o] = (acc[o] || 0)+1, acc), {} )).map(([k, v]) => ({name: k, count: v}))}
 
+
+/**
+ * A general function to interlink two lists  in two dicts by replacing all mentions of a key in the target list with the respective value from the other list
+ * @param {Dict} source - The source dict.
+ * @param {Dict} target - The target array.
+ * @param {string} sourcekey - The key at which the array is found in source.
+ * @param {string} targetkey - The key at which the array is found in target.
+ * @param {string} newKey - The name of the new key under which the links are safed in the source.
+ */
 const replaceMentionsInTarget = (source, target, sourcekey, targetkey, newkey) => {
   for(let coll of source){
     Object.assign(coll, {[newkey]: target.filter(project => {return project[targetkey].includes(coll[sourcekey])})})
   }
 }
 
+/**
+ * A general function to interlink two lists  in two dicts by replacing all mentions of a key in the source list with the respective value from the other list
+ * @param {Dict} source - The source dict.
+ * @param {Dict} target - The target array.
+ * @param {string} sourcekey - The key at which the array is found in source.
+ * @param {string} targetkey - The key at which the array is found in target.
+ */
 const replaceMentionsInSource = (source, target, sourcekey, targetkey) => {
   for(let project of source){
     Object.assign(project, {[sourcekey]: project[sourcekey].map(partner => target.find(entry => entry[targetkey] === partner)).filter(partner => partner)})
   }
 }
 
+
+/**
+ * A function to merge map the date format from VIA to a simpel timestamp format in a two-element array
+ * @param {Array} source - The source list.
+ * @param {string} beginning - The key in which the start is found.
+ * @param {string} end - he key in which the end is found.
+ */
 const mergeDates = (source, beginning, end) => {return source.map(entry => ({...entry, ...{timeframe: [entry[beginning][0].timestamp, entry[end][0].timestamp]}, ...{[beginning]: undefined}, ...{[end]: undefined}}))}
+
+/**
+ * This function queries the VIA and embedds all information in a cyclical graph which is marshalled to a string
+ * @returns {string} - A marshalled version of the graph in the flatted (https://github.com/WebReflection/flatted) format
+ */
 
 const fetchGraph = async login => {
   const geocoding = true

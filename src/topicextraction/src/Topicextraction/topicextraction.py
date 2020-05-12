@@ -1,5 +1,6 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.decomposition import TruncatedSVD
+import numpy as np
 
 class TopicExtraction(BaseEstimator, TransformerMixin):
     """
@@ -18,20 +19,16 @@ class TopicExtraction(BaseEstimator, TransformerMixin):
         else:
             raise Exception(f'{self.__class__.__name__}: No valid method selected!')
 
-    def fit(self, X, y=None):
+    def fit(self, X: np.ndarray, y:np.ndarray=None, **kwargs):
         self.selector = self.selector.fit(X)
         return self
 
-    def transform(self, X, y=None):
+    def transform(self, X: np.ndarray, y:np.ndarray=None, **kwargs):
         try:
             return self.selector.transform(X)
         except Exception as err:
             print('TopicExtraction.transform(): {}'.format(err))
         return X
 
-    def fit_transform(self, X, y=None):
-        self.fit(X, y)
-        return self.transform(X, y)
-
-    def inverse_transform(self, X, y=None):
+    def inverse_transform(self, X: np.ndarray, y:np.ndarray=None, **kwargs):
         return self.selector.inverse_transform(X)

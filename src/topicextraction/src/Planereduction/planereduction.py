@@ -1,7 +1,7 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.manifold import TSNE
-import functools
+import numpy as np
 
 
 class PlaneReduction(BaseEstimator, TransformerMixin):
@@ -23,7 +23,7 @@ class PlaneReduction(BaseEstimator, TransformerMixin):
         else:
             raise Exception(f'{self.__class__.__name__}: No valid method selected!')
 
-    def fit(self, X, y=None):
+    def fit(self, X: np.ndarray, y:np.ndarray=None, **kwargs):
         data, y = X
         if self.method == 'tsne':
             pass
@@ -31,7 +31,7 @@ class PlaneReduction(BaseEstimator, TransformerMixin):
             self.selector = self.selector.fit(data, y)
         return self
 
-    def transform(self, X, y=None):
+    def transform(self, X: np.ndarray, y:np.ndarray=None, **kwargs):
         print(X)
         data, y = X
         try:
@@ -43,9 +43,9 @@ class PlaneReduction(BaseEstimator, TransformerMixin):
             print('PlaneReduction.transform(): {}'.format(err))
         return X
 
-    def fit_transform(self, X, y=None):
+    def fit_transform(self, X: np.ndarray, y:np.ndarray=None, **kwargs):
         data, y = X
         return self.selector.fit_transform(data, y), y
 
-    def inverse_transform(self, X, y):
+    def inverse_transform(self, X: np.ndarray, y:np.ndarray=None, **kwargs):
         raise Exception(f'Inverse transform not defined for clustering')

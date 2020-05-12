@@ -1,5 +1,5 @@
 from sklearn.base import BaseEstimator, TransformerMixin
-
+import numpy as np
 
 class Debug(BaseEstimator, TransformerMixin):
     """
@@ -8,15 +8,7 @@ class Debug(BaseEstimator, TransformerMixin):
     """
     def transform(self, X: np.ndarray, y:np.ndarray=None, **kwargs):
         self.data = X
-        # what other output you want
         return X
 
-    def fit(self, X, y=None, **fit_params):
+    def fit(self, X: np.ndarray, y:np.ndarray=None, **kwargs):
         return self
-
-    def fit_transform(self, X, y=None, **fit_params):
-        self.fit(X, y)
-        return self.transform(X, y)
-
-    def inverse_transform(self, X, y=None):
-        return X, y

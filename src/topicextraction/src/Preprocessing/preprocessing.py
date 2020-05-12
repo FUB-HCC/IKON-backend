@@ -6,6 +6,9 @@ import spacy
 
 
 class Preprocessing(BaseEstimator, TransformerMixin):
+    """
+    This class preprocesses a list of texts by lemmatization and stop word removal and exposes a Sklearn-compatible API.
+    """
     def __init__(self, workers=-1, **kwargs):
         self.nlp = spacy.load('de_core_news_sm', disable=["ner", "tagger", "parser", "textcat"])
         self.workers = workers

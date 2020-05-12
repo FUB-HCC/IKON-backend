@@ -5,6 +5,9 @@ import dbm
 from threading import Lock
 
 class OrderedShelf(Shelf):
+    """
+    This class inherits Shelf and adds an order to the inserted elements, deleting the oldest key once the OrderedShelf is full.
+    """
     def __init__(self, filename, flag='c', protocol=None, writeback=False,
                  keyencoding="utf-8", size=100):
         super().__init__(dbm.open(filename, flag), protocol=protocol, writeback=writeback, keyencoding=keyencoding)

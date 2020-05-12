@@ -2,6 +2,10 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.decomposition import TruncatedSVD
 
 class TopicExtraction(BaseEstimator, TransformerMixin):
+    """
+    This class unifies and abstracts several dimensionality reduction models and exposes a Sklearn-compatible API.
+    Currently only LSA (TruncatedSVD) is supported.
+    """
     def __init__(self, features, method='lsa', **kwargs):
         self.kwargs = kwargs
         self.features = features

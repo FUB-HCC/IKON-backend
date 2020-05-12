@@ -2,8 +2,11 @@ from sklearn.base import BaseEstimator, TransformerMixin
 
 
 class Debug(BaseEstimator, TransformerMixin):
-
-    def transform(self, X, y=None):
+    """
+    This class serves as a cache for passing data and exposes a Sklearn-compatible API.
+    It is used to extract intermediate data in Sklearn pipelines.
+    """
+    def transform(self, X: np.ndarray, y:np.ndarray=None, **kwargs):
         self.data = X
         # what other output you want
         return X

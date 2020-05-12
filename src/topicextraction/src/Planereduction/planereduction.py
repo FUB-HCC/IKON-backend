@@ -5,6 +5,10 @@ import functools
 
 
 class PlaneReduction(BaseEstimator, TransformerMixin):
+    """
+    This class unifies and abstracts several dimensionality reduction models and exposes a Sklearn-compatible API.
+    Currently only TSNE and LDA are supported.
+    """
     def __init__(self, features, method, **kwargs):
         self.kwargs = kwargs
         self.features = features

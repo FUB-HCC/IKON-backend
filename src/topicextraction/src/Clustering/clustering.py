@@ -2,7 +2,11 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.cluster import MiniBatchKMeans
 
 class Clustering(BaseEstimator, TransformerMixin):
-    def __init__(self, features, method='kmeans', **kwargs):
+    """
+    This class unifies and abstracts several clustering models and exposes a Sklearn-compatible API.
+    Currently only KMEANS is supported.
+    """
+    def __init__(self, features: int, method: str='kmeans', **kwargs):
         self.kwargs = kwargs
         self.features = features
         self.method = method

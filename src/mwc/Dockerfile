@@ -16,5 +16,6 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-EXPOSE 8081
+# Enable production mode
+ENV NODE_ENV=production
 CMD [ "npm", "start" ]

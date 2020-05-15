@@ -53,7 +53,7 @@ class Embedding(BaseEstimator, TransformerMixin):
     def fit(self, X: np.ndarray, y: np.ndarray = None, **kwargs):
         return self
 
-        def transform(self, X: np.ndarray, y:np.ndarray=None, **kwargs):
+    def transform(self, X: np.ndarray, y:np.ndarray=None, **kwargs):
         try:
             return self.selector.transform(X)
         except Exception as err:

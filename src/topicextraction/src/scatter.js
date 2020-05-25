@@ -74,7 +74,7 @@ define('scatter', ['d3'], function (d3) {
         .attr("r", 8)
         .attr("cx", function(d) { return x(accessor(d, viztype, 0)); })
         .attr("cy", function(d) { return y(accessor(d, viztype, 1)); })
-        .style("fill", function(d) { return data.cluster_data.cluster_colour[d.cluster]; })
+        .style("fill", "grey")
         .on("mouseover", function(d) {    
             div.transition()    
                 .duration(200)    

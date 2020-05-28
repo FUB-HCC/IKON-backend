@@ -3,21 +3,6 @@ import numpy as np
 from joblib import load
 from gensim.matutils import corpus2csc
 
-
-class TfIdf(object):
-    """
-    This class loads a pretrained TfIdf Model via memory mapping and exposes a Sklearn-compatible API
-    """
-    def __init__(self, dict_path='/models/dict/dict.joblib', model_path='/models/tfidf/tfidf.joblib', **kwargs):
-        self.model = load(model_path, mmap_mode='r')
-        self.dict = load(dict_path, mmap_mode='r')
-
-    def fit(self, X, y=None):
-        return self
-
-    def transform(self, X, y=None):
-        return corpus2csc(self.model[[self.dict.doc2bow(doc) for doc in X]]).T
-
 class HDP(object):
     """
     This class loads a pretrained HDP Model via memory mapping and exposes a Sklearn-compatible API
@@ -30,7 +15,7 @@ class HDP(object):
         return self
 
     def transform(self, X, y=None):
-        return corpus2csc(self.model[[self.dict.doc2bow(doc) for doc in X]]).T
+        return corpus2csc(self.model[[self.dict.doc2bow(doc) for doc in X]]).T.todense()
 
 class Embedding(BaseEstimator, TransformerMixin):
     """

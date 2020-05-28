@@ -5,27 +5,19 @@ from fastapi import FastAPI
 from starlette.middleware.gzip import GZipMiddleware
 from pydantic import BaseModel
 
-from sklearn.metrics import silhouette_samples
 from sklearn.pipeline import Pipeline
 import numpy as np
 from scipy.stats import entropy
+from scipy.spatial.distance import jensenshannon
 
 from Preprocessing.preprocessing import Preprocessing
 from Embedding.embedding import Embedding
-from Topicextraction.topicextraction import TopicExtraction
-from Clustering.clustering import Clustering
 from Planereduction.planereduction import PlaneReduction
 from Linearization.linearization import mapToSpaceSampling, computeClusterTopography
 from Debug.debug import Debug
 
 app = FastAPI()
-
 app.add_middleware(GZipMiddleware)
-
-class Embeddings(BaseModel):
-    id: int
-    description: str
-
 
 class Model(str, Enum):
     HDP = "HDP"
@@ -46,26 +38,24 @@ def topic_extraction(descriptions: List[str], method: Model = Model.HDP):
     :return: The method returns a JSON formatted string which includes information concerning the data points and their embeddings and uncertainties as well as the cluster topography and its dimensions.
     """
     pipe = Pipeline([('Preprocessing', preprocessing),
-                 ('Embedding',  models[method]),
-                 ('EmbeddingData', Debug()),
-                 ('TopicExtraction', TopicExtraction(50, method='LSA')),
-                 ('Clustering', Clustering(10, method='KMEANS')),
-                 ('PlaneReduction', PlaneReduction(2, method='TSNE', perplexity=10, learning_rate=100))], verbose=True)
+         ('Embedding',  models["HDP"]),
+         ('EmbeddingData', Debug()),
+         ('PlaneReduction', PlaneReduction(2, method='TSNE', metric=jensenshannon))], verbose=True)
 
-    tfs_plane, labels = pipe.fit_transform(descriptions)
+    tfs_plane = pipe.fit_transform(descriptions)
+
+    # compute cluster topography
+    print(pipe.named_steps.EmbeddingData.data.sum(axis=1))
+    uncertainty = entropy(pipe.named_steps.EmbeddingData.data, axis=1)
 
     # compute linearization
     tfs_mapped = mapToSpaceSampling(tfs_plane)
 
-    # compute cluster topography
-    uncertainty = entropy(np.array(pipe.named_steps.EmbeddingData.data.todense()).T)
-
     interpolated_topography = computeClusterTopography(tfs_mapped, uncertainty, 200, 200, 'cubic')
 
     return {
-            'project_data': [{'mappoint':mappoint, 'cluster':cluster, 'entropy': entropy} for mappoint, cluster, entropy in zip(
+            'project_data': [{'mappoint':mappoint, 'entropy': entropy} for mappoint, entropy in zip(
                 tfs_mapped.tolist(),
-                labels.tolist(),
                 uncertainty.tolist()
             )],
             'cluster_topography': np.flip(interpolated_topography.T, axis=0).flatten().tolist(),

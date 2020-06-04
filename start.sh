@@ -13,9 +13,8 @@ then
 fi
 
 shopt -s nullglob dotglob
-if [ ! -f ./assets/secrets/ikoncode_secrets ] || [ ! -f ./assets/secrets/postgres_password ];
+if [ ! -f ./assets/secrets/ikoncode_secrets ] ;
 then
-	pwgen 64 1 > ./assets/secrets/postgres_password
 	echo "{
       \"protocol\": \"https\",
       \"server\": \"via.naturkundemuseum.berlin\",

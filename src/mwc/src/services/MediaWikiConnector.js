@@ -10,7 +10,7 @@ ikoncode.api = Promise.promisifyAll(ikoncode.api, { multiArgs: true });
 exports.ikoncode = ikoncode;
 
 // set up nominatim endpoint and warmup LRU cache
-const geocoder = new Nominatim();
+const geocoder = new Nominatim({ secure: false });
 
 /**
  * Creates a promise for the login to VIA. The login process is done once it resolves.

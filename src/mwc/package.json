@@ -13,7 +13,7 @@
     "express": "4.16.4",
     "express-openapi": "6.0.0",
     "flatted": "2.0.1",
-    "got": "10.6.0",
+    "got": "11.8.5",
     "helmet": "3.21.3",
     "nodemw": "0.12.2",
     "nominatim-geocoder": "0.1.4"

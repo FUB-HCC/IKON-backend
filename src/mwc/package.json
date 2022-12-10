@@ -10,7 +10,7 @@
     "bluebird": "3.5.3",
     "compression": "1.7.3",
     "cors": "2.8.5",
-    "express": "4.16.4",
+    "express": "4.17.3",
     "express-openapi": "6.0.0",
     "flatted": "2.0.1",
     "got": "10.6.0",
